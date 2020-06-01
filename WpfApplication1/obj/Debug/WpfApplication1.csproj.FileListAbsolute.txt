@@ -1,0 +1,103 @@
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\SSKAanalyzer.exe.config
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\SSKAanalyzer.exe
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\SSKAanalyzer.pdb
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.dll
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\WPFToolkit.dll
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.pdb
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\WPFToolkit.pdb
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\Window1.baml
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\Window1.g.cs
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\App.g.cs
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\SSKAanalyzer_MarkupCompile.cache
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\SSKAanalyzer.g.resources
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WpfApplication1.Properties.Resources.resources
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WpfApplication1.csproj.GenerateResource.Cache
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\SSKAanalyzer.exe
+C:\Users\VZ\Documents\Visual Studio 2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\SSKAanalyzer.pdb
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\Local\Resource.resx
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\Local\Resource.ru.resx
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\Local\Resource.de.resx
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\Local\Resource.ru.Designer.cs
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\Local\Resource.de.Designer.cs
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\Local\Resource.Designer.cs
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\SSKAanalyzer.exe.config
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\SSKAanalyzer.exe
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\SSKAanalyzer.pdb
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\ru\SSKAanalyzer.resources.dll
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\de\SSKAanalyzer.resources.dll
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\SimpleSecurity.dll
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.dll
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.VisualStudio.Design.dll
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\WPFToolkit.dll
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\SimpleSecurity.pdb
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.pdb
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\WPFToolkit.pdb
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\bin\Debug\System.Windows.Controls.DataVisualization.Toolkit.VisualStudio.Design.pdb
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\ResolveAssemblyReference.cache
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\Window1.baml
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WindowActivation.baml
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WindowAccount.baml
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WindowFieldsDictionary.baml
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WindowFilters.baml
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WindowProgrBar.baml
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WindowWarning.baml
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\Window1.g.cs
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WindowActivation.g.cs
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WindowAccount.g.cs
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WindowFieldsDictionary.g.cs
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WindowFilters.g.cs
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WindowProgrBar.g.cs
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WindowWarning.g.cs
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\App.g.cs
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\SSKAanalyzer_MarkupCompile.cache
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\SSKAanalyzer.g.resources
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WpfApplication1.Properties.Resources.resources
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WpfApplication1.Local.Resource.resources
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WpfApplication1.Local.Resource.ru.resources
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WpfApplication1.Local.Resource.de.resources
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\WpfApplication1.csproj.GenerateResource.Cache
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\ru\SSKAanalyzer.resources.dll
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\de\SSKAanalyzer.resources.dll
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\SSKAanalyzer.exe
+D:\MS_VS_2008\Projects\WpfApp-1\WpfApplication1\obj\Debug\SSKAanalyzer.pdb
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\bin\Debug\SSKAanalyzer.exe.config
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\SSKAanalyzer.exe
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\SSKAanalyzer.pdb
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\bin\Debug\Local\Resource.resx
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\bin\Debug\Local\Resource.ru.resx
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\bin\Debug\Local\Resource.de.resx
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\bin\Debug\Local\Resource.ru.Designer.cs
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\bin\Debug\Local\Resource.de.Designer.cs
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\bin\Debug\Local\Resource.Designer.cs
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\bin\Debug\SSKAanalyzer.exe
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\bin\Debug\SSKAanalyzer.pdb
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\bin\Debug\ru\SSKAanalyzer.resources.dll
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\bin\Debug\de\SSKAanalyzer.resources.dll
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\bin\Debug\SimpleSecurity.dll
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\bin\Debug\SimpleSecurity.pdb
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WpfApplication1.csprojResolveAssemblyReference.cache
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\Window1.baml
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WindowActivation.baml
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WindowAccount.baml
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WindowFieldsDictionary.baml
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WindowFilters.baml
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WindowProgrBar.baml
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WindowWarning.baml
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\Window1.g.cs
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WindowActivation.g.cs
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WindowAccount.g.cs
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WindowFieldsDictionary.g.cs
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WindowFilters.g.cs
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WindowProgrBar.g.cs
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WindowWarning.g.cs
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\App.g.cs
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\SSKAanalyzer_MarkupCompile.cache
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\SSKAanalyzer.g.resources
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WpfApplication1.Properties.Resources.resources
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WpfApplication1.Local.Resource.resources
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WpfApplication1.Local.Resource.ru.resources
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WpfApplication1.Local.Resource.de.resources
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\WpfApplication1.csproj.GenerateResource.Cache
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\ru\SSKAanalyzer.resources.dll
+C:\Users\VIS\Downloads\SSKA_Analizer_Source-1.3\WpfApp-1\WpfApplication1\obj\Debug\de\SSKAanalyzer.resources.dll

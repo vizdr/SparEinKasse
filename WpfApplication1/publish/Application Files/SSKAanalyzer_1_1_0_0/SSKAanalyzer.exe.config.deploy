@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <configSections>
+        <sectionGroup name="userSettings" type="System.Configuration.UserSettingsGroup, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" >
+            <section name="WpfApplication1.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" allowExeDefinition="MachineToLocalUser" requirePermission="false" />
+        </sectionGroup>
+        <sectionGroup name="applicationSettings" type="System.Configuration.ApplicationSettingsGroup, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" >
+            <section name="WpfApplication1.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+        </sectionGroup>
+    </configSections>
+    <userSettings>
+        <WpfApplication1.Properties.Settings>
+            <setting name="TransactionField" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>Transaction</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="ContributorAccField" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>Auftragskonto</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="PaymentDateField" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>Buchungstag</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="BankOperDateField" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>Valutadatum</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="BankOperTypeField" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>Buchungstext</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="PaymentPurposeField" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>Verwendungszweck</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="BeneficiaryAccField" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>Kontonummer</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="IntBankCodeField" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>BLZ</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="BankOperValueField" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>Betrag</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="IBAN_Field" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>IBAN</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="BIC_Field" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>BIC</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="InfoField" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>Info</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="ContributorAccounts" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>1372430361</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="BeneficiaryField" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>Begünstigter-Zahlungspflichtiger</string>
+                        <string>Beguenstigter-Zahlungspflichtiger</string>
+                        <string>Begünstigter/Zahlungspflichtiger</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="CurrencyField" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>Währung</string>
+                        <string>Waehrung</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+            <setting name="CodePage" serializeAs="Xml">
+                <value>
+                    <ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                        <string>1252</string>
+                        <string>1251</string>
+                    </ArrayOfString>
+                </value>
+            </setting>
+        </WpfApplication1.Properties.Settings>
+    </userSettings>
+    <applicationSettings>
+        <WpfApplication1.Properties.Settings>
+            <setting name="StorageFileName" serializeAs="String">
+                <value>Arxiv.xml</value>
+            </setting>
+            <setting name="ContributorAccFieldIndex" serializeAs="String">
+                <value>0</value>
+            </setting>
+            <setting name="PaymentDateFieldIndex" serializeAs="String">
+                <value>1</value>
+            </setting>
+            <setting name="BankOperDateFieldIndex" serializeAs="String">
+                <value>2</value>
+            </setting>
+            <setting name="BankOperTypeFieldIndex" serializeAs="String">
+                <value>3</value>
+            </setting>
+            <setting name="PaymentPurposeFieldIndex" serializeAs="String">
+                <value>4</value>
+            </setting>
+            <setting name="BeneficiaryFieldIndex" serializeAs="String">
+                <value>5</value>
+            </setting>
+            <setting name="BeneficiaryAccFieldIndex" serializeAs="String">
+                <value>6</value>
+            </setting>
+            <setting name="IntBankCodeFieldIndex" serializeAs="String">
+                <value>7</value>
+            </setting>
+            <setting name="BankOperValueFieldIndex" serializeAs="String">
+                <value>8</value>
+            </setting>
+            <setting name="CurrencyFieldIndex" serializeAs="String">
+                <value>9</value>
+            </setting>
+            <setting name="IBAN_FieldIndex" serializeAs="String">
+                <value>10</value>
+            </setting>
+            <setting name="BIC_FieldIndex" serializeAs="String">
+                <value>11</value>
+            </setting>
+            <setting name="InfoFieldIndex" serializeAs="String">
+                <value>12</value>
+            </setting>
+        </WpfApplication1.Properties.Settings>
+    </applicationSettings>
+</configuration>
