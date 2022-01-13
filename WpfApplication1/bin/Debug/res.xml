@@ -1,0 +1,452 @@
+<Root>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>04.02</Buchungstag>
+    <Valutadatum type="date">2013-02-02</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>02.02/11.57UHR CR AU GS38</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002054 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-150,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>01.02</Buchungstag>
+    <Valutadatum type="date">2013-02-01</Valutadatum>
+    <Buchungstext>ENTGELTABSCHLUSS</Buchungstext>
+    <Verwendungszweck>Entgeltabrechnung siehe Anlage</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger></Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-6,10</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>31.01</Buchungstag>
+    <Valutadatum type="date">2013-01-31</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>31.01/18.11UHR AUGS GS06L</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002157 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-150,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>31.01</Buchungstag>
+    <Valutadatum type="date">2013-01-31</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>31.01/18.10UHR AUGS GS06L</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002157 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-20,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>29.01</Buchungstag>
+    <Valutadatum type="date">2013-01-31</Valutadatum>
+    <Buchungstext>UEBERWEISUNG OEFFTL KASSEN</Buchungstext>
+    <Verwendungszweck>BEZUEGE F. 92449392/201301</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>708924493929 STOK B  72136 UNIVERSITAET AUGSBURG/PHYSI</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>1201190315</Kontonummer>
+    <BLZ>70050000</BLZ>
+    <Betrag Währung="EUR" type="float">3691,63</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>29.01</Buchungstag>
+    <Valutadatum type="date">2013-01-29</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>29.01/09.00UHR AUGS GS38M</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002191 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-50,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>28.01</Buchungstag>
+    <Valutadatum type="date">2013-01-28</Valutadatum>
+    <Buchungstext>LASTSCHRIFT</Buchungstext>
+    <Verwendungszweck>ELV61302116 26.01 12.37 ME3</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>KAUFLAND SAGT DANKE</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>1629211</Kontonummer>
+    <BLZ>30050000</BLZ>
+    <Betrag Währung="EUR" type="float">-19,91</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>25.01</Buchungstag>
+    <Valutadatum type="date">2013-01-25</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>25.01/11.07UHR AUGS GS38M</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002191 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-160,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>25.01</Buchungstag>
+    <Valutadatum type="date">2013-01-25</Valutadatum>
+    <Buchungstext>SONSTIGER EINZUG</Buchungstext>
+    <Verwendungszweck>EC 65494357 240113150302OC3</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>PENNY SAGT DANKE 66300556</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>1699115</Kontonummer>
+    <BLZ>30050000</BLZ>
+    <Betrag Währung="EUR" type="float">-8,89</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>21.01</Buchungstag>
+    <Valutadatum type="date">2013-01-21</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>21.01/19.46UHR CR AU GS38</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002054 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-30,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>21.01</Buchungstag>
+    <Valutadatum type="date">2013-01-21</Valutadatum>
+    <Buchungstext>LASTSCHRIFT</Buchungstext>
+    <Verwendungszweck>ELV97706205 19.01 14.34 MK3    554115  EINKAUF EC-KARTE 19.01/14.34UHR    22.64 EUR</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>1387 DROG. MUELLER</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>440029262</Kontonummer>
+    <BLZ>73050000</BLZ>
+    <Betrag Währung="EUR" type="float">-22,64</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>21.01</Buchungstag>
+    <Valutadatum type="date">2013-01-21</Valutadatum>
+    <Buchungstext>LASTSCHRIFT</Buchungstext>
+    <Verwendungszweck>190116263005775141230055690 ELV65494358 19.01 16.26 ME3</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>PENNY SAGT DANKE 66300556</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>1699115</Kontonummer>
+    <BLZ>30050000</BLZ>
+    <Betrag Währung="EUR" type="float">-14,79</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>21.01</Buchungstag>
+    <Valutadatum type="date">2013-01-20</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>20.01/11.13UHR CR AU GS38</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002054 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-50,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>21.01</Buchungstag>
+    <Valutadatum type="date">2013-01-19</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>19.01/13.38UHR EA AU GS20</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002173 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-30,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>17.01</Buchungstag>
+    <Valutadatum type="date">2013-01-16</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>16.01/21.10UHR CR AU GS38</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002054 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-150,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>16.01</Buchungstag>
+    <Valutadatum type="date">2013-01-16</Valutadatum>
+    <Buchungstext>LASTSCHRIFT</Buchungstext>
+    <Verwendungszweck> 592,88 569 J005070597 1212   84,15 PFLEGEVERSICHERUNG</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>TECHNIKER KRANKENKASSE HBG.</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>30936201</Kontonummer>
+    <BLZ>20010020</BLZ>
+    <Betrag Währung="EUR" type="float">-677,03</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>16.01</Buchungstag>
+    <Valutadatum type="date">2013-01-16</Valutadatum>
+    <Buchungstext>LASTSCHRIFT</Buchungstext>
+    <Verwendungszweck>006604765112 DE08960506 RECHNUNG M211130061516015 V OM 08.01.2013</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>O2 SAGT DANKE</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>297622</Kontonummer>
+    <BLZ>20030000</BLZ>
+    <Betrag Währung="EUR" type="float">-49,93</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>15.01</Buchungstag>
+    <Valutadatum type="date">2013-01-15</Valutadatum>
+    <Buchungstext>LASTSCHRIFT</Buchungstext>
+    <Verwendungszweck>UNTERRICHTSBEITRAG FUER STUPENKI FUER JANUAR ILIA 15013</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>HEIMATVEREIN F�R RUSSISCHSP R. KINDER I.AUGSBURG PELIKA</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>240802165</Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-25,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>14.01</Buchungstag>
+    <Valutadatum type="date">2013-01-12</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>12.01/13.20UHR CR AU GS38</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002054 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-20,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>11.01</Buchungstag>
+    <Valutadatum type="date">2013-01-11</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>11.01/09.58UHR CR AU GS38</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002054 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-150,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>11.01</Buchungstag>
+    <Valutadatum type="date">2013-01-11</Valutadatum>
+    <Buchungstext>SONSTIGER EINZUG</Buchungstext>
+    <Verwendungszweck>EC 54316920 100113133606FE3</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>AUFWERTER 115</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>810201855</Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-10,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>07.01</Buchungstag>
+    <Valutadatum type="date">2013-01-07</Valutadatum>
+    <Buchungstext>EIGENE KREDITKARTENABRECHN.</Buchungstext>
+    <Verwendungszweck>04.01.13 5490011003051300</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>KREDITKARTENABRECHNUNG</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>9904291003</Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-81,55</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>07.01</Buchungstag>
+    <Valutadatum type="date">2013-01-07</Valutadatum>
+    <Buchungstext>LASTSCHRIFT</Buchungstext>
+    <Verwendungszweck>STAWA-BELEG 006107708834 G 11232251 V 91483956 ZEPPELINSTR. 26 86159 AUGSBURG ABSCHLAG STROM 94,00 EUR</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>STADTWERKE AUGSBURG</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>12013</Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-94,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>04.01</Buchungstag>
+    <Valutadatum type="date">2013-01-04</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>04.01/10.33UHR AUGS GS38M</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002191 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-260,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>04.01</Buchungstag>
+    <Valutadatum type="date">2013-01-04</Valutadatum>
+    <Buchungstext>ONLINE-UEBERWEISUNG</Buchungstext>
+    <Verwendungszweck>MIETE FUER JANUAR 2013, OBJ.-NR. 1025222 DATUM 03.01.2013, 23.25 UHR 1.TAN 091185</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>BARBARA SCH�N U. STEPHANIER ENNER</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>250447539</Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-520,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>02.01</Buchungstag>
+    <Valutadatum type="date">2013-01-02</Valutadatum>
+    <Buchungstext>LASTSCHRIFT</Buchungstext>
+    <Verwendungszweck>QQI4YK226LN48H7S PP*5861*PP  * BOBSHOP, IHR EINKAUF BEI  BOBSHOP 130101P3TX3128KL</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>PAYPAL</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>175526300</Kontonummer>
+    <BLZ>50070010</BLZ>
+    <Betrag Währung="EUR" type="float">-15,88</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>02.01</Buchungstag>
+    <Valutadatum type="date">2013-01-02</Valutadatum>
+    <Buchungstext>SONSTIGER EINZUG</Buchungstext>
+    <Verwendungszweck>EC 60081777 291212134456OC3</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>MIX MARKT 21 OHG</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>250675071</Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-33,54</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>02.01</Buchungstag>
+    <Valutadatum type="date">2013-01-02</Valutadatum>
+    <Buchungstext>SONSTIGER EINZUG</Buchungstext>
+    <Verwendungszweck>EC 60081777 281212192500OC3</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>MIX MARKT 21 OHG</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>250675071</Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-9,58</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>02.01</Buchungstag>
+    <Valutadatum type="date">2013-01-02</Valutadatum>
+    <Buchungstext>LASTSCHRIFT</Buchungstext>
+    <Verwendungszweck>ELV97706205 28.12 13.11 MK3    553467  EINKAUF EC-KARTE 28.12/13.11UHR     9.99 EUR</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>1387 DROG. MUELLER</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>440029262</Kontonummer>
+    <BLZ>73050000</BLZ>
+    <Betrag Währung="EUR" type="float">-9,99</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>02.01</Buchungstag>
+    <Valutadatum type="date">2013-01-02</Valutadatum>
+    <Buchungstext>LASTSCHRIFT</Buchungstext>
+    <Verwendungszweck>ELV97706205 31.12 13.24 MK3    553560  EINKAUF EC-KARTE 31.12/13.24UHR    19.95 EUR</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>1387 DROG. MUELLER</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>440029262</Kontonummer>
+    <BLZ>73050000</BLZ>
+    <Betrag Währung="EUR" type="float">-19,95</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>02.01</Buchungstag>
+    <Valutadatum type="date">2012-12-31</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>31.12/12.27UHR SB MORIT R</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002180 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-50,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>02.01</Buchungstag>
+    <Valutadatum type="date">2012-12-29</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>29.12/16.59UHR AUGS GS38R</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002066 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-250,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>28.12</Buchungstag>
+    <Valutadatum type="date">2013-01-01</Valutadatum>
+    <Buchungstext>ABSCHLUSS</Buchungstext>
+    <Verwendungszweck>Abrechnung 28.12.2012 siehe Anlage</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger></Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">0,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>28.12</Buchungstag>
+    <Valutadatum type="date">2012-12-29</Valutadatum>
+    <Buchungstext>ENTGELTABSCHLUSS</Buchungstext>
+    <Verwendungszweck>Entgeltabrechnung siehe Anlage</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger></Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-6,65</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>27.12</Buchungstag>
+    <Valutadatum type="date">2012-12-27</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>27.12/16.00UHR CR AU GS38</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002054 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-60,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>27.12</Buchungstag>
+    <Valutadatum type="date">2012-12-27</Valutadatum>
+    <Buchungstext>LASTSCHRIFT</Buchungstext>
+    <Verwendungszweck>221212373036489141240049590 ELV65219183 22.12 12.37 ME3</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>REWE SAGT DANKE  46400495</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>1536911</Kontonummer>
+    <BLZ>30050000</BLZ>
+    <Betrag Währung="EUR" type="float">-28,15</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>27.12</Buchungstag>
+    <Valutadatum type="date">2012-12-27</Valutadatum>
+    <Buchungstext>SONSTIGER EINZUG</Buchungstext>
+    <Verwendungszweck>EC 54297185 221212184957OC3</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>0701 EDEKA WEISS</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>4200446071</Kontonummer>
+    <BLZ>20090700</BLZ>
+    <Betrag Währung="EUR" type="float">-15,33</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>27.12</Buchungstag>
+    <Valutadatum type="date">2012-12-27</Valutadatum>
+    <Buchungstext>SONSTIGER EINZUG</Buchungstext>
+    <Verwendungszweck>EC 60050721 211212155931OC3</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>MIX MARKT 21 OHG</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>250675071</Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-17,97</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>27.12</Buchungstag>
+    <Valutadatum type="date">2012-12-27</Valutadatum>
+    <Buchungstext>LASTSCHRIFT</Buchungstext>
+    <Verwendungszweck>ELV97706205 24.12 12.58 MK3    553356  EINKAUF EC-KARTE 24.12/12.58UHR    53.98 EUR</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>1387 DROG. MUELLER</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>440029262</Kontonummer>
+    <BLZ>73050000</BLZ>
+    <Betrag Währung="EUR" type="float">-53,98</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>27.12</Buchungstag>
+    <Valutadatum type="date">2012-12-27</Valutadatum>
+    <Buchungstext>LASTSCHRIFT</Buchungstext>
+    <Verwendungszweck>ELV97706200 24.12 13.09 MK3    511713  EINKAUF EC-KARTE 24.12/13.09UHR     9.99 EUR</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>1387 DROG. MUELLER</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>440029262</Kontonummer>
+    <BLZ>73050000</BLZ>
+    <Betrag Währung="EUR" type="float">-9,99</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>27.12</Buchungstag>
+    <Valutadatum type="date">2012-12-27</Valutadatum>
+    <Buchungstext>SONSTIGER EINZUG</Buchungstext>
+    <Verwendungszweck>EC 65494358 241212115100OC3</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>PENNY SAGT DANKE 66300556</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>1699115</Kontonummer>
+    <BLZ>30050000</BLZ>
+    <Betrag Währung="EUR" type="float">-16,53</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>27.12</Buchungstag>
+    <Valutadatum type="date">2012-12-24</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>24.12/13.21UHR SB MORIT R</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002180 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-20,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>21.12</Buchungstag>
+    <Valutadatum type="date">2012-12-28</Valutadatum>
+    <Buchungstext>UEBERWEISUNG OEFFTL KASSEN</Buchungstext>
+    <Verwendungszweck>BEZUEGE F. 92449392/201212</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>708924493929 STOK B  72136 UNIVERSITAET AUGSBURG/PHYSI</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>1201190315</Kontonummer>
+    <BLZ>70050000</BLZ>
+    <Betrag Währung="EUR" type="float">3599,14</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>21.12</Buchungstag>
+    <Valutadatum type="date">2012-12-21</Valutadatum>
+    <Buchungstext>GELDAUTOMAT</Buchungstext>
+    <Verwendungszweck>21.12/14.56UHR SB UNI</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>GA NR00002025 BLZ72050000 3</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer></Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">-20,00</Betrag>
+  </Transaction>
+  <Transaction Auftragskonto="240560078">
+    <Buchungstag>21.12</Buchungstag>
+    <Valutadatum type="date">2012-12-21</Valutadatum>
+    <Buchungstext>test1</Buchungstext>
+    <Verwendungszweck>test2</Verwendungszweck>
+    <Begünstigter-Zahlungspflichtiger>KASSE SB MORITZ GA 2</Begünstigter-Zahlungspflichtiger>
+    <Kontonummer>9001311548</Kontonummer>
+    <BLZ>72050000</BLZ>
+    <Betrag Währung="EUR" type="float">20,00</Betrag>
+  </Transaction>
+</Root>

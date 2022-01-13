@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 using System.Management;
@@ -75,7 +73,6 @@ namespace SimpleSecurity
             }
 
             // Return the hexadecimal string.
-
             return sBuilder.ToString();
         }
     }
