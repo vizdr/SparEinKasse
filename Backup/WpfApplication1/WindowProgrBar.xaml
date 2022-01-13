@@ -1,8 +1,0 @@
-﻿<Window x:Class="WpfApplication1.WindowProgrBar"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="WindowProgrBar" Height="100" Width="300">
-    <Grid Margin="20">
-        <ProgressBar  Minimum="0" Maximum="100" IsIndeterminate="True" Name="pbStatus"  />
-    </Grid>
-</Window>
