@@ -18,10 +18,10 @@ namespace WpfApplication1
         private CsvToXmlSSKA dataGate;
         private ChartsModel chartsModel;
         private DataRequest request;
-        public Action<DataRequest> updateChart;
+        public Action<DataRequest> updateChart = delegate { };
         private WindowProgrBar progrBar;
-        static Mutex mutexObj;
-
+        static Mutex mutexObj = new Mutex();
+        private PreprocessedDataRequest handledRequest;
         private static BuisenessLogicSSKA instance = new BuisenessLogicSSKA();
 
         public static BuisenessLogicSSKA GetInstance()
@@ -30,19 +30,30 @@ namespace WpfApplication1
         }
         private BuisenessLogicSSKA()
         {
-
             progrBar = new WindowProgrBar();
+           
+            dataGate = new CsvToXmlSSKA();          
+            request = DataRequest.GetInstance();            
+            RegisterDataRequestHandlers(request);
 
-            dataGate = new CsvToXmlSSKA();
             chartsModel = ChartsModel.GetInstance();
-            request = DataRequest.GetInstance();
+            
+            handledRequest = HandleRequest(request);
 
+            RegisterMethodsForProgressBar();
+            UpdateDataModel();            
+        }
+
+        private void RegisterDataRequestHandlers( DataRequest request)
+        {                                   
             request.DataRequested += delegate { this.UpdateDataModel(); };
             request.FilterValuesRequested += delegate { this.FilterData(); };
             request.DataBankUpdateRequested += delegate { UpdateData(); };
             request.ViewDataRequested += delegate { this.UpdateViewData(); };
+        }
 
-            updateChart += delegate { /* intended empty to delay */ };
+        private void RegisterMethodsForProgressBar()
+        {          
             updateChart += delegate { chartsModel.TransactionsAccounts = GetTransactionsAccounts(request); };
             updateChart += delegate { chartsModel.IncomesOverDatesRange = GetIncomesOverDatesRange(request); };
             updateChart += delegate { chartsModel.BalanceOverDateRange = GetBalanceOverDateRange(request); };
@@ -50,18 +61,9 @@ namespace WpfApplication1
             updateChart += delegate { chartsModel.ExpensesInfoOverDateRange = GetExpensesInfoOverDateRange(request); };
             updateChart += delegate { chartsModel.ExpensesOverRemiteeGroupsInDateRange = GetExpensesOverRemiteeGroupsInDateRange(request); };
             updateChart += delegate { chartsModel.ExpensesOverRemiteeInDateRange = GetExpensesOverRemiteeInDateRange(request); };
-            updateChart += delegate { chartsModel.Summary = GetSummary(request); };           
-            updateChart += delegate { chartsModel.IncomesInfoOverDateRange = GetIncomesInfoOverDateRange(request); };
-
-            UpdateDataModel();
-
+            updateChart += delegate { chartsModel.Summary = GetSummary(request); };
+            updateChart += delegate { chartsModel.IncomesInfoOverDateRange = GetIncomesInfoOverDateRange(request); };            
         }
-
-        static BuisenessLogicSSKA()
-        {
-            mutexObj = new Mutex();
-        }
-
         private decimal ConvertStringToDecimal(string src)
         {
             decimal res = 0m;
@@ -76,8 +78,9 @@ namespace WpfApplication1
             }
             return res;
         }
-        private PreprocessedDataRequest HandleRequest(DataRequest request)
+        private static PreprocessedDataRequest HandleRequest(DataRequest request)
         {
+            mutexObj.WaitOne();
             PreprocessedDataRequest result = new PreprocessedDataRequest();
 
             List<string> buchungstexts = new List<string>();
@@ -106,12 +109,14 @@ namespace WpfApplication1
                 accounts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.Accounts));
                 result.ToFind = request.Filters.ToFind;
             }
+
             result.ExpencesLowestValue = expLowestValue;
             result.ExpencesHighestValue = expHighestValue;
             result.IncomsLowestValue = incomsLowestValue;
             result.IncomsHighestValue = incomsHighestValue;
             result.Buchungstexts = buchungstexts;
             result.Accounts = accounts;
+            mutexObj.ReleaseMutex();
             return result;
         }
 
@@ -139,7 +144,7 @@ namespace WpfApplication1
             IProgress<int> progress = new Progress<int>(s => progrBar.pbStatus.Value = s);
 
             int qty2Invoke = updateChart.GetInvocationList().Length;
-            for (int ctr = 0; ctr < qty2Invoke; ctr++)
+            for (int ctr = 0; ctr < qty2Invoke; ++ctr)
             {
                 // adjusted to 9 calls of functions 
                 int progr = (ctr + 1) * 10;
@@ -178,8 +183,6 @@ namespace WpfApplication1
 
         protected List<KeyValuePair<string, decimal>> GetExpensesOverDateRange(DataRequest request)
         {
-            PreprocessedDataRequest handledRequest = HandleRequest(request);
-
             try
             {
                 var res =
@@ -207,8 +210,6 @@ namespace WpfApplication1
         }
         protected List<KeyValuePair<string, decimal>> GetExpensesOverRemiteeInDateRange(DataRequest request)
         {
-            PreprocessedDataRequest handledRequest = HandleRequest(request);
-
             try
             {
                 var res =
@@ -259,7 +260,6 @@ namespace WpfApplication1
         }
         protected List<KeyValuePair<string, string>> GetExpensesInfoOverDateRange(DataRequest request)
         {
-            PreprocessedDataRequest handledRequest = HandleRequest(request);
             try
             {
                 var res =
@@ -294,8 +294,6 @@ namespace WpfApplication1
         }
         protected List<KeyValuePair<string, decimal>> GetExpensesOverRemiteeGroupsInDateRange(DataRequest request)
         {
-            PreprocessedDataRequest handledRequest = HandleRequest(request);
-
             try
             {
                 var res =
@@ -323,8 +321,6 @@ namespace WpfApplication1
         }
         protected List<KeyValuePair<string, decimal>> GetExpensesAtDate(DataRequest request)
         {
-            PreprocessedDataRequest handledRequest = HandleRequest(request);
-
             try
             {
                 var res =
@@ -352,7 +348,6 @@ namespace WpfApplication1
 
         protected List<KeyValuePair<string, string>> GetIncomesInfoOverDateRange(DataRequest request)
         {
-            PreprocessedDataRequest handledRequest = HandleRequest(request);
             try
             {
                 var res =
@@ -387,7 +382,6 @@ namespace WpfApplication1
         }
         protected List<KeyValuePair<string, decimal>> GetIncomesOverDatesRange(DataRequest request)
         {
-            PreprocessedDataRequest handledRequest = HandleRequest(request);
             try
             {
                 var res =
@@ -421,8 +415,6 @@ namespace WpfApplication1
         protected List<KeyValuePair<DateTime, decimal>> GetBalanceOverDateRange(DataRequest request)
         {
             List<KeyValuePair<DateTime, decimal>> resultedList = new List<KeyValuePair<DateTime, decimal>>();
-            PreprocessedDataRequest handledRequest = HandleRequest(request);
-
             try
             {
                 var res =
@@ -465,7 +457,6 @@ namespace WpfApplication1
 
         protected string GetSummary(DataRequest request)
         {
-            PreprocessedDataRequest handledRequest = HandleRequest(request);
             string result = String.Format("Total: {0:d} - {1:d} : ", handledRequest.BeginDate, handledRequest.FinishDate);
 
             try
@@ -505,8 +496,6 @@ namespace WpfApplication1
                 result += resIncomes.FirstOrDefault<KeyValuePair<string, decimal>>().Value +
                     " " + resExpences.FirstOrDefault<KeyValuePair<string, decimal>>().Value +
                     " = " + resBalances.FirstOrDefault<KeyValuePair<string, decimal>>().Value;
-
-
             }
             catch (Exception e)
             {
@@ -518,7 +507,6 @@ namespace WpfApplication1
 
         protected List<string> GetTransactionsAccounts(DataRequest request)
         {
-            PreprocessedDataRequest handledRequest = HandleRequest(request);
             try
             {
                 var accs =
@@ -538,7 +526,6 @@ namespace WpfApplication1
         }
         protected ObservableCollection<BoolTextCouple> GetTransactionsAccountsObsCollBoolTextCouple(DataRequest request)
         {
-            PreprocessedDataRequest handledRequest = HandleRequest(request);
             if (handledRequest.Accounts.Count > 0)
             {
                 var accs =
@@ -575,7 +562,6 @@ namespace WpfApplication1
 
         protected ObservableCollection<BoolTextCouple> GetBuchungstextOverDateRange(DataRequest request)
         {
-            PreprocessedDataRequest handledRequest = HandleRequest(request);
             if (handledRequest.Buchungstexts.Count > 0)
             {
                 try
@@ -621,7 +607,7 @@ namespace WpfApplication1
             return null;
         }
 
-        protected List<string> ConvertObsCollBoolTextCoupleToList(ObservableCollection<BoolTextCouple> values)
+        protected static List<string> ConvertObsCollBoolTextCoupleToList(ObservableCollection<BoolTextCouple> values)
         {
             List<string> result = new List<string>();
             if (values != null)
@@ -635,7 +621,6 @@ namespace WpfApplication1
 
         protected List<KeyValuePair<string, decimal>> GetDates4RemiteeOverDateRange(DataRequest request)
         {
-            PreprocessedDataRequest handledRequest = HandleRequest(request);
             try
             {
                 var res =

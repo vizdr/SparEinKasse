@@ -19,6 +19,5 @@ namespace WpfApplication1
         string Summary { set; }
         List<string> Accounts { set; }
         event RoutedEventHandler OnDateIntervalChanged;
-        //event RoutedEventHandler OnPropertyChanged;
     }
 }

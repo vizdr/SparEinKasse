@@ -51,6 +51,7 @@ namespace WpfApplication1
             if (isNotRegistred)
             {
                 WindowAc aw = new WindowAc();
+                aw.Activate();
                 aw.ShowDialog();
             }
             this.buttonUpdateSpan.Click += OnDateIntervalChanged;
@@ -70,7 +71,6 @@ namespace WpfApplication1
             popupChRemiteExpText.Padding = new Thickness(2.0d);
             InitializeResources();
         }
-
 
         public void InitializeResources()
         {
@@ -136,7 +136,6 @@ namespace WpfApplication1
         }
         public List<KeyValuePair<DateTime, decimal>> Balance
         {
-
             set
             {
                 (chartDateBalance.Series[0] as DataPointSeries).ItemsSource = value;
