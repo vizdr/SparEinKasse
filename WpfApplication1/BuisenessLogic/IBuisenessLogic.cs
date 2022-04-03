@@ -10,6 +10,6 @@ namespace WpfApplication1
         void UpdateViewData();
         void FinalizeBL();
         DataRequest Request { get; }
-        ChartsModel ChartsModel { get; }
+        ResponseModel ResponseModel { get; }
     }
 }

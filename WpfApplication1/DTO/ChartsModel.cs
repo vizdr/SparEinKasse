@@ -6,10 +6,10 @@ using System.Runtime.CompilerServices;
 
 namespace WpfApplication1.DTO
 {
-    public class ChartsModel : INotifyPropertyChanged
+    public class ResponseModel : INotifyPropertyChanged
     {
-        private static readonly ChartsModel instance = new ChartsModel();
-        private ChartsModel()
+        private static readonly ResponseModel instance = new ResponseModel();
+        private ResponseModel()
         {
             expensesOverDateRange = new List<KeyValuePair<string, decimal>>();
             incomesOverDatesRange = new List<KeyValuePair<string, decimal>>();
@@ -20,13 +20,14 @@ namespace WpfApplication1.DTO
             incomesInfoOverDateRange = new List<KeyValuePair<string, string>>();
             summary = String.Empty;
             transactionsAccounts = new List<string>();
+
             buchungstextOverDateRange = FilterParams.GetInstance().BuchungstextValues;
             transactionsAccountsObsCollBoolTextCouple = FilterParams.GetInstance().Accounts;
 
             expensesAtDate = new List<KeyValuePair<string, decimal>>();
             dates4RemiteeOverDateRange = new List<KeyValuePair<string, decimal>>();
         }
-        public static ChartsModel GetInstance()
+        public static ResponseModel GetInstance()
         {
             return instance;
         }

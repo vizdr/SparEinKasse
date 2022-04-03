@@ -13,7 +13,7 @@ namespace WpfApplication1
         private IViewFilters _viewFilters;
         private IBuisenessLogic bl;
         private DataRequest request;
-        private ChartsModel chartModel;
+        private ResponseModel chartModel;
         private List<KeyValuePair<string, decimal>> dataSourceExpensesOverRemitee;
         public static FilterParams FilterValues { get; private set; }
 
@@ -22,7 +22,7 @@ namespace WpfApplication1
             this.bl = bl;
             this.request = bl.Request;
             _viewChC = viewChC;            
-            chartModel = bl.ChartsModel;
+            chartModel = bl.ResponseModel;
             _viewChC.BeginDate = request.BeginDate;
             _viewChC.EndDate = request.EndDate;
             _viewChC.OnDateIntervalChanged += delegate { this.Initialaze(); };
@@ -39,6 +39,7 @@ namespace WpfApplication1
         {
         }
 
+        // Initiate update of data model by change of xxDate property for DataRequest 
         public void Initialaze()
         {
             request.BeginDate = _viewChC.BeginDate;

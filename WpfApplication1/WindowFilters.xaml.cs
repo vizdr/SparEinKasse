@@ -31,7 +31,7 @@ namespace WpfApplication1
         {
             this.buttonApply.Click += OnApplyFilter;
             this.buttonReset.Click += OnResetFilters;
-            this.buttonCancel.Click += delegate { this.Close(); };
+            this.buttonCancel.Click += delegate { Close(); };
         }
 
         #region IViewFilters Members

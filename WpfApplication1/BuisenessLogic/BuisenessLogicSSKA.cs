@@ -16,12 +16,12 @@ namespace WpfApplication1
     public class BuisenessLogicSSKA : IBuisenessLogic
     {
         private CsvToXmlSSKA dataGate;
-        private ChartsModel chartsModel;
+        private ResponseModel chartsModel;
         private DataRequest request;
         public Action<DataRequest> updateChart = delegate { };
         private WindowProgrBar progrBar;
-        static Mutex mutexObj = new Mutex();
-        private PreprocessedDataRequest handledRequest;
+        //static Mutex mutexObj = new Mutex();
+        private static PreprocessedDataRequest preprocessedRequest;
         private static BuisenessLogicSSKA instance = new BuisenessLogicSSKA();
 
         public static BuisenessLogicSSKA GetInstance()
@@ -33,36 +33,35 @@ namespace WpfApplication1
             progrBar = new WindowProgrBar();
            
             dataGate = new CsvToXmlSSKA();          
-            request = DataRequest.GetInstance();            
-            RegisterDataRequestHandlers(request);
+            request = DataRequest.GetInstance();
+            InitializeHandledRequest();
+            RegisterDataRequestHandlers();
 
-            chartsModel = ChartsModel.GetInstance();
+            chartsModel = ResponseModel.GetInstance();
             
-            handledRequest = HandleRequest(request);
-
             RegisterMethodsForProgressBar();
-            UpdateDataModel();            
+            UpdateDataModel();
         }
 
-        private void RegisterDataRequestHandlers( DataRequest request)
-        {                                   
-            request.DataRequested += delegate { this.UpdateDataModel(); };
-            request.FilterValuesRequested += delegate { this.FilterData(); };
+        private void RegisterDataRequestHandlers( )
+        {
+            request.DataRequested += delegate { UpdateDataModel(); };
+            request.FilterValuesRequested += delegate { FilterData(); };
             request.DataBankUpdateRequested += delegate { UpdateData(); };
-            request.ViewDataRequested += delegate { this.UpdateViewData(); };
+            request.ViewDataRequested += delegate { UpdateViewData(); };
         }
 
         private void RegisterMethodsForProgressBar()
-        {          
-            updateChart += delegate { chartsModel.TransactionsAccounts = GetTransactionsAccounts(request); };
-            updateChart += delegate { chartsModel.IncomesOverDatesRange = GetIncomesOverDatesRange(request); };
-            updateChart += delegate { chartsModel.BalanceOverDateRange = GetBalanceOverDateRange(request); };
-            updateChart += delegate { chartsModel.ExpensesOverDateRange = GetExpensesOverDateRange(request); };
-            updateChart += delegate { chartsModel.ExpensesInfoOverDateRange = GetExpensesInfoOverDateRange(request); };
-            updateChart += delegate { chartsModel.ExpensesOverRemiteeGroupsInDateRange = GetExpensesOverRemiteeGroupsInDateRange(request); };
-            updateChart += delegate { chartsModel.ExpensesOverRemiteeInDateRange = GetExpensesOverRemiteeInDateRange(request); };
-            updateChart += delegate { chartsModel.Summary = GetSummary(request); };
-            updateChart += delegate { chartsModel.IncomesInfoOverDateRange = GetIncomesInfoOverDateRange(request); };            
+        {
+            updateChart += delegate { chartsModel.TransactionsAccounts = GetTransactionsAccounts(); };
+            updateChart += delegate { chartsModel.IncomesOverDatesRange = GetIncomesOverDatesRange(); };
+            updateChart += delegate { chartsModel.BalanceOverDateRange = GetBalanceOverDateRange(); };
+            updateChart += delegate { chartsModel.ExpensesOverDateRange = GetExpensesOverDateRange(); };
+            updateChart += delegate { chartsModel.ExpensesInfoOverDateRange = GetExpensesInfoOverDateRange(); };
+            updateChart += delegate { chartsModel.ExpensesOverRemiteeGroupsInDateRange = GetExpensesOverRemiteeGroupsInDateRange(); };
+            updateChart += delegate { chartsModel.ExpensesOverRemiteeInDateRange = GetExpensesOverRemiteeInDateRange(); };
+            updateChart += delegate { chartsModel.Summary = GetSummary(); };
+            updateChart += delegate { chartsModel.IncomesInfoOverDateRange = GetIncomesInfoOverDateRange(); };
         }
         private decimal ConvertStringToDecimal(string src)
         {
@@ -78,50 +77,44 @@ namespace WpfApplication1
             }
             return res;
         }
-        private static PreprocessedDataRequest HandleRequest(DataRequest request)
+        private static void PreProcessRequest(DataRequest request)
         {
-            mutexObj.WaitOne();
-            PreprocessedDataRequest result = new PreprocessedDataRequest();
+            preprocessedRequest.AtDate = request.AtDate;
+            preprocessedRequest.SelectedRemittee = request.SelectedRemittee;
 
-            List<string> buchungstexts = new List<string>();
-            List<string> accounts = new List<string>();
-            Decimal incomsLowestValue = Decimal.Zero;
-            Decimal incomsHighestValue = Decimal.MaxValue;
-            Decimal expLowestValue = Decimal.MaxValue;
-            Decimal expHighestValue = Decimal.Zero;
-            result.AtDate = request.AtDate;
-            result.SelectedRemittee = request.SelectedRemittee;
-
-            result.BeginDate = request.BeginDate;
-            if (request.EndDate < request.BeginDate)
-                result.FinishDate = request.BeginDate;
-            else result.FinishDate = request.EndDate;
+            preprocessedRequest.BeginDate = request.BeginDate;
+            preprocessedRequest.FinishDate = request.EndDate < request.BeginDate ? request.BeginDate : request.EndDate;
 
             if (request.Filters != null)
             {
-                if (!decimal.TryParse(request.Filters.ExpenciesLessThan, out expLowestValue))
-                    expLowestValue = Decimal.MaxValue;
-                decimal.TryParse(request.Filters.ExpenciesMoreThan, out expHighestValue);
-                if (!decimal.TryParse(request.Filters.IncomesLessThan, out incomsHighestValue))
-                    incomsHighestValue = Decimal.MaxValue;
-                decimal.TryParse(request.Filters.IncomesMoreThan, out incomsLowestValue);
-                buchungstexts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.BuchungstextValues));
-                accounts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.Accounts));
-                result.ToFind = request.Filters.ToFind;
-            }
+                if(request.Filters.Accounts.Count > 0)
+                {
+                    if (!decimal.TryParse(request.Filters.ExpenciesLessThan, out decimal expHigherThan))
+                    {
+                        expHigherThan = decimal.Zero;
+                    }
 
-            result.ExpencesLowestValue = expLowestValue;
-            result.ExpencesHighestValue = expHighestValue;
-            result.IncomsLowestValue = incomsLowestValue;
-            result.IncomsHighestValue = incomsHighestValue;
-            result.Buchungstexts = buchungstexts;
-            result.Accounts = accounts;
-            mutexObj.ReleaseMutex();
-            return result;
+                    decimal.TryParse(request.Filters.ExpenciesMoreThan, out decimal expHighestValue);
+                    if (!decimal.TryParse(request.Filters.IncomesLessThan, out decimal incomsHighestValue))
+                    {
+                        incomsHighestValue = decimal.MaxValue;
+                    }
+
+                    decimal.TryParse(request.Filters.IncomesMoreThan, out decimal incomsLowestValue);
+                    preprocessedRequest.Buchungstexts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.BuchungstextValues));
+                    preprocessedRequest.Accounts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.Accounts));
+                    preprocessedRequest.ToFind = request.Filters.ToFind;
+
+                    preprocessedRequest.ExpencesLowestValue = expHighestValue;
+                    preprocessedRequest.ExpencesHighestValue = expHigherThan;
+                    preprocessedRequest.IncomsLowestValue = incomsLowestValue;
+                    preprocessedRequest.IncomsHighestValue = incomsHighestValue;
+                }
+            }
         }
 
         #region IBuisenessLogic Members
-        public ChartsModel ChartsModel
+        public ResponseModel ResponseModel
         {
             get { return chartsModel; }
         }
@@ -136,6 +129,7 @@ namespace WpfApplication1
         }
         public async void UpdateDataModel()
         {
+            PreProcessRequest(request);
             if (!progrBar.IsVisible)
             {
                 progrBar.Show();
@@ -174,31 +168,29 @@ namespace WpfApplication1
         }
         public void UpdateViewData()
         {
-            if (request.AtDate != null)
+            if (request.AtDate != DateTime.MinValue)
                 chartsModel.ExpensesAtDate = GetExpensesAtDate(request);
             if (request.SelectedRemittee != null)
-                chartsModel.Dates4RemiteeOverDateRange = GetDates4RemiteeOverDateRange(request);
+                chartsModel.Dates4RemiteeOverDateRange = request.SelectedRemittee == string.Empty? chartsModel.Dates4RemiteeOverDateRange : GetDates4RemiteeOverDateRange(request);
         }
         #endregion
 
-        protected List<KeyValuePair<string, decimal>> GetExpensesOverDateRange(DataRequest request)
+        protected List<KeyValuePair<string, decimal>> GetExpensesOverDateRange()
         {
             try
             {
                 var res =
                     from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                                        && !handledRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
                                         && ConvertStringToDecimal(r.Element(Config.BetragField).Value) < 0
-                                        && !handledRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
                     group r.Element(Config.BetragField).Value by r.Element(Config.WertDatumField).Value into g
                     orderby DateTime.Parse(g.Key)
-                    select new KeyValuePair<string, decimal>(g.Key/*.Substring(5)*/, g.TakeWhile<string>(
-                           m => ConvertStringToDecimal(m) <= -handledRequest.ExpencesHighestValue && ConvertStringToDecimal(m) >= -handledRequest.ExpencesLowestValue).Sum<string>(
-                           n => -ConvertStringToDecimal(n)
-                           )
-                   );
+                    select new KeyValuePair<string, decimal>(g.Key/*.Substring(5)*/, g.Sum(n => -ConvertStringToDecimal(n)));
+                                                                     
+                res = res.Where(paar => ((paar.Value >= preprocessedRequest.ExpencesLowestValue) && (paar.Value <= preprocessedRequest.ExpencesHighestValue)));
                 return res.ToList<KeyValuePair<string, decimal>>();
             }
             catch (Exception e)
@@ -208,47 +200,23 @@ namespace WpfApplication1
             }
             return null;
         }
-        protected List<KeyValuePair<string, decimal>> GetExpensesOverRemiteeInDateRange(DataRequest request)
+        protected List<KeyValuePair<string, decimal>> GetExpensesOverRemiteeInDateRange()
         {
             try
             {
                 var res =
                     from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                                        && !handledRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) < 0
-                                        //&& ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= -handledRequest.ExpencesHighestValue
-                                        //&& ConvertStringToDecimal(r.Element(Config.BetragField).Value) >= -handledRequest.ExpencesLowestValue
-                                        && !handledRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) < decimal.Zero
+                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
                     group r.Element(Config.BetragField).Value by r.Element(Config.BeguenstigterField).Value into g
                     orderby g.Key
-                    select new KeyValuePair<string, decimal>(g.Key, g.TakeWhile<string>
-                        (
-                           m => ConvertStringToDecimal(m) <= -handledRequest.ExpencesHighestValue
-                               && ConvertStringToDecimal(m) >= -handledRequest.ExpencesLowestValue
-                         ).Sum<string>(n => -ConvertStringToDecimal(n))
+                    select new KeyValuePair<string, decimal>(g.Key, g.Sum<string>(n => -ConvertStringToDecimal(n))
                     );
-                //    select new
-                //    {
-                //        Betrag = g.Key,
-                //        Gr = g.TakeWhile<string>
-                //            (
-                //               m => ConvertStringToDecimal(m) <= -handledRequest.ExpencesHighestValue
-                //                   && ConvertStringToDecimal(m) >= -handledRequest.ExpencesLowestValue
-                //             ).Sum<string>(n => -ConvertStringToDecimal(n)),
-                //        Values = from p in g select p
-
-                //    };
-                //List<KeyValuePair<string, decimal>> temp = new List<KeyValuePair<string, decimal>>();
-                //foreach (var group in res)
-                //{
-                //    //MessageBox.Show(group.Betrag);                   
-                //    temp.Add(new KeyValuePair<string, decimal>(group.Betrag, group.Gr));
-                //    //foreach (string t in group.Values)
-                //    //    MessageBox.Show(t);                   
-                //}
-                // return temp;
+                
+                res = res.Where(paar => ((paar.Value >= preprocessedRequest.ExpencesLowestValue) && (paar.Value <= preprocessedRequest.ExpencesHighestValue)));
                 return res.ToList<KeyValuePair<string, decimal>>();
             }
             catch (Exception e)
@@ -258,27 +226,26 @@ namespace WpfApplication1
             }
             return null;
         }
-        protected List<KeyValuePair<string, string>> GetExpensesInfoOverDateRange(DataRequest request)
+        protected List<KeyValuePair<string, string>> GetExpensesInfoOverDateRange()
         {
             try
             {
                 var res =
                     from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                                        && !handledRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= -handledRequest.ExpencesHighestValue
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) >= -handledRequest.ExpencesLowestValue
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= decimal.Zero
                                         &&
                                         (
-                                        r.Element(Config.BeguenstigterField).Value.Contains(String.IsNullOrEmpty(handledRequest.ToFind) ? r.Element(Config.BeguenstigterField).Value : handledRequest.ToFind)
-                                        || r.Element(Config.VerwendZweckField).Value.Contains(String.IsNullOrEmpty(handledRequest.ToFind) ? r.Element(Config.VerwendZweckField).Value : handledRequest.ToFind)
+                                        r.Element(Config.BeguenstigterField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.BeguenstigterField).Value : preprocessedRequest.ToFind)
+                                        || r.Element(Config.VerwendZweckField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.VerwendZweckField).Value : preprocessedRequest.ToFind)
                                         )
-                                        && !handledRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
                     orderby DateTime.Parse(r.Element(Config.WertDatumField).Value)
                     select new KeyValuePair<string, string>(r.Element(Config.WertDatumField).Value,
                         " ** " + r.Element(Config.BeguenstigterField).Value +
-                        " ** " + r.Element(Config.VerwendZweckField).Value +
+                        " ** " + r.Element(Config.VerwendZweckField).Value.Substring(0, r.Element(Config.VerwendZweckField).Value.Length < 120 ? r.Element(Config.VerwendZweckField).Value.Length : 120 ) +
                         " ** " + ConvertStringToDecimal(r.Element(Config.BetragField).Value)
 
                    );
@@ -292,24 +259,22 @@ namespace WpfApplication1
             return null;
 
         }
-        protected List<KeyValuePair<string, decimal>> GetExpensesOverRemiteeGroupsInDateRange(DataRequest request)
+        protected List<KeyValuePair<string, decimal>> GetExpensesOverRemiteeGroupsInDateRange()
         {
             try
             {
                 var res =
                     from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField) // .Elements
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                                        && !handledRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= -handledRequest.ExpencesHighestValue
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) >= -handledRequest.ExpencesLowestValue
-                                        && !handledRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= decimal.Zero
+                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
                     group r.Element(Config.BetragField).Value by r.Element(Config.BuchungsTextField).Value into g
                     orderby g.Key
-                    select new KeyValuePair<string, decimal>(g.Key, g.Sum<string>(
-                           n => -ConvertStringToDecimal(n)
-                           )
-                   );
+                    select new KeyValuePair<string, decimal>(g.Key, g.Sum<string>( n => -ConvertStringToDecimal(n)));
+                                                                       
+                res = res.Where(paar => ((paar.Value >= preprocessedRequest.ExpencesLowestValue) && (paar.Value <= preprocessedRequest.ExpencesHighestValue)));
                 return res.ToList<KeyValuePair<string, decimal>>();
             }
             catch (Exception e)
@@ -325,17 +290,15 @@ namespace WpfApplication1
             {
                 var res =
                     from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) == handledRequest.AtDate
-                                        && !handledRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) < 0
-                                        && !handledRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) == request.AtDate
+                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) < decimal.Zero
+                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
                     group r.Element(Config.BetragField).Value by r.Element(Config.BeguenstigterField).Value into g
 
-                    select new KeyValuePair<string, decimal>(g.Key/*.Substring(5)*/, g.TakeWhile<string>(
-                           m => ConvertStringToDecimal(m) <= -handledRequest.ExpencesHighestValue && ConvertStringToDecimal(m) >= -handledRequest.ExpencesLowestValue).Sum<string>(
-                           n => -ConvertStringToDecimal(n)
-                           )
-                   );
+                    select new KeyValuePair<string, decimal>(g.Key/*.Substring(5)*/, g.Sum<string>(n => -ConvertStringToDecimal(n) ));
+                                                                        
+                res = res.Where(paar => (paar.Value >= preprocessedRequest.ExpencesLowestValue) && (paar.Value <= preprocessedRequest.ExpencesLowestValue));
                 return res.ToList<KeyValuePair<string, decimal>>();
             }
             catch (Exception e)
@@ -346,28 +309,28 @@ namespace WpfApplication1
             return null;
         }
 
-        protected List<KeyValuePair<string, string>> GetIncomesInfoOverDateRange(DataRequest request)
+        protected List<KeyValuePair<string, string>> GetIncomesInfoOverDateRange()
         {
             try
             {
                 var res =
                     from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                        && !handledRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) >= handledRequest.IncomsLowestValue
-                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= handledRequest.IncomsHighestValue
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) >= preprocessedRequest.IncomsLowestValue
+                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= preprocessedRequest.IncomsHighestValue
                         &&
                         (
-                        r.Element(Config.BeguenstigterField).Value.Contains(String.IsNullOrEmpty(handledRequest.ToFind) ? r.Element(Config.BeguenstigterField).Value : handledRequest.ToFind)
-                        || r.Element(Config.VerwendZweckField).Value.Contains(String.IsNullOrEmpty(handledRequest.ToFind) ? r.Element(Config.VerwendZweckField).Value : handledRequest.ToFind)
+                        r.Element(Config.BeguenstigterField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.BeguenstigterField).Value : preprocessedRequest.ToFind)
+                        || r.Element(Config.VerwendZweckField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.VerwendZweckField).Value : preprocessedRequest.ToFind)
                         )
-                        && !handledRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
 
                     orderby DateTime.Parse(r.Element(Config.WertDatumField).Value)
                     select new KeyValuePair<string, string>(r.Element(Config.WertDatumField).Value,
                         " ** " + r.Element(Config.BeguenstigterField).Value +
-                        " ** " + r.Element(Config.VerwendZweckField).Value +
+                        " ** " + r.Element(Config.VerwendZweckField).Value.Substring(0, r.Element(Config.VerwendZweckField).Value.Length < 120 ? r.Element(Config.VerwendZweckField).Value.Length : 120) +
                         " ** " + ConvertStringToDecimal(r.Element(Config.BetragField).Value)
                    );
                 return res.ToList<KeyValuePair<string, string>>();
@@ -380,28 +343,23 @@ namespace WpfApplication1
             return null;
 
         }
-        protected List<KeyValuePair<string, decimal>> GetIncomesOverDatesRange(DataRequest request)
+        protected List<KeyValuePair<string, decimal>> GetIncomesOverDatesRange()
         {
             try
             {
                 var res =
                     from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                                        && !handledRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) >= handledRequest.IncomsLowestValue
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= handledRequest.IncomsHighestValue
-                                        && !handledRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) >= decimal.Zero
+                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
                     group r.Element(Config.BetragField).Value by r.Element(Config.WertDatumField).Value into g
                     orderby DateTime.Parse(g.Key)
                     select new KeyValuePair<string, decimal>(g.Key.Substring(5), g.Sum<string>(
-                           n => ConvertStringToDecimal(n)
-                           // g.TakeWhile<XElement>(
-                           //m => ConvertStringToDecimal(m.Value) <= incomsHighestValue && ConvertStringToDecimal(m.Value) >= incomsLowestValue).Sum<XElement>(
-                           //n => ConvertStringToDecimal(n.Value)
-                           )
-                   );
-                //chartsModel.IncomesOverDatesRange = res.ToList<KeyValuePair<string, decimal>>();
+                           n => ConvertStringToDecimal(n)));
+                   
+                res = res.Where(paar => (paar.Value >= preprocessedRequest.IncomsLowestValue) && (paar.Value <= preprocessedRequest.IncomsHighestValue));
                 return res.ToList<KeyValuePair<string, decimal>>();
             }
             catch (Exception e)
@@ -412,17 +370,17 @@ namespace WpfApplication1
             return null;
         }
 
-        protected List<KeyValuePair<DateTime, decimal>> GetBalanceOverDateRange(DataRequest request)
+        protected List<KeyValuePair<DateTime, decimal>> GetBalanceOverDateRange()
         {
             List<KeyValuePair<DateTime, decimal>> resultedList = new List<KeyValuePair<DateTime, decimal>>();
             try
             {
                 var res =
                     from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                                        && !handledRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && !handledRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value) // ??
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value) // ??
                     group r.Element(Config.BetragField).Value by r.Element(Config.WertDatumField).Value into g
                     orderby DateTime.Parse(g.Key)
                     select new KeyValuePair<DateTime, decimal>(DateTime.Parse(g.Key).Date, g.Sum<string>(
@@ -435,7 +393,7 @@ namespace WpfApplication1
                 decimal akku = 0m;
 
                 if (inputEnumerator.MoveNext())
-                    for (DateTime currDate = handledRequest.BeginDate/*.Date.AddDays(1)*/; !handledRequest.FinishDate.Date.Equals(currDate.Date.AddDays(-1)); currDate = currDate.Date.AddDays(1))
+                    for (DateTime currDate = preprocessedRequest.BeginDate/*.Date.AddDays(1)*/; !preprocessedRequest.FinishDate.Date.Equals(currDate.Date.AddDays(-1)); currDate = currDate.Date.AddDays(1))
                     {
                         if (inputEnumerator.Current.Key.Equals(currDate))
                         {
@@ -455,40 +413,40 @@ namespace WpfApplication1
             return null;
         }
 
-        protected string GetSummary(DataRequest request)
+        protected string GetSummary()
         {
-            string result = String.Format("Total: {0:d} - {1:d} : ", handledRequest.BeginDate, handledRequest.FinishDate);
+            string result = String.Format("Total: {0:d} - {1:d} : ", preprocessedRequest.BeginDate, preprocessedRequest.FinishDate);
 
             try
             {
                 var resIncomes =
                     from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                                        && !handledRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
                                         && ConvertStringToDecimal(r.Element(Config.BetragField).Value) > 0
-                                        && !handledRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
                     group r.Elements(Config.BetragField).Single() by r.Parent.Element(Config.TransactionField).Name.LocalName into g
                     select new KeyValuePair<string, decimal>(g.Key, g.Sum<XElement>(
                                                                n => ConvertStringToDecimal(n.Value)
                                                                ));
                 var resExpences =
                     from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                                        && !handledRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
                                         && ConvertStringToDecimal(r.Element(Config.BetragField).Value) < 0
-                                        && !handledRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
                     group r.Elements(Config.BetragField).Single() by r.Parent.Element(Config.TransactionField).Name.LocalName into g
                     select new KeyValuePair<string, decimal>(g.Key, g.Sum<XElement>(
                                                                n => ConvertStringToDecimal(n.Value)
                                                                ));
                 var resBalances =
                     from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                                        && !handledRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && !handledRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
                     group r.Elements(Config.BetragField).Single() by r.Parent.Element(Config.TransactionField).Name.LocalName into g
                     select new KeyValuePair<string, decimal>(g.Key, g.Sum<XElement>(
                                                                n => ConvertStringToDecimal(n.Value)
@@ -505,15 +463,15 @@ namespace WpfApplication1
             return result;
         }
 
-        protected List<string> GetTransactionsAccounts(DataRequest request)
+        protected List<string> GetTransactionsAccounts()
         {
             try
             {
                 var accs =
                     from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                                        && !handledRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
                     select r.Attribute(Config.AuftragsKontoField).Value;
                 return accs.Distinct<string>().ToList<string>();
             }
@@ -526,15 +484,15 @@ namespace WpfApplication1
         }
         protected ObservableCollection<BoolTextCouple> GetTransactionsAccountsObsCollBoolTextCouple(DataRequest request)
         {
-            if (handledRequest.Accounts.Count > 0)
+            if (preprocessedRequest.Accounts.Count > 0)
             {
                 var accs =
                         from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                        where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                                            && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                                            && !handledRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                        where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                                            && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                                            && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
                         group r.Attribute(Config.AuftragsKontoField).Value by r.Attribute(Config.AuftragsKontoField).Value into g
-                        select new BoolTextCouple(!handledRequest.Accounts.Contains(g.Key), g.Key);
+                        select new BoolTextCouple(!preprocessedRequest.Accounts.Contains(g.Key), g.Key);
                 return new ObservableCollection<BoolTextCouple>(accs.Distinct<BoolTextCouple>());
             }
             else
@@ -543,9 +501,9 @@ namespace WpfApplication1
                 {
                     var accs =
                         from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                        where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                                            && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                                            && !handledRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                        where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                                            && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                                            && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
                         group r.Attribute(Config.AuftragsKontoField).Value by r.Attribute(Config.AuftragsKontoField).Value into g
                         select new BoolTextCouple(true, g.Key);
                     return new ObservableCollection<BoolTextCouple>(accs.Distinct<BoolTextCouple>());
@@ -562,18 +520,18 @@ namespace WpfApplication1
 
         protected ObservableCollection<BoolTextCouple> GetBuchungstextOverDateRange(DataRequest request)
         {
-            if (handledRequest.Buchungstexts.Count > 0)
+            if (preprocessedRequest.Buchungstexts.Count > 0)
             {
                 try
                 {
                     var res =
                         from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                        where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                            && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                            && !handledRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                        where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                            && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                            && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
                         group r.Element(Config.WertDatumField).Value by r.Element(Config.BuchungsTextField).Value into g
 
-                        select new BoolTextCouple(!handledRequest.Buchungstexts.Contains(g.Key), g.Key);
+                        select new BoolTextCouple(!preprocessedRequest.Buchungstexts.Contains(g.Key), g.Key);
 
                     return new ObservableCollection<BoolTextCouple>(res);
                 }
@@ -589,9 +547,9 @@ namespace WpfApplication1
                 {
                     var res =
                         from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                        where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                            && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                            && !handledRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                        where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                            && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                            && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
                         group r.Element(Config.WertDatumField).Value by r.Element(Config.BuchungsTextField).Value into g
 
                         select new BoolTextCouple(true, g.Key);
@@ -625,24 +583,23 @@ namespace WpfApplication1
             {
                 var res =
                     from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= handledRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= handledRequest.FinishDate
-                                        && handledRequest.SelectedRemittee.Equals(r.Element(Config.BeguenstigterField).Value)
-                                        && !handledRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= -handledRequest.ExpencesHighestValue
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) >= -handledRequest.ExpencesLowestValue
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                                        && request.SelectedRemittee.Equals(r.Element(Config.BeguenstigterField).Value)
+                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= decimal.Zero
                                         &&
                                         (
-                                        r.Element(Config.BeguenstigterField).Value.Contains(String.IsNullOrEmpty(handledRequest.ToFind) ? r.Element(Config.BeguenstigterField).Value : handledRequest.ToFind)
-                                        || r.Element(Config.VerwendZweckField).Value.Contains(String.IsNullOrEmpty(handledRequest.ToFind) ? r.Element(Config.VerwendZweckField).Value : handledRequest.ToFind)
+                                        r.Element(Config.BeguenstigterField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.BeguenstigterField).Value : preprocessedRequest.ToFind)
+                                        || r.Element(Config.VerwendZweckField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.VerwendZweckField).Value : preprocessedRequest.ToFind)
                                         )
-                                        && !handledRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
                     orderby DateTime.Parse(r.Element(Config.WertDatumField).Value)
 
                     select new KeyValuePair<string, decimal>(r.Element(Config.WertDatumField).Value,
                           (-ConvertStringToDecimal(r.Element(Config.BetragField).Value)));
 
-
+                res = res.Where(paar => (paar.Value >= preprocessedRequest.ExpencesLowestValue) && (paar.Value <= preprocessedRequest.ExpencesHighestValue));
                 return res.ToList<KeyValuePair<string, decimal>>();
             }
             catch (Exception e)
@@ -688,6 +645,18 @@ namespace WpfApplication1
         {
             if (progrBar != null)
                 progrBar.Close();
+        }
+
+        private void InitializeHandledRequest()
+        {
+            preprocessedRequest = new PreprocessedDataRequest();
+
+            preprocessedRequest.Accounts = new List<string>(); 
+            preprocessedRequest.Buchungstexts = new List<string>();
+            preprocessedRequest.IncomsLowestValue = Decimal.Zero;
+            preprocessedRequest.IncomsHighestValue = Decimal.MaxValue;
+            preprocessedRequest.ExpencesLowestValue = Decimal.Zero;
+            preprocessedRequest.ExpencesHighestValue = Decimal.MaxValue;
         }
     }
 }

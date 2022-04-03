@@ -8,10 +8,13 @@ namespace WpfApplication1.DTO
     public class DataRequest
     {
         private static readonly DataRequest instance = new DataRequest();
+
         private DateTime beginDate;
         private DateTime endDate;
+
         private DateTime atDate;
         private String selectedRemittee;
+
         private FilterParams filters;
 
         public event EventHandler DataRequested;
