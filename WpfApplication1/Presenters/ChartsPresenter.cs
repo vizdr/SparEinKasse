@@ -25,7 +25,7 @@ namespace WpfApplication1
             chartModel = bl.ResponseModel;
             _viewChC.BeginDate = request.BeginDate;
             _viewChC.EndDate = request.EndDate;
-            _viewChC.OnDateIntervalChanged += delegate { this.Initialaze(); };
+            _viewChC.OnDateIntervalChanged += delegate { Initialaze(); };
             chartModel.PropertyChanged += ReactOnPropertyChange;
             chartModel.ViewPropertyChanged += ReactOnViewPropertyChange;
         }
@@ -119,7 +119,7 @@ namespace WpfApplication1
 
         private void InitializeExpencsesOverRemitee()
         {
-            this.dataSourceExpensesOverRemitee = chartModel.ExpensesOverRemiteeInDateRange;
+            dataSourceExpensesOverRemitee = chartModel.ExpensesOverRemiteeInDateRange;
             _viewChC.Remitties = this.dataSourceExpensesOverRemitee;
             _viewChC.AxeRemittiesExpencesMaxValue = CalculateMaxValue(dataSourceExpensesOverRemitee);
         }
@@ -176,7 +176,7 @@ namespace WpfApplication1
 
         public IViewFilters ViewFilters
         {
-            get { return _viewFilters; }
+            get => _viewFilters;
             set
             {
                 _viewFilters = value;
@@ -213,7 +213,7 @@ namespace WpfApplication1
             return resString.Trim();
         }
 
-        public string GetDates4Remitee(String remittee)
+        public string GetDates4Remitee(string remittee)
         {
             string resString = "";
             request.SelectedRemittee = remittee;

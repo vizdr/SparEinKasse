@@ -52,7 +52,7 @@ namespace WpfApplication1.DTO
 
         public List<KeyValuePair<string, string>> IncomesInfoOverDateRange
         {
-            get { return incomesInfoOverDateRange; }
+            get => incomesInfoOverDateRange;
             set
             {
                 if (incomesInfoOverDateRange != value)
@@ -64,7 +64,7 @@ namespace WpfApplication1.DTO
         }
         public List<KeyValuePair<string, decimal>> IncomesOverDatesRange
         {
-            get { return incomesOverDatesRange; }
+            get => incomesOverDatesRange;
             set
             {
                 if (incomesOverDatesRange != value)
@@ -77,7 +77,7 @@ namespace WpfApplication1.DTO
 
         public List<KeyValuePair<DateTime, decimal>> BalanceOverDateRange
         {
-            get { return balanceOverDateRange; }
+            get => balanceOverDateRange;
             set
             {
                 if (balanceOverDateRange != value)
@@ -90,7 +90,7 @@ namespace WpfApplication1.DTO
 
         public List<KeyValuePair<string, decimal>> ExpensesOverDateRange
         {
-            get { return expensesOverDateRange; }
+            get => expensesOverDateRange;
             set
             {
                 if (expensesOverDateRange != value)
@@ -102,7 +102,7 @@ namespace WpfApplication1.DTO
         }
         public List<KeyValuePair<string, string>> ExpensesInfoOverDateRange
         {
-            get { return expensesInfoOverDateRange; }
+            get => expensesInfoOverDateRange;
             set
             {
                 if (expensesInfoOverDateRange != value)
@@ -114,7 +114,7 @@ namespace WpfApplication1.DTO
         }
         public List<KeyValuePair<string, decimal>> ExpensesOverRemiteeInDateRange
         {
-            get { return expensesOverRemiteeInDateRange; }
+            get => expensesOverRemiteeInDateRange;
             set
             {
                 if (expensesOverRemiteeInDateRange != value)
@@ -126,7 +126,7 @@ namespace WpfApplication1.DTO
         }
         public List<KeyValuePair<string, decimal>> ExpensesOverRemiteeGroupsInDateRange
         {
-            get { return expensesOverRemiteeGroupsInDateRange; }
+            get => expensesOverRemiteeGroupsInDateRange;
             set
             {
                 if (expensesOverRemiteeGroupsInDateRange != value)
@@ -139,7 +139,7 @@ namespace WpfApplication1.DTO
 
         public string Summary
         {
-            get { return summary; }
+            get => summary;
             set
             {
                 if (summary != value)
@@ -152,7 +152,7 @@ namespace WpfApplication1.DTO
 
         public List<string> TransactionsAccounts
         {
-            get { return transactionsAccounts; }
+            get => transactionsAccounts;
             set
             {
                 if (transactionsAccounts != value)
@@ -164,7 +164,7 @@ namespace WpfApplication1.DTO
         }
         public ObservableCollection<BoolTextCouple> TransactionsAccountsObsCollBoolTextCouple
         {
-            get { return transactionsAccountsObsCollBoolTextCouple; }
+            get => transactionsAccountsObsCollBoolTextCouple;
             set
             {
                 if (transactionsAccountsObsCollBoolTextCouple != value)
@@ -176,7 +176,7 @@ namespace WpfApplication1.DTO
         }
         public ObservableCollection<BoolTextCouple> BuchungstextOverDateRange
         {
-            get { return buchungstextOverDateRange; }
+            get => buchungstextOverDateRange;
             set
             {
                 if (buchungstextOverDateRange != value)
@@ -189,7 +189,7 @@ namespace WpfApplication1.DTO
 
         public List<KeyValuePair<string, decimal>> ExpensesAtDate
         {
-            get { return expensesAtDate; }
+            get => expensesAtDate;
             set
             {
                 if (expensesAtDate != value)
@@ -202,7 +202,7 @@ namespace WpfApplication1.DTO
 
         public List<KeyValuePair<string, decimal>> Dates4RemiteeOverDateRange
         {
-            get { return dates4RemiteeOverDateRange; }
+            get => dates4RemiteeOverDateRange;
             set
             {
                 if (dates4RemiteeOverDateRange != value)
@@ -215,14 +215,12 @@ namespace WpfApplication1.DTO
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            if (this.PropertyChanged != null)
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         protected void OnViewPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            if (ViewPropertyChanged != null)
-                ViewPropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            ViewPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
     }

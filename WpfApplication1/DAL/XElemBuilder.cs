@@ -157,8 +157,8 @@ namespace WpfApplication1.DAL
                     MessageBox.Show(ex.Message, "Unable to parse.", MessageBoxButton.OK, MessageBoxImage.Error);
                     return null;
                 }
+            } // End of if ( XElemBuilder.targetHeaders.Count >= completeNumberOfHeaders && IsAllKeyIndexesFound(XElemBuilder.targetHeaders)
 
-            }
             WindowWarning dialog = new WindowWarning();
             dialog.labelMessage.Content = " Not all acting fields are found!\r\n Only basic functionality is availible.\r\n Press: \r\n Ok - To proceed; \r\n Stop - To cancel databank update. ";
             dialog.buttonOk.Click += delegate { dialog.Close(); };

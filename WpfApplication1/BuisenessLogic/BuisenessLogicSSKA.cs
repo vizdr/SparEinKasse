@@ -20,7 +20,6 @@ namespace WpfApplication1
         private DataRequest request;
         public Action<DataRequest> updateChart = delegate { };
         private WindowProgrBar progrBar;
-        //static Mutex mutexObj = new Mutex();
         private static PreprocessedDataRequest preprocessedRequest;
         private static BuisenessLogicSSKA instance = new BuisenessLogicSSKA();
 
@@ -89,12 +88,12 @@ namespace WpfApplication1
             {
                 if(request.Filters.Accounts.Count > 0)
                 {
-                    if (!decimal.TryParse(request.Filters.ExpenciesLessThan, out decimal expHigherThan))
+                    if (!decimal.TryParse(request.Filters.ExpenciesLessThan, out decimal expLessThan))
                     {
-                        expHigherThan = decimal.Zero;
+                        expLessThan = decimal.Zero;
                     }
 
-                    decimal.TryParse(request.Filters.ExpenciesMoreThan, out decimal expHighestValue);
+                    decimal.TryParse(request.Filters.ExpenciesMoreThan, out decimal expMoreThan);
                     if (!decimal.TryParse(request.Filters.IncomesLessThan, out decimal incomsHighestValue))
                     {
                         incomsHighestValue = decimal.MaxValue;
@@ -105,8 +104,8 @@ namespace WpfApplication1
                     preprocessedRequest.Accounts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.Accounts));
                     preprocessedRequest.ToFind = request.Filters.ToFind;
 
-                    preprocessedRequest.ExpencesLowestValue = expHighestValue;
-                    preprocessedRequest.ExpencesHighestValue = expHigherThan;
+                    preprocessedRequest.ExpencesLowestValue = expMoreThan;
+                    preprocessedRequest.ExpencesHighestValue = expLessThan;
                     preprocessedRequest.IncomsLowestValue = incomsLowestValue;
                     preprocessedRequest.IncomsHighestValue = incomsHighestValue;
                 }
@@ -114,14 +113,8 @@ namespace WpfApplication1
         }
 
         #region IBuisenessLogic Members
-        public ResponseModel ResponseModel
-        {
-            get { return chartsModel; }
-        }
-        public DataRequest Request
-        {
-            get { return request; }
-        }
+        public ResponseModel ResponseModel => chartsModel;
+        public DataRequest Request => request;
         public void UpdateData()
         {
             if (dataGate.UpdateDataBank())
@@ -189,8 +182,8 @@ namespace WpfApplication1
                     group r.Element(Config.BetragField).Value by r.Element(Config.WertDatumField).Value into g
                     orderby DateTime.Parse(g.Key)
                     select new KeyValuePair<string, decimal>(g.Key/*.Substring(5)*/, g.Sum(n => -ConvertStringToDecimal(n)));
-                                                                     
-                res = res.Where(paar => ((paar.Value >= preprocessedRequest.ExpencesLowestValue) && (paar.Value <= preprocessedRequest.ExpencesHighestValue)));
+
+                res = ApplyRangeFilter(res);
                 return res.ToList<KeyValuePair<string, decimal>>();
             }
             catch (Exception e)
@@ -215,8 +208,8 @@ namespace WpfApplication1
                     orderby g.Key
                     select new KeyValuePair<string, decimal>(g.Key, g.Sum<string>(n => -ConvertStringToDecimal(n))
                     );
-                
-                res = res.Where(paar => ((paar.Value >= preprocessedRequest.ExpencesLowestValue) && (paar.Value <= preprocessedRequest.ExpencesHighestValue)));
+
+                res = ApplyRangeFilter(res);
                 return res.ToList<KeyValuePair<string, decimal>>();
             }
             catch (Exception e)
@@ -273,8 +266,8 @@ namespace WpfApplication1
                     group r.Element(Config.BetragField).Value by r.Element(Config.BuchungsTextField).Value into g
                     orderby g.Key
                     select new KeyValuePair<string, decimal>(g.Key, g.Sum<string>( n => -ConvertStringToDecimal(n)));
-                                                                       
-                res = res.Where(paar => ((paar.Value >= preprocessedRequest.ExpencesLowestValue) && (paar.Value <= preprocessedRequest.ExpencesHighestValue)));
+
+                res = ApplyRangeFilter(res);
                 return res.ToList<KeyValuePair<string, decimal>>();
             }
             catch (Exception e)
@@ -297,8 +290,8 @@ namespace WpfApplication1
                     group r.Element(Config.BetragField).Value by r.Element(Config.BeguenstigterField).Value into g
 
                     select new KeyValuePair<string, decimal>(g.Key/*.Substring(5)*/, g.Sum<string>(n => -ConvertStringToDecimal(n) ));
-                                                                        
-                res = res.Where(paar => (paar.Value >= preprocessedRequest.ExpencesLowestValue) && (paar.Value <= preprocessedRequest.ExpencesLowestValue));
+
+                res = ApplyRangeFilter(res);
                 return res.ToList<KeyValuePair<string, decimal>>();
             }
             catch (Exception e)
@@ -308,7 +301,6 @@ namespace WpfApplication1
             }
             return null;
         }
-
         protected List<KeyValuePair<string, string>> GetIncomesInfoOverDateRange()
         {
             try
@@ -369,7 +361,6 @@ namespace WpfApplication1
             }
             return null;
         }
-
         protected List<KeyValuePair<DateTime, decimal>> GetBalanceOverDateRange()
         {
             List<KeyValuePair<DateTime, decimal>> resultedList = new List<KeyValuePair<DateTime, decimal>>();
@@ -482,6 +473,8 @@ namespace WpfApplication1
             }
             return null;
         }
+ 
+        
         protected ObservableCollection<BoolTextCouple> GetTransactionsAccountsObsCollBoolTextCouple(DataRequest request)
         {
             if (preprocessedRequest.Accounts.Count > 0)
@@ -517,7 +510,6 @@ namespace WpfApplication1
 
             return null;
         }
-
         protected ObservableCollection<BoolTextCouple> GetBuchungstextOverDateRange(DataRequest request)
         {
             if (preprocessedRequest.Buchungstexts.Count > 0)
@@ -564,7 +556,6 @@ namespace WpfApplication1
             }
             return null;
         }
-
         protected static List<string> ConvertObsCollBoolTextCoupleToList(ObservableCollection<BoolTextCouple> values)
         {
             List<string> result = new List<string>();
@@ -577,6 +568,7 @@ namespace WpfApplication1
             return result;
         }
 
+              
         protected List<KeyValuePair<string, decimal>> GetDates4RemiteeOverDateRange(DataRequest request)
         {
             try
@@ -599,7 +591,7 @@ namespace WpfApplication1
                     select new KeyValuePair<string, decimal>(r.Element(Config.WertDatumField).Value,
                           (-ConvertStringToDecimal(r.Element(Config.BetragField).Value)));
 
-                res = res.Where(paar => (paar.Value >= preprocessedRequest.ExpencesLowestValue) && (paar.Value <= preprocessedRequest.ExpencesHighestValue));
+                res = ApplyRangeFilter(res);
                 return res.ToList<KeyValuePair<string, decimal>>();
             }
             catch (Exception e)
@@ -608,8 +600,9 @@ namespace WpfApplication1
                     Config.AppName + ": Unable to get Data", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return null;
-        }
 
+
+        }
         public List<string> GetUserAccounts()
         {
             try
@@ -626,6 +619,8 @@ namespace WpfApplication1
             }
             return null;
         }
+
+
         private int GetPercentage(int numerator, int denominator)
         {
             int res;
@@ -640,13 +635,11 @@ namespace WpfApplication1
 
             return res;
         }
-
         public void FinalizeBL()
         {
             if (progrBar != null)
                 progrBar.Close();
         }
-
         private void InitializeHandledRequest()
         {
             preprocessedRequest = new PreprocessedDataRequest();
@@ -657,6 +650,10 @@ namespace WpfApplication1
             preprocessedRequest.IncomsHighestValue = Decimal.MaxValue;
             preprocessedRequest.ExpencesLowestValue = Decimal.Zero;
             preprocessedRequest.ExpencesHighestValue = Decimal.MaxValue;
+        }
+        private IEnumerable<KeyValuePair<string, decimal>> ApplyRangeFilter(IEnumerable<KeyValuePair<string, decimal>> res)
+        {
+            return res.Where(paar => (paar.Value >= preprocessedRequest.ExpencesLowestValue) && (paar.Value <= preprocessedRequest.ExpencesHighestValue));
         }
     }
 }

@@ -67,6 +67,8 @@ namespace WpfApplication1
                 case NotifyCollectionChangedAction.Remove:
                     Settings.Default.ContributorAccField.Remove(e.OldItems[0] as string);
                     break;
+            default:
+                    break;
             }
         }
 
@@ -79,6 +81,8 @@ namespace WpfApplication1
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     Settings.Default.PaymentDateField.Remove(e.OldItems[0] as string);
+                    break;
+            default:
                     break;
             }
         }
@@ -93,6 +97,8 @@ namespace WpfApplication1
                 case NotifyCollectionChangedAction.Remove:
                     Settings.Default.BankOperDateField.Remove(e.OldItems[0] as string);
                     break;
+                default:
+                    break;
             }
         }
 
@@ -105,6 +111,8 @@ namespace WpfApplication1
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     Settings.Default.BankOperTypeField.Remove(e.OldItems[0] as string);
+                    break;
+                default:
                     break;
             }
         }
@@ -119,6 +127,8 @@ namespace WpfApplication1
                 case NotifyCollectionChangedAction.Remove:
                     Settings.Default.PaymentPurposeField.Remove(e.OldItems[0] as string);
                     break;
+                default:
+                    break;
             }
         }
 
@@ -131,6 +141,8 @@ namespace WpfApplication1
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     Settings.Default.BeneficiaryField.Remove(e.OldItems[0] as string);
+                    break;
+            default:
                     break;
             }
         }
@@ -145,6 +157,8 @@ namespace WpfApplication1
                 case NotifyCollectionChangedAction.Remove:
                     Settings.Default.BeneficiaryAccField.Remove(e.OldItems[0] as string);
                     break;
+            default:
+                    break;
             }
         }
 
@@ -157,6 +171,8 @@ namespace WpfApplication1
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     Settings.Default.IntBankCodeField.Remove(e.OldItems[0] as string);
+                    break;
+            default:
                     break;
             }
         }
@@ -171,6 +187,8 @@ namespace WpfApplication1
                 case NotifyCollectionChangedAction.Remove:
                     Settings.Default.BankOperValueField.Remove(e.OldItems[0] as string);
                     break;
+            default:
+                    break;
             }
         }
 
@@ -183,6 +201,8 @@ namespace WpfApplication1
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     Settings.Default.CurrencyField.Remove(e.OldItems[0] as string);
+                    break;
+            default:
                     break;
             }
         }

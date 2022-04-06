@@ -67,6 +67,8 @@ namespace WpfApplication1.DAL
                 case 1251:
                     res = CultureInfo.GetCultureInfo("ru-RU");
                     break;
+                default:
+                    break;
             }
             return res;
         }

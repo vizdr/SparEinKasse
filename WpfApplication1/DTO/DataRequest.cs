@@ -22,13 +22,12 @@ namespace WpfApplication1.DTO
         public event EventHandler DataBankUpdateRequested;
         public event EventHandler ViewDataRequested;
 
-        public Boolean DataBankUpdating
+        public bool DataBankUpdating
         { set { OnDataBankUpdateRequested(); } }
 
         public DateTime BeginDate
         {
-            get
-            { return beginDate; }
+            get => beginDate;
             set
             {
                 if (beginDate != value)
@@ -40,8 +39,7 @@ namespace WpfApplication1.DTO
         }
         public DateTime EndDate
         {
-            get
-            { return endDate; }
+            get => endDate;
             set
             {
                 if (endDate != value)
@@ -53,7 +51,7 @@ namespace WpfApplication1.DTO
         }
         public FilterParams Filters
         {
-            get { return filters; }
+            get => filters;
 
             set
             {
@@ -67,7 +65,7 @@ namespace WpfApplication1.DTO
 
         public DateTime AtDate
         {
-            get { return atDate; }
+            get => atDate;
             set
             {
                 if (atDate != value)
@@ -79,7 +77,7 @@ namespace WpfApplication1.DTO
         }
         public String SelectedRemittee
         {
-            get { return selectedRemittee; }
+            get => selectedRemittee;
             set
             {
                 if (selectedRemittee != value)
@@ -103,25 +101,21 @@ namespace WpfApplication1.DTO
 
         protected void OnDataRequested()
         {
-            if (DataRequested != null)
-                DataRequested(this, EventArgs.Empty);
+            DataRequested?.Invoke(this, EventArgs.Empty);
         }
 
         protected void OnFilterValuesRequested()
         {
-            if (FilterValuesRequested != null)
-                FilterValuesRequested(this, EventArgs.Empty);
+            FilterValuesRequested?.Invoke(this, EventArgs.Empty);
         }
 
         protected void OnDataBankUpdateRequested()
         {
-            if (DataBankUpdateRequested != null)
-                DataBankUpdateRequested(this, EventArgs.Empty);
+            DataBankUpdateRequested?.Invoke(this, EventArgs.Empty);
         }
         protected void OnViewDataRequested()
         {
-            if (ViewDataRequested != null)
-                ViewDataRequested(this, EventArgs.Empty);
+            ViewDataRequested?.Invoke(this, EventArgs.Empty);
         }
 
     }
