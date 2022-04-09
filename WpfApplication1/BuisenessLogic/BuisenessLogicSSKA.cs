@@ -90,7 +90,7 @@ namespace WpfApplication1
                 {
                     if (!decimal.TryParse(request.Filters.ExpenciesLessThan, out decimal expLessThan))
                     {
-                        expLessThan = decimal.Zero;
+                        expLessThan = decimal.MaxValue;
                     }
 
                     decimal.TryParse(request.Filters.ExpenciesMoreThan, out decimal expMoreThan);
@@ -100,7 +100,15 @@ namespace WpfApplication1
                     }
 
                     decimal.TryParse(request.Filters.IncomesMoreThan, out decimal incomsLowestValue);
+                    if(preprocessedRequest.Buchungstexts.Count > 0)
+                    {
+                        preprocessedRequest.Buchungstexts.Clear();
+                    }
                     preprocessedRequest.Buchungstexts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.BuchungstextValues));
+                    if (preprocessedRequest.Accounts.Count > 0)
+                    {
+                        preprocessedRequest.Accounts.Clear();
+                    }
                     preprocessedRequest.Accounts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.Accounts));
                     preprocessedRequest.ToFind = request.Filters.ToFind;
 
@@ -118,7 +126,9 @@ namespace WpfApplication1
         public void UpdateData()
         {
             if (dataGate.UpdateDataBank())
+            {
                 UpdateDataModel();
+            }
         }
         public async void UpdateDataModel()
         {

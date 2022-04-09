@@ -11,37 +11,42 @@ namespace WpfApplication1.DAL
 {
     public abstract class XElemBuilder
     {
-        protected List<uint> keyIndexes;
+        protected List<uint>                    keyIndexes;
         protected static Dictionary<uint, uint> targetHeaders;
-        protected XElemBuilder Successor { get; set; }
+        protected XElemBuilder                  Successor { get; set; }
         protected Dictionary<uint, uint> ResolveHeaders(string[] headers, CsvHeaderResolver fieldsResolver)
         {
             targetHeaders = new Dictionary<uint, uint>();
 
             for (uint i = 0; i < headers.Length; i++)
             {
-                int fieldIndex = fieldsResolver.FindTargetFieldIndex(headers[i]); // index of required(target) field in Settings
+                int fieldIndex = fieldsResolver.FindTargetFieldIndex(headers[i]); // index of required(target) field in Settings, if not found: -1 
                 if (fieldIndex >= 0)
+                {
                     targetHeaders.Add((uint)fieldIndex, i); // TargetFieldIndex: Key -  to sort; i from parameter: headers[i] - Value
-                                                            //else 
-                                                            //throw new Exception(String.Format("Unable to resolve header {0} : {1}.", i, headers[i]));
+                }
+                //else 
+                //throw new Exception(String.Format("Unable to resolve header {0} : {1}.", i, headers[i]));
             }
             return targetHeaders;
         }
-
-        protected virtual bool IsAllKeyIndexesFound(Dictionary<uint, uint> targetHeaders)
+        protected virtual bool           IsAllKeyIndexesFound(Dictionary<uint, uint> targetHeaders)
         {
             IEnumerable<uint> targetIndexes = targetHeaders.Keys;
             return keyIndexes.Except<uint>(targetIndexes).Count<uint>() == 0;
         }
-
-        protected static string GetAdoptedDouble(object dec)
+        protected static string          GetCultureAdaptedDouble(object dec)
         {
-            double tmp = 0d;
-            if (double.TryParse(dec.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out tmp))
+            if (double.TryParse(dec.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out double tmp))
+            {
                 return tmp.ToString(CultureInfo.InvariantCulture);
+            }
+
             if (double.TryParse(dec.ToString(), NumberStyles.Any, Config.GetCSVCultureInfo(), out tmp))
+            {
                 return tmp.ToString(CultureInfo.InvariantCulture);
+            }
+
             try
             {
                 tmp = double.Parse(dec.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture);
@@ -54,14 +59,16 @@ namespace WpfApplication1.DAL
             }
             return tmp.ToString("F2");
         }
-        abstract public XElement BuildXElement(List<string[]> source);
+        abstract public XElement         BuildXElement(List<string[]> source);
     }
 
-    public class XSimpleElemBuilder : XElemBuilder
+    public class XBaseElemBuilder : XElemBuilder
     {
-        public string SavedBankAccount { get; set; }
-        public XSimpleElemBuilder() => this.keyIndexes = new List<uint>() { Settings.Default.PaymentDateFieldIndex, Settings.Default.BankOperDateFieldIndex, Settings.Default.BankOperTypeFieldIndex, Settings.Default.PaymentPurposeFieldIndex, Settings.Default.BeneficiaryFieldIndex, Settings.Default.BankOperValueFieldIndex };
-        public static string BankAccount { get; set; }
+        public XBaseElemBuilder() => keyIndexes = new List<uint>() { Settings.Default.PaymentDateFieldIndex, Settings.Default.BankOperDateFieldIndex, 
+                                                                       Settings.Default.BankOperTypeFieldIndex, Settings.Default.PaymentPurposeFieldIndex,
+                                                                       Settings.Default.BeneficiaryFieldIndex, Settings.Default.BankOperValueFieldIndex 
+                                                                      };
+        public static string BankAccount { get; set; }  // to get from user input, may be missing in the recognized headers
         public override XElement BuildXElement(List<string[]> source)
         {
             if ((XElemBuilder.targetHeaders.Count + 1) >= keyIndexes.Count && IsAllKeyIndexesFound(XElemBuilder.targetHeaders))
@@ -84,7 +91,7 @@ namespace WpfApplication1.DAL
                         new XElement(Config.KontonummerField, String.Empty),                                                                        // Kontonummer   
                         new XElement(Config.BLZField, String.Empty),                                                                                // BLZ   
                         new XElement(Config.BetragField,                                                                                            // Betrag       
-                             GetAdoptedDouble(fields[(int)targetHeaders[8]]),
+                             GetCultureAdaptedDouble(fields[(int)targetHeaders[8]]),
                         new XAttribute(Config.WaehrungField, " Euro"), new XAttribute("type", "double"))                                             // Währung
                         )
                     );
@@ -126,7 +133,7 @@ namespace WpfApplication1.DAL
                 Settings.Default.BankOperValueFieldIndex, Settings.Default.CurrencyFieldIndex
             };
             XElemBuilder.targetHeaders = ResolveHeaders(headers, new CsvTargetFieldResolver(CsvTargetFieldsChain.Instance));
-            Successor = new XSimpleElemBuilder();
+            Successor = new XBaseElemBuilder();
         }
         public override XElement BuildXElement(List<string[]> source)
         {
@@ -146,7 +153,7 @@ namespace WpfApplication1.DAL
                            new XElement(Config.KontonummerField, fields[(int)targetHeaders[6]]),                                               // Kontonummer   
                            new XElement(Config.BLZField, fields[(int)targetHeaders[7]]),                                               // BLZ   
                            new XElement(Config.BetragField,                                                           // Betrag       
-                                GetAdoptedDouble(fields[(int)targetHeaders[8]]),
+                                GetCultureAdaptedDouble(fields[(int)targetHeaders[8]]),
                                    new XAttribute(Config.WaehrungField, fields[(int)targetHeaders[9]]), new XAttribute("type", "double"))   // Währung
                            )
                        );

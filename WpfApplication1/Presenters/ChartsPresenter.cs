@@ -9,7 +9,7 @@ namespace WpfApplication1
 {
     class ChartsPresenter
     {
-        private IViewCharts _viewChC;
+        private IViewCharts _viewCharts;
         private IViewFilters _viewFilters;
         private IBuisenessLogic bl;
         private DataRequest request;
@@ -17,15 +17,15 @@ namespace WpfApplication1
         private List<KeyValuePair<string, decimal>> dataSourceExpensesOverRemitee;
         public static FilterParams FilterValues { get; private set; }
 
-        public ChartsPresenter(IViewCharts viewChC, IBuisenessLogic bl)
+        public ChartsPresenter(IViewCharts viewChart, IBuisenessLogic bl)
         {
-            this.bl = bl;
-            this.request = bl.Request;
-            _viewChC = viewChC;            
+            this.bl = bl ?? throw new ArgumentNullException(nameof(bl));
+            request = bl.Request;
+            _viewCharts = viewChart ?? throw new ArgumentNullException(nameof(viewChart));            
             chartModel = bl.ResponseModel;
-            _viewChC.BeginDate = request.BeginDate;
-            _viewChC.EndDate = request.EndDate;
-            _viewChC.OnDateIntervalChanged += delegate { Initialaze(); };
+            _viewCharts.BeginDate = request.BeginDate;
+            _viewCharts.EndDate = request.EndDate;
+            _viewCharts.OnDateIntervalChanged += delegate { Initialaze(); };
             chartModel.PropertyChanged += ReactOnPropertyChange;
             chartModel.ViewPropertyChanged += ReactOnViewPropertyChange;
         }
@@ -42,8 +42,8 @@ namespace WpfApplication1
         // Initiate update of data model by change of xxDate property for DataRequest 
         public void Initialaze()
         {
-            request.BeginDate = _viewChC.BeginDate;
-            request.EndDate = _viewChC.EndDate;
+            request.BeginDate = _viewCharts.BeginDate;
+            request.EndDate = _viewCharts.EndDate;
             Thread.Sleep(120);
         }
 
@@ -58,34 +58,34 @@ namespace WpfApplication1
             switch (s)
             {
                 case "ExpensesOverDateRange":
-                    _viewChC.Expenses = ConvertToDatesList(chartModel.ExpensesOverDateRange);
+                    _viewCharts.Expenses = ConvertToDatesList(chartModel.ExpensesOverDateRange);
                     break;
                 case "IncomesOverDatesRange":
-                    _viewChC.Incomes = chartModel.IncomesOverDatesRange;
+                    _viewCharts.Incomes = chartModel.IncomesOverDatesRange;
                     break;
                 case "BalanceOverDateRange":
-                    _viewChC.Balance = chartModel.BalanceOverDateRange;
+                    _viewCharts.Balance = chartModel.BalanceOverDateRange;
                     break;
                 case "Summary":
-                    _viewChC.Summary = chartModel.Summary;
+                    _viewCharts.Summary = chartModel.Summary;
                     break;
                 case "ExpensesOverRemiteeInDateRange":
                     InitializeExpencsesOverRemitee();
                     break;
                 case "IncomesInfoOverDateRange":
-                    _viewChC.IncomsOverview = chartModel.IncomesInfoOverDateRange;
+                    _viewCharts.IncomsOverview = chartModel.IncomesInfoOverDateRange;
                     break;
                 case "ExpensesInfoOverDateRange":
-                    _viewChC.ExpensesOverview = chartModel.ExpensesInfoOverDateRange;
+                    _viewCharts.ExpensesOverview = chartModel.ExpensesInfoOverDateRange;
                     break;
                 case "TransactionsAccounts":
-                    _viewChC.Accounts = chartModel.TransactionsAccounts;
+                    _viewCharts.Accounts = chartModel.TransactionsAccounts;
                     break;
                 case "ExpensesOverRemiteeGroupsInDateRange":
-                    _viewChC.RemittieeGroups = chartModel.ExpensesOverRemiteeGroupsInDateRange;
+                    _viewCharts.RemittieeGroups = chartModel.ExpensesOverRemiteeGroupsInDateRange;
                     break;
                 case "Balance":
-                    _viewChC.Balance = chartModel.BalanceOverDateRange;
+                    _viewCharts.Balance = chartModel.BalanceOverDateRange;
                     break;
                 case "BuchungstextOverDateRange":
                     _viewFilters.BuchungstextValues = chartModel.BuchungstextOverDateRange;
@@ -99,7 +99,7 @@ namespace WpfApplication1
             }
         }
 
-        // never called because currently set xx is not in Use 
+        // draft, never called because currently set viewProperty xx is not in Use 
         public void ReactOnViewPropertyChange(object sender, PropertyChangedEventArgs e)
         {
             String s = e.PropertyName;
@@ -120,8 +120,8 @@ namespace WpfApplication1
         private void InitializeExpencsesOverRemitee()
         {
             dataSourceExpensesOverRemitee = chartModel.ExpensesOverRemiteeInDateRange;
-            _viewChC.Remitties = this.dataSourceExpensesOverRemitee;
-            _viewChC.AxeRemittiesExpencesMaxValue = CalculateMaxValue(dataSourceExpensesOverRemitee);
+            _viewCharts.Remitties = dataSourceExpensesOverRemitee;
+            _viewCharts.AxeRemittiesExpencesMaxValue = CalculateMaxValue(dataSourceExpensesOverRemitee);
         }
 
         public void ReloadXml()

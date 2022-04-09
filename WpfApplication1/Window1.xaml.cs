@@ -40,9 +40,10 @@ namespace WpfApplication1
                 MessageBox.Show(exc.InnerException.ToString(), "SSKA analyzer: Unable to initialize XAML components", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            this.chP = new ChartsPresenter(this);
+            Window1 window1 = this;
+            window1.chP = new ChartsPresenter(window1);
             chP.Initialaze();
-            this.Closing += delegate { chP.FinalizeChP(); };
+            window1.Closing += delegate { window1.chP.FinalizeChP(); };
 
 #if DEBUG
             isNotRegistred = true;
@@ -54,15 +55,18 @@ namespace WpfApplication1
                 aw.Activate();
                 aw.ShowDialog();
             }
-            this.buttonUpdateSpan.Click += OnDateIntervalChanged;
-            this.buttonShowFilters.Click += delegate { InitialaizeFiltersWindow(new WindowFilters()); };
-            this.buttonUpdateDataBankXML.Click += delegate
+            window1.buttonUpdateSpan.Click += OnDateIntervalChanged;
+            window1.buttonShowFilters.Click += delegate { window1.InitialaizeFiltersWindow(new WindowFilters()); };
+            window1.buttonUpdateDataBankXML.Click += delegate
             {
-                if (!isNotRegistred | expDate > DateTime.Now)
-                { this.chP.ReloadXml(); this.chP.Initialaze(); }
+                if (!isNotRegistred || (expDate > DateTime.Now))
+                {
+                    window1.chP.ReloadXml();
+                    window1.chP.Initialaze();
+                }
             };
-            this.buttonSettings.Click += delegate { new WindowFieldsDictionary().ShowDialog(); };
-            this.lineSeries2.MouseUp += BarDataPoint_MouseUp;
+            window1.buttonSettings.Click += delegate { new WindowFieldsDictionary().ShowDialog(); };
+            window1.lineSeries2.MouseUp += window1.BarDataPoint_MouseUp;
             popupChDateExpText = new TextBlock();
             popupChDateExpText.Background = Brushes.LightBlue;
             popupChDateExpText.Padding = new Thickness(2.0d);
@@ -96,7 +100,7 @@ namespace WpfApplication1
 
         private void InitialaizeFiltersWindow(WindowFilters window)
         {
-            window.Owner = Window1.GetWindow(this);
+            window.Owner = GetWindow(this);
             chP.ViewFilters = window;
             window.RegisterEventHandlers();
             chP.InitializeFilters(ChartsPresenter.FilterValues);
@@ -164,21 +168,21 @@ namespace WpfApplication1
         }
         public DateTime BeginDate
         {
-            get { return datePickerBeginDate.SelectedDate ?? DateTime.Now.Date.AddDays(-30); }
-            set { datePickerBeginDate.SelectedDate = value; }
+            get => datePickerBeginDate.SelectedDate ?? DateTime.Now.Date.AddDays(-30);
+            set => datePickerBeginDate.SelectedDate = value;
         }
         public DateTime EndDate
         {
-            get { return datePickerEndDate.SelectedDate ?? DateTime.Now.Date.Date; }
-            set { datePickerEndDate.SelectedDate = value; }
+            get => datePickerEndDate.SelectedDate ?? DateTime.Now.Date.Date;
+            set => datePickerEndDate.SelectedDate = value;
         }
         public List<KeyValuePair<string, string>> ExpensesOverview
         {
-            set { listboxExpencesOverview.DataContext = value; }
+            set => listboxExpencesOverview.DataContext = value;
         }
         public List<KeyValuePair<string, string>> IncomsOverview
         {
-            set { listboxIncomssOverview.DataContext = value; }
+            set => listboxIncomssOverview.DataContext = value;
         }
         public Decimal AxeRemittiesExpencesMaxValue
         {
@@ -198,7 +202,7 @@ namespace WpfApplication1
         }
         public List<string> Accounts
         {
-            set { listBoxAccounts.DataContext = value; }
+            set => listBoxAccounts.DataContext = value;
         }
         public List<KeyValuePair<string, decimal>> RemittieeGroups
         {
@@ -227,13 +231,12 @@ namespace WpfApplication1
         private void BarDataPoint_MouseUp2(object sender, MouseButtonEventArgs e)
         {
             Object o = (this.chartRemeteeExpence.Series[0] as DataPointSeries).SelectedItem;
-            if (o is KeyValuePair<String, decimal>)
+            if (o is KeyValuePair<String, decimal> kv)
             {
-                KeyValuePair<String, decimal> kv = (KeyValuePair<String, decimal>)o;
                 popupChRemiteExpText.Text = chP.GetDates4Remitee(kv.Key);
-                this.popupChartDateRemitte.Child = popupChRemiteExpText;
-                this.popupChartDateRemitte.IsOpen = true;
-                this.popupChartDateRemitte.StaysOpen = false;
+                popupChartDateRemitte.Child = popupChRemiteExpText;
+                popupChartDateRemitte.IsOpen = true;
+                popupChartDateRemitte.StaysOpen = false;
             }
         }
         private static void HandleRegistration()

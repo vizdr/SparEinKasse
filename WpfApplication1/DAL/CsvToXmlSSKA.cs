@@ -34,10 +34,6 @@ namespace WpfApplication1.DAL
             {
                 MessageBox.Show(e.Message, Config.AppName + ": Xml Storage File was not load!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            //finally
-            //{
-            //    DataSource = null;
-            //}
         }
 
         public static bool isInputCsvFileAvailable()
@@ -82,7 +78,7 @@ namespace WpfApplication1.DAL
             {
                 lock (_fileLock)
                 {
-                    XElement newXml = this.GetXmlElem(fileToReadPath);
+                    XElement newXml = GetXmlElem(fileToReadPath);
                     if (newXml != null && newXml.HasElements)
                     {
                         if (isInputCsvFileAvailable())
@@ -135,7 +131,6 @@ namespace WpfApplication1.DAL
             foreach (string el in src)
             {
                 string[] testArr = el.Split(sep, StringSplitOptions.None);
-                //if (testArr.GetLength(0) >= Config.CsvFields.GetLength(0) && !string.IsNullOrEmpty(testArr[0]) && !string.IsNullOrEmpty(testArr[3]))
                 res.Add(testArr);
             }
             return res;

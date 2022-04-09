@@ -18,12 +18,12 @@ namespace WpfApplication1
         public void Initialize()
         {
             _viewAccounts.UserAccounts = bl.GetUserAccounts();
-            _viewAccounts.SelectedAccount = XSimpleElemBuilder.BankAccount ?? String.Empty;
+            _viewAccounts.SelectedAccount = XBaseElemBuilder.BankAccount ?? String.Empty;
         }
 
         private void RegisterViewAccountsHandlers()
         {
-            _viewAccounts.OnAccountsAdd += delegate { XSimpleElemBuilder.BankAccount = _viewAccounts.SelectedAccount; };
+            _viewAccounts.OnAccountsAdd += delegate { XBaseElemBuilder.BankAccount = _viewAccounts.SelectedAccount; };
         }
     }
 }
