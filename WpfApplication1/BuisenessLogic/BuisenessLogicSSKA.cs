@@ -15,13 +15,11 @@ namespace WpfApplication1
 {
     public class BuisenessLogicSSKA : IBuisenessLogic
     {
-        private CsvToXmlSSKA dataGate;
-        private ResponseModel chartsModel;
-        private DataRequest request;
+        private readonly CsvToXmlSSKA dataGate;
         public Action<DataRequest> updateChart = delegate { };
-        private WindowProgrBar progrBar;
+        private readonly WindowProgrBar progrBar;
         private static PreprocessedDataRequest preprocessedRequest;
-        private static BuisenessLogicSSKA instance = new BuisenessLogicSSKA();
+        private static readonly BuisenessLogicSSKA instance = new BuisenessLogicSSKA();
 
         public static BuisenessLogicSSKA GetInstance()
         {
@@ -30,13 +28,13 @@ namespace WpfApplication1
         private BuisenessLogicSSKA()
         {
             progrBar = new WindowProgrBar();
-           
-            dataGate = new CsvToXmlSSKA();          
-            request = DataRequest.GetInstance();
+
+            dataGate = new CsvToXmlSSKA();
+            Request = DataRequest.GetInstance();
             InitializeHandledRequest();
             RegisterDataRequestHandlers();
 
-            chartsModel = ResponseModel.GetInstance();
+            ResponseModel = ResponseModel.GetInstance();
             
             RegisterMethodsForProgressBar();
             UpdateDataModel();
@@ -44,23 +42,23 @@ namespace WpfApplication1
 
         private void RegisterDataRequestHandlers( )
         {
-            request.DataRequested += delegate { UpdateDataModel(); };
-            request.FilterValuesRequested += delegate { FilterData(); };
-            request.DataBankUpdateRequested += delegate { UpdateData(); };
-            request.ViewDataRequested += delegate { UpdateViewData(); };
+            Request.DataRequested += delegate { UpdateDataModel(); };
+            Request.FilterValuesRequested += delegate { FilterData(); };
+            Request.DataBankUpdateRequested += delegate { UpdateData(); };
+            Request.ViewDataRequested += delegate { UpdateViewData(); };
         }
 
         private void RegisterMethodsForProgressBar()
         {
-            updateChart += delegate { chartsModel.TransactionsAccounts = GetTransactionsAccounts(); };
-            updateChart += delegate { chartsModel.IncomesOverDatesRange = GetIncomesOverDatesRange(); };
-            updateChart += delegate { chartsModel.BalanceOverDateRange = GetBalanceOverDateRange(); };
-            updateChart += delegate { chartsModel.ExpensesOverDateRange = GetExpensesOverDateRange(); };
-            updateChart += delegate { chartsModel.ExpensesInfoOverDateRange = GetExpensesInfoOverDateRange(); };
-            updateChart += delegate { chartsModel.ExpensesOverRemiteeGroupsInDateRange = GetExpensesOverRemiteeGroupsInDateRange(); };
-            updateChart += delegate { chartsModel.ExpensesOverRemiteeInDateRange = GetExpensesOverRemiteeInDateRange(); };
-            updateChart += delegate { chartsModel.Summary = GetSummary(); };
-            updateChart += delegate { chartsModel.IncomesInfoOverDateRange = GetIncomesInfoOverDateRange(); };
+            updateChart += delegate { ResponseModel.TransactionsAccounts = GetTransactionsAccounts(); };
+            updateChart += delegate { ResponseModel.IncomesOverDatesRange = GetIncomesOverDatesRange(); };
+            updateChart += delegate { ResponseModel.BalanceOverDateRange = GetBalanceOverDateRange(); };
+            updateChart += delegate { ResponseModel.ExpensesOverDateRange = GetExpensesOverDateRange(); };
+            updateChart += delegate { ResponseModel.ExpensesInfoOverDateRange = GetExpensesInfoOverDateRange(); };
+            updateChart += delegate { ResponseModel.ExpensesOverRemiteeGroupsInDateRange = GetExpensesOverRemiteeGroupsInDateRange(); };
+            updateChart += delegate { ResponseModel.ExpensesOverRemiteeInDateRange = GetExpensesOverRemiteeInDateRange(); };
+            updateChart += delegate { ResponseModel.Summary = GetSummary(); };
+            updateChart += delegate { ResponseModel.IncomesInfoOverDateRange = GetIncomesInfoOverDateRange(); };
         }
         private decimal ConvertStringToDecimal(string src)
         {
@@ -121,8 +119,8 @@ namespace WpfApplication1
         }
 
         #region IBuisenessLogic Members
-        public ResponseModel ResponseModel => chartsModel;
-        public DataRequest Request => request;
+        public ResponseModel ResponseModel { get; }
+        public DataRequest Request { get; }
         public void UpdateData()
         {
             if (dataGate.UpdateDataBank())
@@ -132,7 +130,7 @@ namespace WpfApplication1
         }
         public async void UpdateDataModel()
         {
-            PreProcessRequest(request);
+            PreProcessRequest(Request);
             if (!progrBar.IsVisible)
             {
                 progrBar.Show();
@@ -147,7 +145,7 @@ namespace WpfApplication1
                 int progr = (ctr + 1) * 10;
 
                 var updChart = updateChart.GetInvocationList()[ctr];
-                updChart.DynamicInvoke(request);
+                updChart.DynamicInvoke(Request);
                 await Task.Factory.StartNew<int>(
                                              () =>
                                              {
@@ -166,15 +164,15 @@ namespace WpfApplication1
         public void FilterData()
         {
             UpdateDataModel();
-            chartsModel.BuchungstextOverDateRange = GetBuchungstextOverDateRange(request);
-            chartsModel.TransactionsAccountsObsCollBoolTextCouple = GetTransactionsAccountsObsCollBoolTextCouple(request);
+            ResponseModel.BuchungstextOverDateRange = GetBuchungstextOverDateRange();
+            ResponseModel.TransactionsAccountsObsCollBoolTextCouple = GetTransactionsAccountsObsCollBoolTextCouple();
         }
         public void UpdateViewData()
         {
-            if (request.AtDate != DateTime.MinValue)
-                chartsModel.ExpensesAtDate = GetExpensesAtDate(request);
-            if (request.SelectedRemittee != null)
-                chartsModel.Dates4RemiteeOverDateRange = request.SelectedRemittee == string.Empty? chartsModel.Dates4RemiteeOverDateRange : GetDates4RemiteeOverDateRange(request);
+            if (Request.AtDate != DateTime.MinValue)
+                ResponseModel.ExpensesAtDate = GetExpensesAtDate(Request);
+            if (Request.SelectedRemittee != null)
+                ResponseModel.Dates4RemiteeOverDateRange = Request.SelectedRemittee == string.Empty? ResponseModel.Dates4RemiteeOverDateRange : GetDates4RemiteeOverDateRange(Request);
         }
         #endregion
 
@@ -485,7 +483,7 @@ namespace WpfApplication1
         }
  
         
-        protected ObservableCollection<BoolTextCouple> GetTransactionsAccountsObsCollBoolTextCouple(DataRequest request)
+        protected ObservableCollection<BoolTextCouple> GetTransactionsAccountsObsCollBoolTextCouple()
         {
             if (preprocessedRequest.Accounts.Count > 0)
             {
@@ -520,7 +518,7 @@ namespace WpfApplication1
 
             return null;
         }
-        protected ObservableCollection<BoolTextCouple> GetBuchungstextOverDateRange(DataRequest request)
+        protected ObservableCollection<BoolTextCouple> GetBuchungstextOverDateRange()
         {
             if (preprocessedRequest.Buchungstexts.Count > 0)
             {

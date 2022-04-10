@@ -9,25 +9,21 @@ namespace WpfApplication1
 {
     class ChartsPresenter
     {
-        private IViewCharts _viewCharts;
+        private readonly IViewCharts _viewCharts;
         private IViewFilters _viewFilters;
-        private IBuisenessLogic bl;
-        private DataRequest request;
-        private ResponseModel chartModel;
+        private readonly IBuisenessLogic bl;
         private List<KeyValuePair<string, decimal>> dataSourceExpensesOverRemitee;
         public static FilterParams FilterValues { get; private set; }
 
         public ChartsPresenter(IViewCharts viewChart, IBuisenessLogic bl)
         {
             this.bl = bl ?? throw new ArgumentNullException(nameof(bl));
-            request = bl.Request;
             _viewCharts = viewChart ?? throw new ArgumentNullException(nameof(viewChart));            
-            chartModel = bl.ResponseModel;
-            _viewCharts.BeginDate = request.BeginDate;
-            _viewCharts.EndDate = request.EndDate;
+            _viewCharts.BeginDate = bl.Request.BeginDate;
+            _viewCharts.EndDate = bl.Request.EndDate;
             _viewCharts.OnDateIntervalChanged += delegate { Initialaze(); };
-            chartModel.PropertyChanged += ReactOnPropertyChange;
-            chartModel.ViewPropertyChanged += ReactOnViewPropertyChange;
+            bl.ResponseModel.PropertyChanged += ReactOnPropertyChange;
+            bl.ResponseModel.ViewPropertyChanged += ReactOnViewPropertyChange;
         }
 
         public ChartsPresenter(IViewCharts viewChC)
@@ -42,8 +38,8 @@ namespace WpfApplication1
         // Initiate update of data model by change of xxDate property for DataRequest 
         public void Initialaze()
         {
-            request.BeginDate = _viewCharts.BeginDate;
-            request.EndDate = _viewCharts.EndDate;
+            bl.Request.BeginDate = _viewCharts.BeginDate;
+            bl.Request.EndDate = _viewCharts.EndDate;
             Thread.Sleep(120);
         }
 
@@ -58,40 +54,40 @@ namespace WpfApplication1
             switch (s)
             {
                 case "ExpensesOverDateRange":
-                    _viewCharts.Expenses = ConvertToDatesList(chartModel.ExpensesOverDateRange);
+                    _viewCharts.Expenses = ConvertToDatesList(bl.ResponseModel.ExpensesOverDateRange);
                     break;
                 case "IncomesOverDatesRange":
-                    _viewCharts.Incomes = chartModel.IncomesOverDatesRange;
+                    _viewCharts.Incomes = bl.ResponseModel.IncomesOverDatesRange;
                     break;
                 case "BalanceOverDateRange":
-                    _viewCharts.Balance = chartModel.BalanceOverDateRange;
+                    _viewCharts.Balance = bl.ResponseModel.BalanceOverDateRange;
                     break;
                 case "Summary":
-                    _viewCharts.Summary = chartModel.Summary;
+                    _viewCharts.Summary = bl.ResponseModel.Summary;
                     break;
                 case "ExpensesOverRemiteeInDateRange":
                     InitializeExpencsesOverRemitee();
                     break;
                 case "IncomesInfoOverDateRange":
-                    _viewCharts.IncomsOverview = chartModel.IncomesInfoOverDateRange;
+                    _viewCharts.IncomsOverview = bl.ResponseModel.IncomesInfoOverDateRange;
                     break;
                 case "ExpensesInfoOverDateRange":
-                    _viewCharts.ExpensesOverview = chartModel.ExpensesInfoOverDateRange;
+                    _viewCharts.ExpensesOverview = bl.ResponseModel.ExpensesInfoOverDateRange;
                     break;
                 case "TransactionsAccounts":
-                    _viewCharts.Accounts = chartModel.TransactionsAccounts;
+                    _viewCharts.Accounts = bl.ResponseModel.TransactionsAccounts;
                     break;
                 case "ExpensesOverRemiteeGroupsInDateRange":
-                    _viewCharts.RemittieeGroups = chartModel.ExpensesOverRemiteeGroupsInDateRange;
+                    _viewCharts.RemittieeGroups = bl.ResponseModel.ExpensesOverRemiteeGroupsInDateRange;
                     break;
                 case "Balance":
-                    _viewCharts.Balance = chartModel.BalanceOverDateRange;
+                    _viewCharts.Balance = bl.ResponseModel.BalanceOverDateRange;
                     break;
                 case "BuchungstextOverDateRange":
-                    _viewFilters.BuchungstextValues = chartModel.BuchungstextOverDateRange;
+                    _viewFilters.BuchungstextValues = bl.ResponseModel.BuchungstextOverDateRange;
                     break;
                 case "TransactionsAccountsObsCollBoolTextCouple":
-                    _viewFilters.UserAccounts = chartModel.TransactionsAccountsObsCollBoolTextCouple;
+                    _viewFilters.UserAccounts = bl.ResponseModel.TransactionsAccountsObsCollBoolTextCouple;
                     break;
                 default:
                     { };
@@ -119,14 +115,14 @@ namespace WpfApplication1
 
         private void InitializeExpencsesOverRemitee()
         {
-            dataSourceExpensesOverRemitee = chartModel.ExpensesOverRemiteeInDateRange;
+            dataSourceExpensesOverRemitee = bl.ResponseModel.ExpensesOverRemiteeInDateRange;
             _viewCharts.Remitties = dataSourceExpensesOverRemitee;
             _viewCharts.AxeRemittiesExpencesMaxValue = CalculateMaxValue(dataSourceExpensesOverRemitee);
         }
 
         public void ReloadXml()
         {
-            request.DataBankUpdating = true;
+            bl.Request.DataBankUpdating = true;
         }
 
         #region Filters
@@ -136,7 +132,7 @@ namespace WpfApplication1
             {
                 FilterValues = new FilterParams(_viewFilters.ExpenciesLessThan, _viewFilters.ExpenciesMoreThan,
                 _viewFilters.IncomesLessThan, _viewFilters.IncomesMoreThan, _viewFilters.ToFind, _viewFilters.BuchungstextValues, _viewFilters.UserAccounts);
-                request.Filters = FilterValues;
+                bl.Request.Filters = FilterValues;
             }
             else
             {
@@ -171,7 +167,7 @@ namespace WpfApplication1
         {
             FilterValues = new FilterParams(_viewFilters.ExpenciesLessThan, _viewFilters.ExpenciesMoreThan,
                 _viewFilters.IncomesLessThan, _viewFilters.IncomesMoreThan, _viewFilters.ToFind, _viewFilters.BuchungstextValues, _viewFilters.UserAccounts);
-            request.Filters = FilterValues;
+            bl.Request.Filters = FilterValues;
         }
 
         public IViewFilters ViewFilters
@@ -204,8 +200,8 @@ namespace WpfApplication1
         public string GetExpencesAtDate(DateTime inDate)
         {
             string resString = "";
-            request.AtDate = inDate;
-            List<KeyValuePair<string, decimal>> resList = chartModel.ExpensesAtDate;
+            bl.Request.AtDate = inDate;
+            List<KeyValuePair<string, decimal>> resList = bl.ResponseModel.ExpensesAtDate;
             foreach (KeyValuePair<string, decimal> el in resList)
             {
                 resString += el.Key + ": " + el.Value.ToString() + "\n";
@@ -216,8 +212,8 @@ namespace WpfApplication1
         public string GetDates4Remitee(string remittee)
         {
             string resString = "";
-            request.SelectedRemittee = remittee;
-            List<KeyValuePair<string, decimal>> resList = chartModel.Dates4RemiteeOverDateRange;
+            bl.Request.SelectedRemittee = remittee;
+            List<KeyValuePair<string, decimal>> resList = bl.ResponseModel.Dates4RemiteeOverDateRange;
             foreach (KeyValuePair<string, decimal> el in resList)
             {
                 resString += el.Key + ": " + el.Value.ToString() + "\n";
