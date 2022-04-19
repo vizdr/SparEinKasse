@@ -23,6 +23,7 @@ namespace WpfApplication1
         private ObservableCollection<string> waehrungFields;
         private ObservableCollection<string> encodePages;
         private ObservableCollection<string> appCultures;
+        private ObservableCollection<string> delimitersCSV;
         private string currentCulture;
 
         public WindowFieldsDictionary()
@@ -38,6 +39,7 @@ namespace WpfApplication1
                 sPresenter.UpdateSettings();
             }
             comboBox_Local.SelectedIndex = 0;
+            comboBox_CSVDelimiter.SelectedIndex = 0;
             listBoxCodepageInputCSV.SelectedIndex = 0; 
             
             foreach (UIElement c in LayoutRoot.Children)
@@ -331,7 +333,19 @@ namespace WpfApplication1
                 comboBox_Local.ItemsSource = appCultures;
             }
         }
-     
+
+        public ObservableCollection<string> DelimitersCSV
+        {
+            get
+            {
+                return delimitersCSV;
+            }
+            set
+            {
+                delimitersCSV = value;
+                comboBox_CSVDelimiter.ItemsSource = delimitersCSV;
+            }
+        }
         #endregion
     }
 }

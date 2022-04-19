@@ -23,7 +23,7 @@ namespace WpfApplication1
             set
             {
                 isSelected = value;
-                OnPropertyChanged(this.Text);
+                OnPropertyChanged(Text);
             }
         }
 

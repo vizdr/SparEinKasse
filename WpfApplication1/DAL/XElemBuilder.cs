@@ -132,7 +132,7 @@ namespace WpfApplication1.DAL
                 Settings.Default.BeneficiaryAccFieldIndex, Settings.Default.IntBankCodeFieldIndex,
                 Settings.Default.BankOperValueFieldIndex, Settings.Default.CurrencyFieldIndex
             };
-            XElemBuilder.targetHeaders = ResolveHeaders(headers, new CsvTargetFieldResolver(CsvTargetFieldsChain.Instance));
+            XElemBuilder.targetHeaders = ResolveHeaders(headers, new CsvTargetFieldResolver(CsvTargetFieldsChain.Instance.FirstTargetField));
             Successor = new XBaseElemBuilder();
         }
         public override XElement BuildXElement(List<string[]> source)

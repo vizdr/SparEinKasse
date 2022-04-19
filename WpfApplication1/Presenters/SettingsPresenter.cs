@@ -3,6 +3,7 @@ using WpfApplication1.Properties;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
+using System;
 
 namespace WpfApplication1
 {
@@ -39,6 +40,17 @@ namespace WpfApplication1
             _viewSettings.EncodePages.CollectionChanged += OnMyEncodingPageChanged;
             _viewSettings.AppCultures = new ObservableCollection<string>(Settings.Default.AppCultures.Cast<string>());
             _viewSettings.AppCultures.CollectionChanged += OnAppCultureSelected;
+            _viewSettings.DelimitersCSV = new ObservableCollection<string>(Settings.Default.DelimiterCSVInput.Cast<string>());
+            _viewSettings.DelimitersCSV.CollectionChanged += OnCSVDelimiterChanged;
+        }
+
+        private void OnCSVDelimiterChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewStartingIndex != e.OldStartingIndex)
+            {
+                Settings.Default.DelimiterCSVInput.RemoveAt(e.OldStartingIndex);
+                Settings.Default.DelimiterCSVInput.Insert(0, (sender as ObservableCollection<string>)[e.NewStartingIndex]);
+            }
         }
 
         public void InitialazeCulture()

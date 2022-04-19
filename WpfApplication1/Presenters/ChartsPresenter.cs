@@ -95,7 +95,7 @@ namespace WpfApplication1
             }
         }
 
-        // draft, never called because currently set viewProperty xx is not in Use 
+        // draft, currently set for viewProperty xx occurs via mouse up event handlers 
         public void ReactOnViewPropertyChange(object sender, PropertyChangedEventArgs e)
         {
             String s = e.PropertyName;
@@ -122,7 +122,7 @@ namespace WpfApplication1
 
         public void ReloadXml()
         {
-            bl.Request.DataBankUpdating = true;
+            bl.Request.DataBankUpdating = true; // to emit event
         }
 
         #region Filters
@@ -163,6 +163,7 @@ namespace WpfApplication1
             InitializeFilters(null);
         }
 
+        // apply if selection of params is completed
         private void ApplyFilters()
         {
             FilterValues = new FilterParams(_viewFilters.ExpenciesLessThan, _viewFilters.ExpenciesMoreThan,
@@ -197,6 +198,7 @@ namespace WpfApplication1
             return maxVal.Count() > 0 ? maxVal.Max() + 2 : 0m;
         }
 
+        // for the defined in xaml mouse up event handlers, presentationFramework - external dll
         public string GetExpencesAtDate(DateTime inDate)
         {
             string resString = "";
@@ -208,7 +210,7 @@ namespace WpfApplication1
             }
             return resString.Trim();
         }
-
+        
         public string GetDates4Remitee(string remittee)
         {
             string resString = "";

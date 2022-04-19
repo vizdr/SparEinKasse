@@ -23,8 +23,8 @@ namespace WpfApplication1
         private List<KeyValuePair<string, decimal>> remittieeGroups;
         public static bool isNotRegistred;
         public static DateTime expDate;
-        private TextBlock popupChDateExpText;
-        private TextBlock popupChRemiteExpText;
+        private readonly TextBlock popupChDateExpText;
+        private readonly TextBlock popupChRemiteExpText;
         static Window1()
         {
             HandleRegistration();
@@ -66,13 +66,17 @@ namespace WpfApplication1
                 }
             };
             window1.buttonSettings.Click += delegate { new WindowFieldsDictionary().ShowDialog(); };
-            window1.lineSeries2.MouseUp += window1.BarDataPoint_MouseUp;
-            popupChDateExpText = new TextBlock();
-            popupChDateExpText.Background = Brushes.LightBlue;
-            popupChDateExpText.Padding = new Thickness(2.0d);
-            popupChRemiteExpText = new TextBlock();
-            popupChRemiteExpText.Background = Brushes.LightBlue;
-            popupChRemiteExpText.Padding = new Thickness(2.0d);
+            window1.lineSeries2.MouseUp += window1.BarDataPoint_MouseUp;  // event handler popup for chart date-expence
+            popupChDateExpText = new TextBlock
+            {
+                Background = Brushes.LightBlue,
+                Padding = new Thickness(2.0d)
+            };
+            popupChRemiteExpText = new TextBlock
+            {
+                Background = Brushes.LightBlue,
+                Padding = new Thickness(2.0d)
+            };
             InitializeResources();
         }
 
@@ -184,7 +188,7 @@ namespace WpfApplication1
         {
             set => listboxIncomssOverview.DataContext = value;
         }
-        public Decimal AxeRemittiesExpencesMaxValue
+        public decimal AxeRemittiesExpencesMaxValue
         {
             set
             {
@@ -216,22 +220,22 @@ namespace WpfApplication1
         #endregion
 
         public event RoutedEventHandler OnDateIntervalChanged;
+
+        // handlers of event setters for attached in xaml styles, resources for chart popups   
         private void BarDataPoint_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            Object o = (this.chartDateExpence.Series[0] as DataPointSeries).SelectedItem;
-            if (o is KeyValuePair<DateTime, decimal>)
+            // also accessible via object o = (chartDateExpence.Series[0] as DataPointSeries).SelectedItem;
+            if ((sender as DataPointSeries).SelectedItem is KeyValuePair<DateTime, decimal> kv)
             {
-                KeyValuePair<DateTime, decimal> kv = (KeyValuePair<DateTime, decimal>)o;
                 popupChDateExpText.Text = chP.GetExpencesAtDate(kv.Key.Date);
-                this.popupChartDateExpenes.Child = popupChDateExpText;
-                this.popupChartDateExpenes.IsOpen = true;
-                this.popupChartDateExpenes.StaysOpen = false;
+                popupChartDateExpenes.Child = popupChDateExpText;
+                popupChartDateExpenes.IsOpen = true;
+                popupChartDateExpenes.StaysOpen = false;
             }
         }
         private void BarDataPoint_MouseUp2(object sender, MouseButtonEventArgs e)
         {
-            Object o = (this.chartRemeteeExpence.Series[0] as DataPointSeries).SelectedItem;
-            if (o is KeyValuePair<String, decimal> kv)
+            if ((sender as DataPointSeries).SelectedItem is KeyValuePair<string, decimal> kv)
             {
                 popupChRemiteExpText.Text = chP.GetDates4Remitee(kv.Key);
                 popupChartDateRemitte.Child = popupChRemiteExpText;
@@ -239,6 +243,7 @@ namespace WpfApplication1
                 popupChartDateRemitte.StaysOpen = false;
             }
         }
+       
         private static void HandleRegistration()
         {
             using (RegistryKey currentUserKey = Registry.CurrentUser.OpenSubKey("SOFTWARE", true))
@@ -248,25 +253,32 @@ namespace WpfApplication1
                 {
                     string[] kvalues = sskaKey.GetValueNames();
                     if (kvalues.Contains("isT"))
+                    {
                         if (!bool.TryParse(sskaKey.GetValue("isT").ToString(), out isNotRegistred))
                         {
                             isNotRegistred = true;
                             sskaKey.SetValue("isT", isNotRegistred);
                         }
                         else { }
+                    }
                     else
                     {
                         isNotRegistred = true;
                         sskaKey.SetValue("isT", true);
                     }
                     if (kvalues.Contains("ed"))
+                    {
                         if (!DateTime.TryParse(sskaKey.GetValue("ed").ToString(), out expDate))
                         {
                             expDate = DateTime.Now.Date.AddDays(61);
                             sskaKey.SetValue("ed", expDate.ToString("d"));
                         }
                         else { }
-                    else sskaKey.SetValue("ed", DateTime.Now.Date.AddDays(61).ToString("d"));
+                    }
+                    else
+                    {
+                        sskaKey.SetValue("ed", DateTime.Now.Date.AddDays(61).ToString("d"));
+                    }
                 }
                 else
                 {

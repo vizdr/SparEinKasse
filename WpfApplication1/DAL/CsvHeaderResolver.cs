@@ -6,30 +6,30 @@ namespace WpfApplication1
 {
     abstract public class CsvHeaderResolver
     {
-        public CsvHeaderResolver(CsvTargetField target)
+        public CsvHeaderResolver(CsvTargetField targetCSVField)
         {
-            Target = target;
+            TargetCSVField = targetCSVField;
         }
-        public CsvTargetField Target { get; protected set; }
+        public CsvTargetField TargetCSVField { get; protected set; }
         abstract public int FindTargetFieldIndex(string headerField);
     }
 
     public class CsvTargetFieldResolver : CsvHeaderResolver
     {
-        public CsvTargetFieldResolver(CsvTargetField input) : base(input) { }
+        public CsvTargetFieldResolver(CsvTargetField targetCSVField) : base(targetCSVField) { }
         private static bool isReseted = false;
         public override int FindTargetFieldIndex(string headerField)
         {
             // recursive search of index
-            StringEnumerator targetEnumerator = Target.TargetFieldSynonyms.GetEnumerator();
+            StringEnumerator targetEnumerator = TargetCSVField.TargetFieldSynonyms.GetEnumerator();
             while (targetEnumerator.MoveNext())
             {
                 if (targetEnumerator.Current.Equals(headerField))
-                    return (int)Target.TargetFieldIndex;  // index in Settings
+                    return (int)TargetCSVField.TargetFieldIndex;  // index in Settings
             }
-            if (Target.Successor == null)
+            if (TargetCSVField.Successor == null)
             {
-                Target = CsvTargetFieldsChain.Instance;
+                TargetCSVField = CsvTargetFieldsChain.Instance.FirstTargetField;
                 if (isReseted)
                 {
                     isReseted = false;
@@ -43,7 +43,7 @@ namespace WpfApplication1
             }
             else
             {
-                Target = Target.Successor;
+                TargetCSVField = TargetCSVField.Successor;
                 return FindTargetFieldIndex(headerField);
             }
         }
@@ -73,7 +73,7 @@ namespace WpfApplication1
     {
         private readonly CsvTargetField firstTargetField;
         private static CsvTargetFieldsChain instance;
-
+        
         private CsvTargetFieldsChain()
         {
             firstTargetField = new CsvTargetField(Settings.Default.ContributorAccFieldIndex, Settings.Default.ContributorAccField);
@@ -98,15 +98,19 @@ namespace WpfApplication1
                 new CsvTargetField(Settings.Default.InfoFieldIndex, Settings.Default.InfoField);
         }
 
-        public static CsvTargetField Instance
+        public static CsvTargetFieldsChain Instance
         {
             get
             {
                 if (instance == null)
+                {
                     instance = new CsvTargetFieldsChain();
-                return instance.firstTargetField;
+                }
+                return instance;
             }
         }
+
+        public CsvTargetField FirstTargetField => firstTargetField;
     }
 
 

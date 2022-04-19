@@ -73,6 +73,6 @@ namespace WpfApplication1.DAL
             return res;
         }
 
-
+        public static string Delimiter4CSVFile = Settings.Default.DelimiterCSVInput[0];
     }
 }

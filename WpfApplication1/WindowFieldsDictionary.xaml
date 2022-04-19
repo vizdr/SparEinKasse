@@ -2,9 +2,9 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Settings" Height="Auto" Width="Auto">
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="-1,-1,-1,-1">
         
-        <UniformGrid Name="LayoutRoot" Rows="3" Columns="4" >
+        <UniformGrid Name="LayoutRoot" Rows="3" Columns="4" Height="Auto" Width="Auto" >
             <GroupBox Name="gpb_AuftragsKonto">
                 <GroupBox.Header><Button Background="Lavender" Name="btn_Auftragskonto"> Auftragskonto </Button> </GroupBox.Header>
                 <ListBox   Height="Auto" Name="listBoxAuftragsKontoField" Width="Auto" />
@@ -43,15 +43,17 @@
                 </GroupBox.Header><ListBox   Height="Auto" Name="listBoxCodepageInputCSV" Width="Auto" /></GroupBox>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch">
                <GroupBox>
-                   <StackPanel>
+                   <StackPanel Orientation="Vertical">
                        <Label Name="lblLanguages" HorizontalAlignment="Center">Select Language</Label>
-                       <ComboBox  Name="comboBox_Local" Width="60" Text="Language" ></ComboBox>
-                       <Label Height="23"></Label>
-                   </StackPanel>
+                        <ComboBox  Name="comboBox_Local" Width="60" Text="Language" ></ComboBox>
+
+                        <Label Name="lblDelimiters" HorizontalAlignment="Center">CSV Separator</Label>
+                        <ComboBox  Name="comboBox_CSVDelimiter" Width="60" Text="Delimiter" ></ComboBox>
+                    </StackPanel>
                 </GroupBox> 
                 <GroupBox>
                     <StackPanel>
-                        <Label Height="20"></Label>
+                        <Label Height="5"></Label>
                        <TextBox Name="txtBox_AddFieldValue" > Add Value</TextBox>
                         <Button Name="btn_SaveAndClose" IsCancel="True" > Save and Quit </Button>
                         <Button Name="btn_CancelAndClose" IsCancel="True"> Reset and Quit </Button> 

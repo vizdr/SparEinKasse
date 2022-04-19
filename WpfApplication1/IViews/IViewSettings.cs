@@ -16,5 +16,7 @@ namespace WpfApplication1
         ObservableCollection<string> BetragFields { set; get; }
         ObservableCollection<string> WaehrungFields { set; get; }
         ObservableCollection<string> EncodePages { set; get; }
+
+        ObservableCollection<string> DelimitersCSV { set; get; } 
     }
 }

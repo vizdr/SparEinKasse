@@ -10,8 +10,10 @@ namespace WpfApplication1
         {
             return instance;
         }
+
+        // Observable collection to sync visual representation of ListView with data sources
         public ObservableCollection<BoolTextCouple> BuchungstextValues { private set; get; }
-        public ObservableCollection<BoolTextCouple> Accounts { private set; get; }
+        public ObservableCollection<BoolTextCouple> Accounts { private set; get; }  
         public string ExpenciesLessThan { get; private set; }
         public string ExpenciesMoreThan { get; private set; }
         public string IncomesLessThan { get; private set; }

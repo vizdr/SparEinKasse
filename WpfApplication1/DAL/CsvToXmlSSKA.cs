@@ -123,7 +123,7 @@ namespace WpfApplication1.DAL
                 }
                 return new string[] { "\";\"" };
             }
-            return new string[] { ";" };
+            return new string[] { Config.Delimiter4CSVFile };
         }
         private List<string[]> FilterStrings(string[] src, string[] sep)
         {
@@ -137,7 +137,7 @@ namespace WpfApplication1.DAL
         }
         private string[] GetHeader(List<string[]> textFileStrings)
         {
-            return textFileStrings.FirstOrDefault();
+            return textFileStrings.FirstOrDefault(); // first line contains headers
         }
         private List<string[]> RemoveHeader(List<string[]> textFileStrings)
         {
@@ -153,13 +153,21 @@ namespace WpfApplication1.DAL
                     string[] sources = File.ReadAllLines(pathToFileToRead, /*Encoding.Default*/ Encoding.GetEncoding(Config.EncodePage)).ToArray<string>();
                     string[] sep = RefineStringsGetSeparator(ref sources);
                     List<string[]> source = FilterStrings(sources, sep);
-                    string[] headers = GetHeader(source);
-                    source = RemoveHeader(source);
-                    XElemBuilder XElemsBuilder = new X10ElemBuilder(headers);
-                    res = XElemsBuilder.BuildXElement(source);
-                    if (res != null)
-                        return res; //XElemsBuilder.BuildXElement(source) ?? new XElement("Root");
-                    else throw new XmlException("Update of Xml DataBank file failed. ");
+                    string[] sourceHeaders = GetHeader(source);
+                    
+                    if (sourceHeaders.Length > 0)
+                    {
+                        source = RemoveHeader(source);
+                        XElemBuilder XElemsBuilder = new X10ElemBuilder(sourceHeaders);
+                        res = XElemsBuilder.BuildXElement(source);
+                        if (res != null)
+                            return res; //XElemsBuilder.BuildXElement(source) ?? new XElement("Root");
+                        else throw new XmlException("Update of Xml DataBank file failed. ");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Headers error", "Header in source file are missing.", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
 
