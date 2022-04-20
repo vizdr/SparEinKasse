@@ -2,8 +2,6 @@
 using System.IO;
 using System.Windows;
 
-
-
 namespace WpfApplication1.DAL
 {
     static class PathToFilesUtil

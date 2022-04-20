@@ -112,16 +112,14 @@ namespace WpfApplication1.DAL
                 return false;
             }
         }
-        private string[] RefineStringsGetSeparator(ref string[] src)
+        private string[] ReplaceSymbolGetSeparator(ref string[] src, char symbol2Remove = '\"', char symbol2Replace = ' ')
         {
-            if (src[0].StartsWith("\"") && src[0].EndsWith("\""))
+            for(int i = 0; i< src.GetLength(0); i++)
             {
-                for (int i = 0; i < src.GetLength(0); i++)
+                if (src[i].Contains(symbol2Remove))
                 {
-                    src[i] = src[i].Substring(1);
-                    src[i] = src[i].Remove(src[i].Length - 1);
+                    src[i] = src[i].Replace(symbol2Remove, symbol2Replace);
                 }
-                return new string[] { "\";\"" };
             }
             return new string[] { Config.Delimiter4CSVFile };
         }
@@ -130,8 +128,13 @@ namespace WpfApplication1.DAL
             List<string[]> res = new List<string[]>();
             foreach (string el in src)
             {
-                string[] testArr = el.Split(sep, StringSplitOptions.None);
-                res.Add(testArr);
+                string[] splittedArr = el.Split(sep, StringSplitOptions.None);
+                for(int j = 0; j < splittedArr.Length; j++)
+                {
+                    splittedArr[j] = splittedArr[j].Trim();
+                    
+                }
+                res.Add(splittedArr);
             }
             return res;
         }
@@ -151,7 +154,7 @@ namespace WpfApplication1.DAL
                 lock (_fileLock)
                 {
                     string[] sources = File.ReadAllLines(pathToFileToRead, /*Encoding.Default*/ Encoding.GetEncoding(Config.EncodePage)).ToArray<string>();
-                    string[] sep = RefineStringsGetSeparator(ref sources);
+                    string[] sep = ReplaceSymbolGetSeparator(ref sources);
                     List<string[]> source = FilterStrings(sources, sep);
                     string[] sourceHeaders = GetHeader(source);
                     

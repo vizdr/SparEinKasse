@@ -23,7 +23,7 @@ namespace WpfApplication1.DAL
                 int fieldIndex = fieldsResolver.FindTargetFieldIndex(headers[i]); // index of required(target) field in Settings, if not found: -1 
                 if (fieldIndex >= 0)
                 {
-                    targetHeaders.Add((uint)fieldIndex, i); // TargetFieldIndex: Key -  to sort; i from parameter: headers[i] - Value
+                    targetHeaders.Add((uint)fieldIndex, i); // Key from Settings - to sort; Value from parameter: headers[i] 
                 }
                 //else 
                 //throw new Exception(String.Format("Unable to resolve header {0} : {1}.", i, headers[i]));
@@ -82,17 +82,20 @@ namespace WpfApplication1.DAL
                     XElement cust = new XElement(Config.XmlFileRoot,
                     from fields in source
                     where !fields[0].Equals(string.Empty) & !fields[1].Equals(string.Empty)
+                                                                                                                                                                                                  // index of targrtHeaders from Settings
                     select new XElement(Config.TransactionField, new XAttribute(Config.AuftragsKontoField, targetHeaders[0].Equals(String.Empty) ? BankAccount : fields[(int)targetHeaders[0]]),  // Auftragskonto
-                        new XElement(Config.BuchungstagField, fields[(int)targetHeaders[1]]),                                                       // Buchungstag   
-                        new XElement(Config.WertDatumField, Config.ExchYearDay(fields[(int)targetHeaders[2]]), new XAttribute("type", "date")),     // Valutadatum
-                        new XElement(Config.BuchungsTextField, fields[(int)targetHeaders[3]]),                                                      // Buchungstext
-                        new XElement(Config.VerwendZweckField, fields[(int)targetHeaders[4]]),                                                      // Verwendungszweck   
-                        new XElement(Config.BeguenstigterField, fields[(int)targetHeaders[5]].Equals(string.Empty) ? "---" : fields[(int)targetHeaders[5]]),          // Begünstigter
-                        new XElement(Config.KontonummerField, String.Empty),                                                                        // Kontonummer   
-                        new XElement(Config.BLZField, String.Empty),                                                                                // BLZ   
-                        new XElement(Config.BetragField,                                                                                            // Betrag       
+                        new XElement(Config.BuchungstagField, fields[(int)targetHeaders[1]]),                                                                                                     // Buchungstag   
+                        new XElement(Config.WertDatumField, Config.ExchYearDay(fields[(int)targetHeaders[2]]), new XAttribute("type", "date")),                                                   // Valutadatum
+                        new XElement(Config.BuchungsTextField, fields[(int)targetHeaders[3]]),                                                                                                    // Buchungstext
+                        new XElement(Config.VerwendZweckField, fields[(int)targetHeaders[4]]),                                                                                                    // Verwendungszweck   
+                        new XElement(Config.BeguenstigterField, fields[(int)targetHeaders[5]].Equals(string.Empty) ? "---" : fields[(int)targetHeaders[5]]),                                      // Begünstigter
+                        new XElement(Config.KontonummerField, String.Empty),                                                                                                                      // Kontonummer   
+                        new XElement(Config.BLZField, String.Empty),                                                                                                                              // BLZ   
+                        new XElement(Config.BetragField,                                                                                                                                          // Betrag       
                              GetCultureAdaptedDouble(fields[(int)targetHeaders[8]]),
-                        new XAttribute(Config.WaehrungField, " Euro"), new XAttribute("type", "double"))                                             // Währung
+                        new XAttribute(Config.WaehrungField, " Euro"), new XAttribute("type", "double")),                                                                                          // Währung
+                        new XElement(Config.CategoryIdField, fields[(int)targetHeaders[13]]),                                                                                                      // CategoryID
+                        new XElement(Config.CategoryField, fields[(int)targetHeaders[14]])                                                                                                         // Category
                         )
                     );
                     return cust;
@@ -143,18 +146,20 @@ namespace WpfApplication1.DAL
                 {
                     XElement cust = new XElement(Config.XmlFileRoot,
                        from fields in source
-                       where !fields[1].Equals(string.Empty) & !fields[2].Equals(string.Empty)
-                       select new XElement(Config.TransactionField, new XAttribute(Config.AuftragsKontoField, fields[(int)targetHeaders[0]]),    // Auftragskonto
-                           new XElement(Config.BuchungstagField, Config.ExchYearDay(fields[(int)targetHeaders[1]]), new XAttribute("type", "date")), // Buchungstag   
-                           new XElement(Config.WertDatumField, Config.ExchYearDay(fields[(int)targetHeaders[2]]), new XAttribute("type", "date")),  // Valutadatum
-                           new XElement(Config.BuchungsTextField, fields[(int)targetHeaders[3]]),                                               // Buchungstext
-                           new XElement(Config.VerwendZweckField, fields[(int)targetHeaders[4]]),                                               // Verwendungszweck   
+                       where !fields[1].Equals(string.Empty) & !fields[2].Equals(string.Empty)                                                    // indexes of targetHeaders from Settings
+                       select new XElement(Config.TransactionField, new XAttribute(Config.AuftragsKontoField, fields[(int)targetHeaders[0]]),                        // Auftragskonto
+                           new XElement(Config.BuchungstagField, Config.ExchYearDay(fields[(int)targetHeaders[1]]), new XAttribute("type", "date")),                 // Buchungstag   
+                           new XElement(Config.WertDatumField, Config.ExchYearDay(fields[(int)targetHeaders[2]]), new XAttribute("type", "date")),                   // Valutadatum
+                           new XElement(Config.BuchungsTextField, fields[(int)targetHeaders[3]]),                                                                    // Buchungstext
+                           new XElement(Config.VerwendZweckField, fields[(int)targetHeaders[4]]),                                                                    // Verwendungszweck   
                            new XElement(Config.BeguenstigterField, fields[(int)targetHeaders[5]].Equals(string.Empty) ? "---" : fields[(int)targetHeaders[5]]),      // Begünstigter
-                           new XElement(Config.KontonummerField, fields[(int)targetHeaders[6]]),                                               // Kontonummer   
-                           new XElement(Config.BLZField, fields[(int)targetHeaders[7]]),                                               // BLZ   
-                           new XElement(Config.BetragField,                                                           // Betrag       
+                           new XElement(Config.KontonummerField, fields[(int)targetHeaders[6]]),                                                                     // Kontonummer   
+                           new XElement(Config.BLZField, fields[(int)targetHeaders[7]]),                                                                             // BLZ   
+                           new XElement(Config.BetragField,                                                                                                          // Betrag       
                                 GetCultureAdaptedDouble(fields[(int)targetHeaders[8]]),
-                                   new XAttribute(Config.WaehrungField, fields[(int)targetHeaders[9]]), new XAttribute("type", "double"))   // Währung
+                                   new XAttribute(Config.WaehrungField, fields[(int)targetHeaders[9]]), new XAttribute("type", "double")),                            // Währung
+                            new XElement(Config.CategoryIdField, fields[(int)targetHeaders[13]]),                               // CategoryID                                                                                               
+                            new XElement(Config.CategoryField, fields[(int)targetHeaders[14]])                                                                        // Category
                            )
                        );
                     return cust;

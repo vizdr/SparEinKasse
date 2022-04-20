@@ -504,5 +504,26 @@ namespace WpfApplication1.Properties {
                 this["DelimiterCSVInput"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("13")]
+        public uint CategoryIdFieldIndex {
+            get {
+                return ((uint)(this["CategoryIdFieldIndex"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("14")]
+        public uint CategoryFieldIndex {
+            get {
+                return ((uint)(this["CategoryFieldIndex"]));
+            }
+            set {
+                this["CategoryFieldIndex"] = value;
+            }
+        }
     }
 }

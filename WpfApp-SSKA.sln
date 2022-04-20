@@ -1,13 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32228.343
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApplication1", "WpfApplication1\WpfApplication1.csproj", "{01A15E59-C31A-43D3-BE1D-2A3F567078C5}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupSSKAmonitor", "SetupSSKAmonitor\SetupSSKAmonitor.vdproj", "{C465FE9C-16BA-4660-973D-403B7D955E29}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSecurity", "SimpleSecurity\SimpleSecurity.csproj", "{F1E04FA3-F114-462F-BFF1-CC45ACE274A0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Categ4CSVSparkasse", "Categorization\Categ4CSVSparkasse\Categ4CSVSparkasse\Categ4CSVSparkasse.csproj", "{9EB068D1-2B37-4DBB-9E51-E2B37C5AC07E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsTestCSV", "Categorization\ConsTestCSV\ConsTestCSV\ConsTestCSV.csproj", "{797DBFFE-E397-4DE0-9773-9F21BC8944E1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Categorization", "Categorization", "{34FD69AD-0392-43E2-9B34-B6801CA65E17}"
+	ProjectSection(SolutionItems) = preProject
+		Categorization\Categorization.csv = Categorization\Categorization.csv
+		Categorization\MT940_Test_umsatz.csv = Categorization\MT940_Test_umsatz.csv
+		Categorization\testOutput.csv = Categorization\testOutput.csv
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,8 +38,19 @@ Global
 		{F1E04FA3-F114-462F-BFF1-CC45ACE274A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1E04FA3-F114-462F-BFF1-CC45ACE274A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F1E04FA3-F114-462F-BFF1-CC45ACE274A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EB068D1-2B37-4DBB-9E51-E2B37C5AC07E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EB068D1-2B37-4DBB-9E51-E2B37C5AC07E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EB068D1-2B37-4DBB-9E51-E2B37C5AC07E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EB068D1-2B37-4DBB-9E51-E2B37C5AC07E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{797DBFFE-E397-4DE0-9773-9F21BC8944E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{797DBFFE-E397-4DE0-9773-9F21BC8944E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{797DBFFE-E397-4DE0-9773-9F21BC8944E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{797DBFFE-E397-4DE0-9773-9F21BC8944E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14BA3560-D646-4E77-AC3A-EE29368CE4C7}
 	EndGlobalSection
 EndGlobal

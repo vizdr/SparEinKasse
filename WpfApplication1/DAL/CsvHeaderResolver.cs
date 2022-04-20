@@ -1,6 +1,7 @@
 ﻿using System;
 using WpfApplication1.Properties;
 using System.Collections.Specialized;
+using WpfApplication1.DAL;
 
 namespace WpfApplication1
 {
@@ -25,8 +26,11 @@ namespace WpfApplication1
             while (targetEnumerator.MoveNext())
             {
                 if (targetEnumerator.Current.Equals(headerField))
+                {
                     return (int)TargetCSVField.TargetFieldIndex;  // index in Settings
+                }
             }
+
             if (TargetCSVField.Successor == null)
             {
                 TargetCSVField = CsvTargetFieldsChain.Instance.FirstTargetField;
@@ -73,9 +77,13 @@ namespace WpfApplication1
     {
         private readonly CsvTargetField firstTargetField;
         private static CsvTargetFieldsChain instance;
-        
+        private StringCollection categoryId = new StringCollection();
+        private StringCollection category = new StringCollection();
         private CsvTargetFieldsChain()
         {
+            categoryId.Add(Config.CategoryIdField);
+            category.Add(Config.CategoryField);
+
             firstTargetField = new CsvTargetField(Settings.Default.ContributorAccFieldIndex, Settings.Default.ContributorAccField);
             firstTargetField.Successor = new CsvTargetField(Settings.Default.PaymentDateFieldIndex, Settings.Default.PaymentDateField);
             firstTargetField.Successor.Successor = new CsvTargetField(Settings.Default.BankOperDateFieldIndex, Settings.Default.BankOperDateField);
@@ -96,6 +104,10 @@ namespace WpfApplication1
                 new CsvTargetField(Settings.Default.BIC_FieldIndex, Settings.Default.BIC_Field);
             firstTargetField.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor =
                 new CsvTargetField(Settings.Default.InfoFieldIndex, Settings.Default.InfoField);
+            firstTargetField.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor =
+                new CsvTargetField(Settings.Default.CategoryIdFieldIndex, categoryId);
+            firstTargetField.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor.Successor =
+                new CsvTargetField(Settings.Default.CategoryFieldIndex, category);
         }
 
         public static CsvTargetFieldsChain Instance
@@ -111,6 +123,7 @@ namespace WpfApplication1
         }
 
         public CsvTargetField FirstTargetField => firstTargetField;
+       
     }
 
 

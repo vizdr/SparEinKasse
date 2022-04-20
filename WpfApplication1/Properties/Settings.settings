@@ -189,5 +189,11 @@
   &lt;string&gt;:&lt;/string&gt;
 &lt;/ArrayOfString&gt;</Value>
     </Setting>
+    <Setting Name="CategoryIdFieldIndex" Type="System.UInt32" Scope="Application">
+      <Value Profile="(Default)">13</Value>
+    </Setting>
+    <Setting Name="CategoryFieldIndex" Type="System.UInt32" Scope="User">
+      <Value Profile="(Default)">14</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

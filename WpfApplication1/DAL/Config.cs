@@ -74,5 +74,7 @@ namespace WpfApplication1.DAL
         }
 
         public static string Delimiter4CSVFile = Settings.Default.DelimiterCSVInput[0];
+        public static string CategoryIdField = "CategoryID";
+        public static string CategoryField = "Category";
     }
 }
