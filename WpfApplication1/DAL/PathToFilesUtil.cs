@@ -10,7 +10,6 @@ namespace WpfApplication1.DAL
 {
     static class PathToFilesUtil
     {
-        static string[] rawInputCSVfiles;
         static string[] categorizedInputCSVfiles;
         private static readonly object _fileLock;
         static PathToFilesUtil()
@@ -21,7 +20,7 @@ namespace WpfApplication1.DAL
         {
             try
             {
-                string[] categorizedInputCSVfiles = Directory.GetFiles(Config.PathToSskaDownloadsFolder, @"*categorized.csv");
+                categorizedInputCSVfiles = Directory.GetFiles(Config.PathToSskaDownloadsFolder, @"*categorized.csv");
                 string[] allInputCSVfiles = Directory.GetFiles(Config.PathToSskaDownloadsFolder, @"*.csv");
                 return allInputCSVfiles.Except(categorizedInputCSVfiles).ToArray();
             }
@@ -83,9 +82,7 @@ namespace WpfApplication1.DAL
 
         public static string CreateCategorizedCsvFile(string rawCsvFile)
         {
-            // string sourceFileName = GetNameInputRawCsvFile();
             string categorizedFileName = AppendSuffixToFileName(rawCsvFile, "_categorized");
-            //string processedFileName = AppendSuffixToFileName(rawCsvFile, "_raw"));
             try
             {
                 FileStream fileStream = File.Create(categorizedFileName);
@@ -93,14 +90,6 @@ namespace WpfApplication1.DAL
                 {
                     fileStream.Close();
                 }
-                //File.Copy(rawCsvFile, categorizedFileName);
-                //if (!File.Exists(arxivedFileName))
-                //{
-                //    File.Move(rawCsvFile, arxivedFileName);
-                //}
-                //string[] sources = File.ReadAllLines(categorizedFileName, /*Encoding.Default*/ Encoding.GetEncoding(Config.EncodePage));
-                //AppendCategoryFields(ref sources);
-                //File.WriteAllLines(categorizedFileName, sources);
                 return categorizedFileName;
             }
             catch (Exception ex)
@@ -108,7 +97,6 @@ namespace WpfApplication1.DAL
                 MessageBox.Show("Failure to create or move csv file with suffix categorized", ex.Message);
                 return String.Empty;
             }
-
         }
 
         static void AppendCategoryFields(ref string[] sources)

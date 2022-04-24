@@ -20,8 +20,7 @@ namespace WpfApplication1
         private ChartsPresenter chP;
         private List<KeyValuePair<string, decimal>> incomes;
         private List<KeyValuePair<string, decimal>> remittees;
-        private List<KeyValuePair<string, decimal>> remittieeGroups;
-        private List<KeyValuePair<string, decimal>> expensesCategory;
+
         public static bool isNotRegistred;
         public static DateTime expDate;
         private readonly TextBlock popupChDateExpText;
@@ -95,7 +94,6 @@ namespace WpfApplication1
             buttonUpdateSpan.Content = Local.Resource.UpdateDateSpan;
             buttonUpdateDataBankXML.Content = Local.Resource.UpdateDataStorage;
             txtBoxInc.Text = Local.Resource.Incomes;
-            //txtBoxExpences.Text = Local.Resource.Expences;
             buttonSettings.Content = Local.Resource.Settings;
             labelAccounts.Content = Local.Resource.Accounts;
             buttonShowFilters.Content = Local.Resource.Filter;
@@ -211,20 +209,12 @@ namespace WpfApplication1
         }
         public List<KeyValuePair<string, decimal>> RemittieeGroups
         {
-            set
-            {
-                remittieeGroups = value;
-                (chartRemGroupExpence.Series[0] as DataPointSeries).ItemsSource = remittieeGroups;
-            }
+            set => (chartRemGroupExpence.Series[0] as DataPointSeries).ItemsSource = value;
         }
 
         public List<KeyValuePair<string, decimal>> ExpensesCategory
         {
-            set
-            {
-                expensesCategory = value;
-                (chartCategoryExpence.Series[0] as DataPointSeries).ItemsSource = expensesCategory;
-            }            
+            set => (chartCategoryExpence.Series[0] as DataPointSeries).ItemsSource = value;
         }
 
         public decimal AxeExpencesCategoryMaxValue 
@@ -236,8 +226,7 @@ namespace WpfApplication1
                 adjustedAxis.ShowGridLines = true;
                 adjustedAxis.ExtendRangeToOrigin = true;
                 adjustedAxis.Maximum = (double)value;
-                (chartCategoryExpence.Series[0] as BarSeries).DependentRangeAxis = adjustedAxis;
-                
+                (chartCategoryExpence.Series[0] as BarSeries).DependentRangeAxis = adjustedAxis;                
             }
         }
 
