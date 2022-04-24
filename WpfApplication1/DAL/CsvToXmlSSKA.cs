@@ -7,11 +7,14 @@ using System.Windows;
 using System.IO;
 using WpfApplication1.Properties;
 using System.Xml;
+using CategoryFormatter;
 
 namespace WpfApplication1.DAL
 {
     class CsvToXmlSSKA
     {
+        static string[] rawCSVInputFiles;
+        static string[] categorizedCSVInputFiles;
         public static string PathToStorageXmlFile { get; private set; }
         private static bool isExceptionUnhandled = false;
         public static XElement DataSource { get; private set; }
@@ -36,12 +39,19 @@ namespace WpfApplication1.DAL
             }
         }
 
-        public static bool isInputCsvFileAvailable()
+        public static bool isInputCsvFilesAvailable()
         {
-            string[] files = { };
             if (Directory.Exists(Config.PathToSskaDownloadsFolder))
-                files = Directory.GetFiles(Config.PathToSskaDownloadsFolder, @"*.csv");
-            bool res = !isExceptionUnhandled & files.Length > 0 ? true : false;
+                rawCSVInputFiles = Directory.GetFiles(Config.PathToSskaDownloadsFolder, @"*.csv");
+            bool res = !isExceptionUnhandled & rawCSVInputFiles.Length > 0 ? true : false;
+            return res;
+        }
+
+        public static bool isInputCsvFilesCategorized()
+        {
+            if (Directory.Exists(Config.PathToSskaDownloadsFolder))
+                categorizedCSVInputFiles = Directory.GetFiles(Config.PathToSskaDownloadsFolder, @"*categorized*.csv");
+            bool res = !isExceptionUnhandled & categorizedCSVInputFiles.Length > 0 ? true : false;
             return res;
         }
 
@@ -49,14 +59,23 @@ namespace WpfApplication1.DAL
         {
             isExceptionUnhandled = false;
             int filesCounter = 0;
-            if (isInputCsvFileAvailable())
+            if (isInputCsvFilesAvailable())
             {
-                while (isInputCsvFileAvailable())
-                    if (TryUpdateSavedXml(PathToFilesUtil.GetNameInputCsvFile()))
-                    {
-                        PathToFilesUtil.MoveFileToArxiv();
-                        filesCounter++;
-                    }
+                bool isCategorizationSucced = false;
+                if (!isInputCsvFilesCategorized())
+                {
+                    isCategorizationSucced = ProvideCategorization();
+                }
+                if (isCategorizationSucced)
+                {
+                    while (isInputCsvFilesCategorized())
+                        if (TryUpdateSavedXml(PathToFilesUtil.GetNameInputCategorizedCsvFile()))
+                        {
+                            PathToFilesUtil.MoveFileToArxiv();
+                            filesCounter++;
+                        }
+                }
+                return isCategorizationSucced;
             }
             else PathToFilesUtil.CreateSskaFolderAndFile();
             if (filesCounter > 0)
@@ -70,6 +89,58 @@ namespace WpfApplication1.DAL
             return (filesCounter > 0);
         }
 
+        private bool ProvideCategorization()
+        {
+            bool isCategorizatioSucseeded = false;
+            string[] rawCsvFiles = PathToFilesUtil.GetInputRawCsvFiles();
+            if (rawCsvFiles.Length == 0)
+            {
+                return isCategorizatioSucseeded;
+            }
+            foreach (string rawCsvFile in rawCsvFiles)
+            {
+                string csvFileWithCategoryFields = PathToFilesUtil.CreateCategorizedCsvFile(rawCsvFile);
+                if (File.Exists(csvFileWithCategoryFields))
+                {
+                    // fill file with categories;
+                    FormatterCSVCategories formatterCsv;
+                    string path2CaegorizationFile = FormatterCSVCategories.defaultPath2Categorization;
+                    if (!File.Exists(path2CaegorizationFile))
+                    {
+                        path2CaegorizationFile = @"../../../Categorization/" + Path.GetFileName(FormatterCSVCategories.defaultPath2Categorization);
+                        if (!File.Exists(path2CaegorizationFile))
+                        {
+                            MessageBox.Show("File to parse categories is missing: " + Path.GetFullPath(FormatterCSVCategories.defaultPath2Categorization) + " or: " + Path.GetFullPath(path2CaegorizationFile));
+                        }
+                        else
+                        {
+                            formatterCsv = new FormatterCSVCategories(pathToCategoriesCSV: path2CaegorizationFile, pathToInputCSV: rawCsvFile, pathToOutputCSV: csvFileWithCategoryFields);
+                            ProcessCategoriyFile(formatterCsv);
+                            isCategorizatioSucseeded = true;
+                        }
+                    }
+                    else
+                    {
+                        formatterCsv = new FormatterCSVCategories(pathToInputCSV: rawCsvFile, pathToOutputCSV: csvFileWithCategoryFields);
+                        ProcessCategoriyFile(formatterCsv);
+                        isCategorizatioSucseeded = true;
+                    }
+                }
+                string file2Arxive = PathToFilesUtil.GetArxivedCsvFilePath(rawCsvFile);
+                if (!File.Exists(file2Arxive))
+                {
+                    File.Move(rawCsvFile, file2Arxive);
+                }
+            }
+            return isCategorizatioSucseeded;
+        }
+
+        private void ProcessCategoriyFile(FormatterCSVCategories formatterCsv)
+        {
+            formatterCsv.GetCategoriesAndKeywordsFromFile();
+            formatterCsv.ProcessCSVInput();
+            formatterCsv.FormCSVOutput();
+        }
         public bool TryUpdateSavedXml(string fileToReadPath)
         {
             IEnumerable<XElement> mergedElements = null;
@@ -81,7 +152,7 @@ namespace WpfApplication1.DAL
                     XElement newXml = GetXmlElem(fileToReadPath);
                     if (newXml != null && newXml.HasElements)
                     {
-                        if (isInputCsvFileAvailable())
+                        if (isInputCsvFilesAvailable())
                             savedXml = XElement.Load(PathToStorageXmlFile);
                         if (savedXml.HasElements)
                         {
@@ -114,7 +185,7 @@ namespace WpfApplication1.DAL
         }
         private string[] ReplaceSymbolGetSeparator(ref string[] src, char symbol2Remove = '\"', char symbol2Replace = ' ')
         {
-            for(int i = 0; i< src.GetLength(0); i++)
+            for (int i = 0; i < src.GetLength(0); i++)
             {
                 if (src[i].Contains(symbol2Remove))
                 {
@@ -129,10 +200,10 @@ namespace WpfApplication1.DAL
             foreach (string el in src)
             {
                 string[] splittedArr = el.Split(sep, StringSplitOptions.None);
-                for(int j = 0; j < splittedArr.Length; j++)
+                for (int j = 0; j < splittedArr.Length; j++)
                 {
                     splittedArr[j] = splittedArr[j].Trim();
-                    
+
                 }
                 res.Add(splittedArr);
             }
@@ -157,7 +228,7 @@ namespace WpfApplication1.DAL
                     string[] sep = ReplaceSymbolGetSeparator(ref sources);
                     List<string[]> source = FilterStrings(sources, sep);
                     string[] sourceHeaders = GetHeader(source);
-                    
+
                     if (sourceHeaders.Length > 0)
                     {
                         source = RemoveHeader(source);
@@ -186,5 +257,7 @@ namespace WpfApplication1.DAL
             }
             return null;
         }
+
+
     }
 }

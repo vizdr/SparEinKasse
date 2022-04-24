@@ -1,5 +1,5 @@
 ﻿using System;
-using Categ4CSVSparkasse;
+using CategoryFormatter;
 
 namespace ConsTestCSV
 {
@@ -8,7 +8,7 @@ namespace ConsTestCSV
         static void Main(string[] args)
         {
             Console.WriteLine("Hello CSV Categories");
-            CSVFormCategories worker = new();
+            FormatterCSVCategories worker = new();
             worker.GetCategoriesAndKeywordsFromFile();
             worker.ProcessCSVInput();
             worker.FormCSVOutput();

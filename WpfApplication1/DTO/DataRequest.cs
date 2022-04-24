@@ -23,7 +23,9 @@ namespace WpfApplication1.DTO
         public event EventHandler ViewDataRequested;
 
         public bool DataBankUpdating
-        { set { OnDataBankUpdateRequested(); } }
+        { 
+            set => OnDataBankUpdateRequested(); 
+        }
 
         public DateTime BeginDate
         {

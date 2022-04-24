@@ -1,20 +1,22 @@
-﻿using Microsoft.VisualBasic.FileIO;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
+using System.Text;
+using Microsoft.VisualBasic.FileIO;
 
-namespace Categ4CSVSparkasse
+namespace FormatCSVCategories
 {
-    public class CSVFormCategories
+    public class Formatter4CSVCategegories
     {
+
         private readonly string pathToCategories;
         private readonly string pathToInputCSV;
         private readonly string pathToOutputCSV;
         private readonly string delimiter;
         private readonly int indexBeneficiaryField;
         private readonly int indexReasonForPaymentField;
-        private readonly int indexBookingTextField;       
+        private readonly int indexBookingTextField;
         private readonly string categoryId;
         private readonly string category;
 
@@ -28,7 +30,7 @@ namespace Categ4CSVSparkasse
         private List<string> lines;
         public static readonly string notFoundCategory = "NonCategorized";
         public static readonly int notFoundCategoryID = 0;
-        public CSVFormCategories(string pathToCategoriesCSV = @"../../../../../Categorization.csv", string pathToInputCSV = @"../../../../../MT940_Test_umsatz.csv", string pathToOutputCSV = @"../../../../../testOutput.csv",
+        public Formatter4CSVCategegories(string pathToCategoriesCSV = @"../../../../../Categorization.csv", string pathToInputCSV = @"../../../../../MT940_Test_umsatz.csv", string pathToOutputCSV = @"../../../../../testOutput.csv",
             string categoryId = "CategoryID", string category = "Category",
             string delimiter = ";", int indexBeneficiaryField = 5, int indexReasonForPaymentField = 4, int indexBookingTextField = 3)
         {
@@ -37,11 +39,11 @@ namespace Categ4CSVSparkasse
             this.pathToOutputCSV = pathToOutputCSV;
 
             categoryContexts = new List<Tuple<KeyValuePair<int, string>, HashSet<string>, HashSet<string>, HashSet<string>>>(30);
-            categoryInfo = new();
-            collectedTokensFromRow = new();
-            
+            categoryInfo = new List<Tuple<long /* row number */, KeyValuePair<int /* category ID */, string /* Category */>>>();
+            collectedTokensFromRow = new List<string>();
+
             this.categoryId = categoryId;
-            this.category = category;           
+            this.category = category;
             this.delimiter = delimiter;
             this.indexBeneficiaryField = indexBeneficiaryField;
             this.indexReasonForPaymentField = indexReasonForPaymentField;
@@ -53,51 +55,54 @@ namespace Categ4CSVSparkasse
             catch (Exception ex)
             {
                 Console.WriteLine("Input CSV File for raw lines not found. {0,-120}", ex.Message);
-            }            
+            }
         }
 
         public void GetCategoriesAndKeywordsFromFile()
         {
             try
             {
-                using TextFieldParser parser = new(pathToCategories);
-                List<string> recognizedCategories = new(30);
-                recognizedCategories.Add(notFoundCategory);
-                parser.TextFieldType = FieldType.Delimited;
-                parser.SetDelimiters(delimiter);
-                parser.ReadLine(); // Skip header
-                int currentCategory = default;
-                categoryContexts.Add(Tuple.Create(KeyValuePair.Create(currentCategory, notFoundCategory), new HashSet<string>(), new HashSet<string>(), new HashSet<string>()));
-
-                while (!parser.EndOfData)
+                using (TextFieldParser parser = new TextFieldParser(pathToCategories))
                 {
-                    //Process row
-                    string[] fields = parser.ReadFields();
-                    if ((fields is not null))
-                    {
-                        string receivedCategory = fields[0]?.Trim();
-                        if (!recognizedCategories.Contains(receivedCategory ?? notFoundCategory))
-                        {
-                            currentCategory = ++categoryCounter;
-                            KeyValuePair<int, string> newCategory = KeyValuePair.Create(currentCategory, fields[0].Trim());
-                            categoryContexts.Add(Tuple.Create(newCategory, new HashSet<string>(), new HashSet<string>(), new HashSet<string>()));
-                            recognizedCategories.Add(receivedCategory);
-                        }
+                    List<string> recognizedCategories = new List<string>(30);
+                    recognizedCategories.Add(notFoundCategory);
+                    parser.TextFieldType = FieldType.Delimited;
+                    parser.SetDelimiters(delimiter);
+                    parser.ReadLine(); // Skip header
+                    int currentCategory = default;
+                    categoryContexts.Add(Tuple.Create(new KeyValuePair<int, string>(currentCategory, notFoundCategory), new HashSet<string>(), new HashSet<string>(), new HashSet<string>()));
 
-                        // Process fields
-                        if (!string.IsNullOrWhiteSpace(fields[1]))
+                    while (!parser.EndOfData)
+                    {
+                        //Process row
+                        string[] fields = parser.ReadFields();
+                        if ((fields != null))
                         {
-                            categoryContexts[currentCategory].Item2.Add(fields[1].ToLower().Trim()); // beneficiary
-                        }
-                        if (!string.IsNullOrWhiteSpace(fields[2]))
-                        {
-                            categoryContexts[currentCategory].Item3.Add(fields[2].ToLower().Trim());  // reasonForPayment
-                        }
-                        if (!string.IsNullOrWhiteSpace(fields[3]))
-                        {
-                            categoryContexts[currentCategory].Item4.Add(fields[3].ToLower().Trim()); // bookingText
+                            string receivedCategory = fields[0]?.Trim();
+                            if (!recognizedCategories.Contains(receivedCategory ?? notFoundCategory))
+                            {
+                                currentCategory = ++categoryCounter;
+                                KeyValuePair<int, string> newCategory = new KeyValuePair<int, string>(currentCategory, fields[0].Trim());
+                                categoryContexts.Add(Tuple.Create(newCategory, new HashSet<string>(), new HashSet<string>(), new HashSet<string>()));
+                                recognizedCategories.Add(receivedCategory);
+                            }
+
+                            // Process fields
+                            if (!string.IsNullOrWhiteSpace(fields[1]))
+                            {
+                                categoryContexts[currentCategory].Item2.Add(fields[1].ToLower().Trim()); // beneficiary
+                            }
+                            if (!string.IsNullOrWhiteSpace(fields[2]))
+                            {
+                                categoryContexts[currentCategory].Item3.Add(fields[2].ToLower().Trim());  // reasonForPayment
+                            }
+                            if (!string.IsNullOrWhiteSpace(fields[3]))
+                            {
+                                categoryContexts[currentCategory].Item4.Add(fields[3].ToLower().Trim()); // bookingText
+                            }
                         }
                     }
+                    
 
                 }
                 for (int i = 0; i <= categoryCounter; i++)
@@ -110,8 +115,8 @@ namespace Categ4CSVSparkasse
             {
                 Console.WriteLine("Categorization.csv with path {0,30} is not found. Exception: {1,-120}", pathToCategories, ex.Message);
             }
-            
-            
+
+
         }
 
         private void FormCategoryInfoForRow(string[] tokens, long rowNumber)
@@ -119,7 +124,7 @@ namespace Categ4CSVSparkasse
             bool isCategoryDetermined = false;
             bool isFound = false;
             foreach (string token in tokens)
-            {                
+            {
                 foreach (var categoryConrext in categoryContexts)
                 {
                     if (categoryConrext.Item2.Contains(token) || categoryConrext.Item3.Contains(token) || categoryConrext.Item4.Contains(token))
@@ -132,17 +137,17 @@ namespace Categ4CSVSparkasse
                         }
                         isFound = true;
                         break;
-                    }                       
+                    }
                 }
                 if (isFound)
                 {
                     break;
                 }
             }
-            if(!isCategoryDetermined)
+            if (!isCategoryDetermined)
             {
-                categoryInfo.Add(Tuple.Create(rowNumber + 1, KeyValuePair.Create(notFoundCategoryID, notFoundCategory)));
-            }            
+                categoryInfo.Add(Tuple.Create(rowNumber + 1, new KeyValuePair<int, string>(notFoundCategoryID, notFoundCategory)));
+            }
         }
 
         private string[] Tokenize(string field)
@@ -155,19 +160,19 @@ namespace Categ4CSVSparkasse
                 string[] splitedSecond = splited.Split(' ');
                 foreach (string splitThird in splitedSecond)
                 {
-                    string[] tokens = splitThird.Split("//");
+                    string[] tokens = splitThird.Split(new char[2] { '/','/' });
                     tokensList.AddRange(tokens);
                 }
             }
 
             List<string> formatedTokens = new List<string>(tokensList.Count());
-            tokensList.ForEach(field => formatedTokens.Add(field.ToLower().Trim()));
+            tokensList.ForEach(fld =>  formatedTokens.Add(fld.ToLower().Trim()) );
             return formatedTokens.ToArray();
         }
 
         public void FormCSVOutput()
         {
-            if (lines is not null && lines[0] is not null)
+            if ((lines != null) && (lines[0] != null))
             {
                 lines[0] += delimiter + categoryId + delimiter + category;
                 int rowNumber = 1;
@@ -177,9 +182,9 @@ namespace Categ4CSVSparkasse
                     rowNumber++;
                 });
             }
-                                     
+
             //write the new content
-            if(File.Exists(pathToOutputCSV))
+            if (File.Exists(pathToOutputCSV))
             {
                 try
                 {
@@ -211,36 +216,40 @@ namespace Categ4CSVSparkasse
             categoryInfo.Clear();
             try
             {
-                using TextFieldParser parser = new(pathToInputCSV);
-                parser.TextFieldType = FieldType.Delimited;
-                parser.SetDelimiters(delimiter);
-                parser.ReadLine(); // Skip first line with headers
-                while (!parser.EndOfData)
+                using (TextFieldParser parser = new TextFieldParser(pathToInputCSV))
                 {
-                    //Process row of input file
-                    try
-                    {
-                        rowInputCSV = parser.ReadFields();
 
-                        if (rowInputCSV is not null)
+                    parser.TextFieldType = FieldType.Delimited;
+                    parser.SetDelimiters(delimiter);
+                    parser.ReadLine(); // Skip first line with headers
+                    while (!parser.EndOfData)
+                    {
+                        //Process row of input file
+                        try
                         {
-                            GetTokensFromFiels(rowInputCSV);
-                            FormCategoryInfoForRow(collectedTokensFromRow.ToArray(), parser.LineNumber - 2);
+                            rowInputCSV = parser.ReadFields();
+
+                            if (rowInputCSV != null)
+                            {
+                                GetTokensFromFiels(rowInputCSV);
+                                FormCategoryInfoForRow(collectedTokensFromRow.ToArray(), parser.LineNumber - 2);
+                            }
+                        }
+                        catch (MalformedLineException ex)
+                        {
+                            Console.WriteLine("InputCSVFile Line: " + ex.LineNumber + " Not valid and skipped." + parser.ErrorLine);
+                            GetTokensFromFiels(new string[0]);
+                            FormCategoryInfoForRow(collectedTokensFromRow.ToArray(), parser.ErrorLineNumber - 2);
                         }
                     }
-                    catch (MalformedLineException ex)
-                    {
-                        Console.WriteLine("InputCSVFile Line: " + ex.LineNumber + " Not valid and skipped." + parser.ErrorLine);
-                        GetTokensFromFiels(new string[0]);
-                        FormCategoryInfoForRow(collectedTokensFromRow.ToArray(), parser.ErrorLineNumber - 2);
-                    }
                 }
+                
             }
             catch (FileNotFoundException ex)
             {
                 Console.WriteLine("Input CSV file with path {0,30} is not found. Exception: {1,-120}", pathToInputCSV, ex.Message);
             }
-            
+
         }
     }
 }

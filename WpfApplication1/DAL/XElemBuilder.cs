@@ -5,6 +5,7 @@ using System.Xml.Linq;
 using WpfApplication1.Properties;
 using System.Windows;
 using System.Globalization;
+using CategoryFormatter;
 
 
 namespace WpfApplication1.DAL
@@ -82,7 +83,7 @@ namespace WpfApplication1.DAL
                     XElement cust = new XElement(Config.XmlFileRoot,
                     from fields in source
                     where !fields[0].Equals(string.Empty) & !fields[1].Equals(string.Empty)
-                                                                                                                                                                                                  // index of targrtHeaders from Settings
+                    // index of targrtHeaders from Settings
                     select new XElement(Config.TransactionField, new XAttribute(Config.AuftragsKontoField, targetHeaders[0].Equals(String.Empty) ? BankAccount : fields[(int)targetHeaders[0]]),  // Auftragskonto
                         new XElement(Config.BuchungstagField, fields[(int)targetHeaders[1]]),                                                                                                     // Buchungstag   
                         new XElement(Config.WertDatumField, Config.ExchYearDay(fields[(int)targetHeaders[2]]), new XAttribute("type", "date")),                                                   // Valutadatum
@@ -94,8 +95,8 @@ namespace WpfApplication1.DAL
                         new XElement(Config.BetragField,                                                                                                                                          // Betrag       
                              GetCultureAdaptedDouble(fields[(int)targetHeaders[8]]),
                         new XAttribute(Config.WaehrungField, " Euro"), new XAttribute("type", "double")),                                                                                          // Währung
-                        new XElement(Config.CategoryIdField, fields[(int)targetHeaders[13]]),                                                                                                      // CategoryID
-                        new XElement(Config.CategoryField, fields[(int)targetHeaders[14]])                                                                                                         // Category
+                        new XElement(Config.CategoryIdField, String.IsNullOrEmpty(fields[(int)targetHeaders[13]]) ? FormatterCSVCategories.notFoundCategoryID.ToString() : fields[(int)targetHeaders[13]]),                                                                                                      // CategoryID
+                        new XElement(Config.CategoryField, String.IsNullOrEmpty(fields[(int)targetHeaders[14]]) ? FormatterCSVCategories.notFoundCategory : fields[(int)targetHeaders[14]])                                                                                                         // Category
                         )
                     );
                     return cust;
@@ -158,8 +159,8 @@ namespace WpfApplication1.DAL
                            new XElement(Config.BetragField,                                                                                                          // Betrag       
                                 GetCultureAdaptedDouble(fields[(int)targetHeaders[8]]),
                                    new XAttribute(Config.WaehrungField, fields[(int)targetHeaders[9]]), new XAttribute("type", "double")),                            // Währung
-                            new XElement(Config.CategoryIdField, fields[(int)targetHeaders[13]]),                               // CategoryID                                                                                               
-                            new XElement(Config.CategoryField, fields[(int)targetHeaders[14]])                                                                        // Category
+                            new XElement(Config.CategoryIdField, String.IsNullOrEmpty(fields[(int)targetHeaders[13]]) ? FormatterCSVCategories.notFoundCategoryID.ToString() : fields[(int)targetHeaders[13]]),                               // CategoryID                                                                                               
+                            new XElement(Config.CategoryField, String.IsNullOrEmpty(fields[(int)targetHeaders[14]]) ? FormatterCSVCategories.notFoundCategory : fields[(int)targetHeaders[14]])                                                                        // Category
                            )
                        );
                     return cust;

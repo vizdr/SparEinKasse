@@ -12,7 +12,6 @@ namespace WpfApplication1
         private readonly IViewCharts _viewCharts;
         private IViewFilters _viewFilters;
         private readonly IBuisenessLogic bl;
-        private List<KeyValuePair<string, decimal>> dataSourceExpensesOverRemitee;
         public static FilterParams FilterValues { get; private set; }
 
         public ChartsPresenter(IViewCharts viewChart, IBuisenessLogic bl)
@@ -66,7 +65,7 @@ namespace WpfApplication1
                     _viewCharts.Summary = bl.ResponseModel.Summary;
                     break;
                 case "ExpensesOverRemiteeInDateRange":
-                    InitializeExpencsesOverRemitee();
+                    InitializeExpencsesOverRemitee(bl.ResponseModel.ExpensesOverRemiteeInDateRange);
                     break;
                 case "IncomesInfoOverDateRange":
                     _viewCharts.IncomsOverview = bl.ResponseModel.IncomesInfoOverDateRange;
@@ -88,6 +87,9 @@ namespace WpfApplication1
                     break;
                 case "TransactionsAccountsObsCollBoolTextCouple":
                     _viewFilters.UserAccounts = bl.ResponseModel.TransactionsAccountsObsCollBoolTextCouple;
+                    break;
+                case "ExpensesOverCategory":
+                    InitializeExpencsesOverCategory(bl.ResponseModel.ExpensesOverCategory);
                     break;
                 default:
                     { };
@@ -113,11 +115,16 @@ namespace WpfApplication1
             }
         }
 
-        private void InitializeExpencsesOverRemitee()
+        private void InitializeExpencsesOverRemitee(List<KeyValuePair<string, decimal>> dataSourceExpensesOverRemitee)
         {
-            dataSourceExpensesOverRemitee = bl.ResponseModel.ExpensesOverRemiteeInDateRange;
             _viewCharts.Remitties = dataSourceExpensesOverRemitee;
             _viewCharts.AxeRemittiesExpencesMaxValue = CalculateMaxValue(dataSourceExpensesOverRemitee);
+        }
+
+        private void InitializeExpencsesOverCategory(List<KeyValuePair<string, decimal>> dataSourceExpensesOverCategory)
+        {
+            _viewCharts.ExpensesCategory = dataSourceExpensesOverCategory;
+            _viewCharts.AxeExpencesCategoryMaxValue = CalculateMaxValue(dataSourceExpensesOverCategory);
         }
 
         public void ReloadXml()

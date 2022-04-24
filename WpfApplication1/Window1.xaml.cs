@@ -21,6 +21,7 @@ namespace WpfApplication1
         private List<KeyValuePair<string, decimal>> incomes;
         private List<KeyValuePair<string, decimal>> remittees;
         private List<KeyValuePair<string, decimal>> remittieeGroups;
+        private List<KeyValuePair<string, decimal>> expensesCategory;
         public static bool isNotRegistred;
         public static DateTime expDate;
         private readonly TextBlock popupChDateExpText;
@@ -86,7 +87,7 @@ namespace WpfApplication1
             chartRemeteeExpence.Title = Local.Resource.ExpencesOverRemittee;
             chartDateExpence.Title = Local.Resource.ExpencesOverDate;
             chartDateBalance.Title = Local.Resource.Balance;
-            expRemitties.Header = Local.Resource.Exp;
+            // expRemitties.Header = Local.Resource.Exp;
             expInc.Header = Local.Resource.Inc;
             groupBoxDateInterval.Header = Local.Resource.TimeSpan;
             labelFrom.Content = Local.Resource.DatumFrom;
@@ -94,12 +95,12 @@ namespace WpfApplication1
             buttonUpdateSpan.Content = Local.Resource.UpdateDateSpan;
             buttonUpdateDataBankXML.Content = Local.Resource.UpdateDataStorage;
             txtBoxInc.Text = Local.Resource.Incomes;
-            txtBoxExpences.Text = Local.Resource.Expences;
+            //txtBoxExpences.Text = Local.Resource.Expences;
             buttonSettings.Content = Local.Resource.Settings;
             labelAccounts.Content = Local.Resource.Accounts;
             buttonShowFilters.Content = Local.Resource.Filter;
             expRemGroups.Header = Local.Resource.Exp2;
-            chartRemGroupExpence.Title = Local.Resource.ExpencesOverRemitteeGroups;
+            // chartRemGroupExpence.Title = Local.Resource.ExpencesOverRemitteeGroups;
         }
 
         private void InitialaizeFiltersWindow(WindowFilters window)
@@ -214,6 +215,29 @@ namespace WpfApplication1
             {
                 remittieeGroups = value;
                 (chartRemGroupExpence.Series[0] as DataPointSeries).ItemsSource = remittieeGroups;
+            }
+        }
+
+        public List<KeyValuePair<string, decimal>> ExpensesCategory
+        {
+            set
+            {
+                expensesCategory = value;
+                (chartCategoryExpence.Series[0] as DataPointSeries).ItemsSource = expensesCategory;
+            }            
+        }
+
+        public decimal AxeExpencesCategoryMaxValue 
+        {
+            set
+            {
+                LinearAxis adjustedAxis = new LinearAxis();
+                adjustedAxis.Orientation = AxisOrientation.X;
+                adjustedAxis.ShowGridLines = true;
+                adjustedAxis.ExtendRangeToOrigin = true;
+                adjustedAxis.Maximum = (double)value;
+                (chartCategoryExpence.Series[0] as BarSeries).DependentRangeAxis = adjustedAxis;
+                
             }
         }
 

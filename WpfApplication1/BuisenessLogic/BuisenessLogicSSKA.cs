@@ -59,6 +59,7 @@ namespace WpfApplication1
             updateChart += delegate { ResponseModel.ExpensesOverRemiteeInDateRange = GetExpensesOverRemiteeInDateRange(); };
             updateChart += delegate { ResponseModel.Summary = GetSummary(); };
             updateChart += delegate { ResponseModel.IncomesInfoOverDateRange = GetIncomesInfoOverDateRange(); };
+            updateChart += delegate { ResponseModel.ExpensesOverCategory = GetExpensesOverCategory(); };
         }
         private decimal ConvertStringToDecimal(string src)
         {
@@ -141,8 +142,8 @@ namespace WpfApplication1
             int qty2Invoke = updateChart.GetInvocationList().Length;
             for (int ctr = 0; ctr < qty2Invoke; ++ctr)
             {
-                // adjusted to 9 calls of functions 
-                int progr = (ctr + 1) * 10;
+                // (ctr + 1) would be adjusted to 9 calls of functions 
+                int progr = ctr  * 10;
 
                 var updChart = updateChart.GetInvocationList()[ctr];
                 updChart.DynamicInvoke(Request);
@@ -628,6 +629,31 @@ namespace WpfApplication1
             return null;
         }
 
+        protected List<KeyValuePair<string, decimal>> GetExpensesOverCategory()
+        {
+            try
+            {
+                var res =
+                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) < 0
+                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                    group r.Element(Config.BetragField).Value by r.Element(Config.CategoryField).Value into g
+                    orderby g.Key
+                    select new KeyValuePair<string, decimal>(g.Key/*.Substring(5)*/, g.Sum(n => -ConvertStringToDecimal(n)));
+
+                res = ApplyRangeFilter(res);
+                return res.ToList<KeyValuePair<string, decimal>>();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message + "**BuisenessLogicSSKA-GetExpensesOverDateRange**",
+                    Config.AppName + ": Unable to get Data.", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return null;
+        }
 
         private int GetPercentage(int numerator, int denominator)
         {
