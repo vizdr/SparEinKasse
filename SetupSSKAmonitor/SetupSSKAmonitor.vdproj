@@ -21,31 +21,49 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_15D2B3B64EE8F35158AFECD744B31F1D"
+        "OwnerKey" = "8:_A27FD17736654A448C29D4693E38471D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_287ABC20C0074EE4A308CBAB7E2C2326"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_58617B3C35186063FDD435B8C4304C30"
+        "MsmKey" = "8:_511E1BCF9B79623713919299056DD721"
+        "OwnerKey" = "8:_532816BD55069D135209BA105228D256"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_511E1BCF9B79623713919299056DD721"
         "OwnerKey" = "8:_A27FD17736654A448C29D4693E38471D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6C485DD93644C28B11EF204AA06D142E"
-        "OwnerKey" = "8:_EF8A5DDFAFE28BC6C2AE84A8E1EA87E8"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_6C485DD93644C28B11EF204AA06D142E"
+        "MsmKey" = "8:_532816BD55069D135209BA105228D256"
         "OwnerKey" = "8:_A27FD17736654A448C29D4693E38471D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_993B4F6C29ADCC878CB35DFBE647B99C"
+        "MsmKey" = "8:_532816BD55069D135209BA105228D256"
+        "OwnerKey" = "8:_6E2665D9F10E7C4E54E887562963EE7F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6E2665D9F10E7C4E54E887562963EE7F"
+        "OwnerKey" = "8:_A27FD17736654A448C29D4693E38471D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7A5C80783FF6CAB33EB6B288E978E863"
         "OwnerKey" = "8:_A27FD17736654A448C29D4693E38471D"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -57,18 +75,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_EF8A5DDFAFE28BC6C2AE84A8E1EA87E8"
-        "OwnerKey" = "8:_A27FD17736654A448C29D4693E38471D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_EF8A5DDFAFE28BC6C2AE84A8E1EA87E8"
-        "OwnerKey" = "8:_58617B3C35186063FDD435B8C4304C30"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_A27FD17736654A448C29D4693E38471D"
         "MsmSig" = "8:_UNDEFINED"
@@ -76,25 +82,31 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_58617B3C35186063FDD435B8C4304C30"
+        "OwnerKey" = "8:_6E2665D9F10E7C4E54E887562963EE7F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EF8A5DDFAFE28BC6C2AE84A8E1EA87E8"
+        "OwnerKey" = "8:_532816BD55069D135209BA105228D256"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6C485DD93644C28B11EF204AA06D142E"
+        "OwnerKey" = "8:_511E1BCF9B79623713919299056DD721"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_993B4F6C29ADCC878CB35DFBE647B99C"
+        "OwnerKey" = "8:_15D2B3B64EE8F35158AFECD744B31F1D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_7A5C80783FF6CAB33EB6B288E978E863"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -194,7 +206,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:3.5.30729"
+                "FrameworkVersion" = "8:3.5.30729 "
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=76617"
                 }
@@ -222,96 +234,14 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_287ABC20C0074EE4A308CBAB7E2C2326"
-            {
-            "SourcePath" = "8:..\\WpfApplication1\\IconSSKAapp.ico"
-            "TargetName" = "8:IconSSKApp.ico"
-            "Tag" = "8:"
-            "Folder" = "8:_75BF75F8E79B497AABA3613FC8CD266C"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_58617B3C35186063FDD435B8C4304C30"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.Windows.Controls.DataVisualization.Toolkit.VisualStudio.Design, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_58617B3C35186063FDD435B8C4304C30"
-                    {
-                    "Name" = "8:System.Windows.Controls.DataVisualization.Toolkit.VisualStudio.Design.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:System.Windows.Controls.DataVisualization.Toolkit.VisualStudio.Design.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_75BF75F8E79B497AABA3613FC8CD266C"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6C485DD93644C28B11EF204AA06D142E"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:WPFToolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_6C485DD93644C28B11EF204AA06D142E"
-                    {
-                    "Name" = "8:WPFToolkit.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:WPFToolkit.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_75BF75F8E79B497AABA3613FC8CD266C"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_993B4F6C29ADCC878CB35DFBE647B99C"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_15D2B3B64EE8F35158AFECD744B31F1D"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:SimpleSecurity, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_993B4F6C29ADCC878CB35DFBE647B99C"
+                    "_15D2B3B64EE8F35158AFECD744B31F1D"
                     {
                     "Name" = "8:SimpleSecurity.dll"
                     "Attributes" = "3:512"
@@ -335,20 +265,133 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_EF8A5DDFAFE28BC6C2AE84A8E1EA87E8"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_287ABC20C0074EE4A308CBAB7E2C2326"
+            {
+            "SourcePath" = "8:..\\WpfApplication1\\IconSSKAapp.ico"
+            "TargetName" = "8:IconSSKApp.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_75BF75F8E79B497AABA3613FC8CD266C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_511E1BCF9B79623713919299056DD721"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:WPFToolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_511E1BCF9B79623713919299056DD721"
+                    {
+                    "Name" = "8:WPFToolkit.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:WPFToolkit.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_75BF75F8E79B497AABA3613FC8CD266C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_532816BD55069D135209BA105228D256"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:System.Windows.Controls.DataVisualization.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_EF8A5DDFAFE28BC6C2AE84A8E1EA87E8"
+                    "_532816BD55069D135209BA105228D256"
                     {
                     "Name" = "8:System.Windows.Controls.DataVisualization.Toolkit.dll"
                     "Attributes" = "3:512"
                     }
                 }
             "SourcePath" = "8:System.Windows.Controls.DataVisualization.Toolkit.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_75BF75F8E79B497AABA3613FC8CD266C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6E2665D9F10E7C4E54E887562963EE7F"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:System.Windows.Controls.DataVisualization.Toolkit.VisualStudio.Design, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_6E2665D9F10E7C4E54E887562963EE7F"
+                    {
+                    "Name" = "8:System.Windows.Controls.DataVisualization.Toolkit.VisualStudio.Design.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:System.Windows.Controls.DataVisualization.Toolkit.VisualStudio.Design.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_75BF75F8E79B497AABA3613FC8CD266C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7A5C80783FF6CAB33EB6B288E978E863"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:CategoryFormatter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_7A5C80783FF6CAB33EB6B288E978E863"
+                    {
+                    "Name" = "8:CategoryFormatter.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:CategoryFormatter.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_75BF75F8E79B497AABA3613FC8CD266C"
@@ -637,7 +680,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_4B590AC308C14784AFC8FEB56BC787C1"
                     {
                     "Sequence" = "3:200"
-                    "DisplayName" = "8:Installation Folder"
+                    "DisplayName" = "8:Installationsordner"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdFolderDlg.wid"
@@ -672,7 +715,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_5E12C56E4AEE437A974BDD14C708FE0F"
                     {
                     "Sequence" = "3:300"
-                    "DisplayName" = "8:Confirm Installation"
+                    "DisplayName" = "8:Installation bestätigen"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdConfirmDlg.wid"
@@ -694,7 +737,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_D97D30B2ADCD4A908F275EAF26EB2FF6"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Welcome"
+                    "DisplayName" = "8:Willkommen"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdWelcomeDlg.wid"
@@ -757,7 +800,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_E54DFE14C0B7423E9D401EC6B64D9DAD"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Progress"
+                    "DisplayName" = "8:Status"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminProgressDlg.wid"
@@ -801,7 +844,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_08F8AA14D8164B0592509719DB16F0E1"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Welcome"
+                    "DisplayName" = "8:Willkommen"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminWelcomeDlg.wid"
@@ -849,7 +892,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_50501FA7A8FA44D1A318F3C4AB3A46A9"
                     {
                     "Sequence" = "3:300"
-                    "DisplayName" = "8:Confirm Installation"
+                    "DisplayName" = "8:Installation bestätigen"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminConfirmDlg.wid"
@@ -871,7 +914,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_DEAE9F50827B46729212A001AADA210F"
                     {
                     "Sequence" = "3:200"
-                    "DisplayName" = "8:Installation Folder"
+                    "DisplayName" = "8:Installationsordner"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminFolderDlg.wid"
@@ -902,7 +945,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_A2FE406396E340DE99B081C15B556F46"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Finished"
+                    "DisplayName" = "8:Fertig"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdFinishedDlg.wid"
@@ -946,7 +989,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_4923979388D944B5ADCFCA51AA01ED8B"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Progress"
+                    "DisplayName" = "8:Status"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdProgressDlg.wid"
@@ -990,7 +1033,7 @@
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_99F9E33E1D484769AB608683473DADDF"
                     {
                     "Sequence" = "3:100"
-                    "DisplayName" = "8:Finished"
+                    "DisplayName" = "8:Fertig"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
                     "SourcePath" = "8:<VsdDialogDir>\\VsdAdminFinishedDlg.wid"
@@ -1047,7 +1090,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A27FD17736654A448C29D4693E38471D"
             {
-            "SourcePath" = "8:..\\WpfApplication1\\obj\\Release\\SSKAanalyzer.exe"
+            "SourcePath" = "8:..\\WpfApplication1\\obj\\Debug\\SSKAanalyzer.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_75BF75F8E79B497AABA3613FC8CD266C"

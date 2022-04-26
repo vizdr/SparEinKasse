@@ -127,7 +127,7 @@ namespace WpfApplication1.DAL
 
     public class X10ElemBuilder : XElemBuilder
     {
-        const uint completeNumberOfHeaders = 10U;
+        const uint completeNumberOfHeaders = 12U; // 10 listed and additionaly categoryID and Category headers
         public X10ElemBuilder(string[] headers)
         {
             this.keyIndexes = new List<uint>() { Settings.Default.ContributorAccFieldIndex, Settings.Default.PaymentDateFieldIndex,

@@ -25,7 +25,6 @@ namespace CategoryFormatter
 
         private List<Tuple<KeyValuePair<int, string> /*category*/,
             HashSet<string> /*beneficiary*/, HashSet<string> /* reasonForPayment*/ , HashSet<string> /*bookingText*/>> categoryContexts;
-        private static int categoryCounter;
         private List<Tuple<long /* row number */, KeyValuePair<int /* category ID */, string /* Category */>>> categoryInfo;
         private List<string> lines;
 
@@ -33,6 +32,7 @@ namespace CategoryFormatter
         public static readonly int notFoundCategoryID = 0;
         public const string defaultPath2Categorization = @"../../../../../Categorization.csv";
         public string PathToCategories => pathToCategories;
+        public int GetCountOfAvailibleCategories => categoryContexts.Count();
         public FormatterCSVCategories(string pathToCategoriesCSV = defaultPath2Categorization, string pathToInputCSV = @"../../../../../MT940_Test_umsatz.csv", string pathToOutputCSV = @"../../../../../testOutput.csv",
             string categoryId = "CategoryID", string category = "Category",
             string delimiter = ";", int indexBeneficiaryField = 5, int indexReasonForPaymentField = 4, int indexBookingTextField = 3)
@@ -61,8 +61,22 @@ namespace CategoryFormatter
             }
         }
 
-        public void GetCategoriesAndKeywordsFromFile()
+        public void GetCategoriesAndKeywordsFromFile(bool updateFlag = false)
         {
+            int currentCategory = default;
+            if (categoryContexts.Count > 0 && updateFlag)
+            {
+                categoryContexts.Clear();
+            }
+            else if (categoryContexts.Count == 0)           
+            {
+
+            }
+            else 
+            {
+                return;
+            }
+            
             try
             {
                 using (TextFieldParser parser = new TextFieldParser(pathToCategories))
@@ -71,8 +85,7 @@ namespace CategoryFormatter
                     recognizedCategories.Add(notFoundCategory);
                     parser.TextFieldType = FieldType.Delimited;
                     parser.SetDelimiters(delimiter);
-                    parser.ReadLine(); // Skip header
-                    int currentCategory = default;
+                    parser.ReadLine(); // Skip header                    
                     categoryContexts.Add(Tuple.Create(new KeyValuePair<int, string>(currentCategory, notFoundCategory), new HashSet<string>(), new HashSet<string>(), new HashSet<string>()));
 
                     while (!parser.EndOfData)
@@ -84,8 +97,7 @@ namespace CategoryFormatter
                             string receivedCategory = fields[0]?.Trim();
                             if (!recognizedCategories.Contains(receivedCategory ?? notFoundCategory))
                             {
-                                currentCategory = ++categoryCounter;
-                                KeyValuePair<int, string> newCategory = new KeyValuePair<int, string>(currentCategory, fields[0].Trim());
+                                KeyValuePair<int, string> newCategory = new KeyValuePair<int, string>(++currentCategory, fields[0].Trim());
                                 categoryContexts.Add(Tuple.Create(newCategory, new HashSet<string>(), new HashSet<string>(), new HashSet<string>()));
                                 recognizedCategories.Add(receivedCategory);
                             }
@@ -108,7 +120,7 @@ namespace CategoryFormatter
 
 
                 }
-                for (int i = 0; i <= categoryCounter; i++)
+                for (int i = 0; i <= currentCategory; i++)
                 {
                     Console.WriteLine("{0,3}: {1,-25} | beneficiary: {2,-3} | reasonForPayment: {3,-3} | bookingText: {4,-3}",
                         i, categoryContexts[i].Item1.Value, categoryContexts[i].Item2.Count, categoryContexts[i].Item3.Count, categoryContexts[i].Item4.Count);

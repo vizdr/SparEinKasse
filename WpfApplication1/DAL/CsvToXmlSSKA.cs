@@ -93,6 +93,7 @@ namespace WpfApplication1.DAL
         {
             bool isCategorizatioSucseeded = false;
             string[] rawCsvFiles = PathToFilesUtil.GetInputRawCsvFiles();
+            // categorization should be processed. Only raw CSV Input, w/o appended category fields, is accepted.
             if (rawCsvFiles.Length == 0)
             {
                 return isCategorizatioSucseeded;
@@ -126,18 +127,28 @@ namespace WpfApplication1.DAL
                         isCategorizatioSucseeded = true;
                     }
                 }
-                string file2Arxive = PathToFilesUtil.GetArxivedCsvFilePath(rawCsvFile);
+                string file2Arxive = PathToFilesUtil.GetArxivedCsvFilePath(PathToFilesUtil.AppendSuffixToFileName(rawCsvFile, "_arxiv"));
                 if (!File.Exists(file2Arxive))
                 {
-                    File.Move(rawCsvFile, file2Arxive);
+                    try
+                    {
+                        File.Move(rawCsvFile, file2Arxive);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Input CSV File can not be moved to Arxive folder:", ex.Message);
+                    }                    
                 }
             }
             return isCategorizatioSucseeded;
         }
-
         private void ProcessCategoriyFile(FormatterCSVCategories formatterCsv)
         {
-            formatterCsv.GetCategoriesAndKeywordsFromFile();
+            if (formatterCsv.GetCountOfAvailibleCategories == 0)
+            {
+                formatterCsv.GetCategoriesAndKeywordsFromFile();
+            }
+            
             formatterCsv.ProcessCSVInput();
             formatterCsv.FormCSVOutput();
         }
