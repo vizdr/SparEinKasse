@@ -70,7 +70,6 @@ namespace CategoryFormatter
             }
             else if (categoryContexts.Count == 0)           
             {
-
             }
             else 
             {

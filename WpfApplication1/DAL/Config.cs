@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using WpfApplication1.Properties;
 using System.Globalization;
+using System.IO;
 
 namespace WpfApplication1.DAL
 {
@@ -76,5 +77,6 @@ namespace WpfApplication1.DAL
         public static string Delimiter4CSVFile = Settings.Default.DelimiterCSVInput[0];
         public static string CategoryIdField = "CategoryID";
         public static string CategoryField = "Category";
+        public static string PathToCategorizationFile = PathToSskaDownloadsFolder + @"\Categorization\Categorization.csv";
     }
 }

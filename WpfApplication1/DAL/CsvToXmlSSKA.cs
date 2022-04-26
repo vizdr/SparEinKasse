@@ -108,7 +108,11 @@ namespace WpfApplication1.DAL
                     string path2CaegorizationFile = FormatterCSVCategories.defaultPath2Categorization;
                     if (!File.Exists(path2CaegorizationFile))
                     {
-                        path2CaegorizationFile = @"../../../Categorization/" + Path.GetFileName(FormatterCSVCategories.defaultPath2Categorization);
+                        path2CaegorizationFile = Config.PathToCategorizationFile;
+                        if (!File.Exists(path2CaegorizationFile))
+                        {
+                            path2CaegorizationFile = @"../../../Categorization/" + Path.GetFileName(FormatterCSVCategories.defaultPath2Categorization);
+                        }                       
                         if (!File.Exists(path2CaegorizationFile))
                         {
                             MessageBox.Show("File to parse categories is missing: " + Path.GetFullPath(FormatterCSVCategories.defaultPath2Categorization) + " or: " + Path.GetFullPath(path2CaegorizationFile));
