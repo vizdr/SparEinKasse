@@ -8,10 +8,10 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SSKA_analyzer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Application to analyse downloaded csv files with turnover")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("V_Zdravkov")]
-[assembly: AssemblyProduct("WpfApplication1")]
+[assembly: AssemblyProduct("WpfApp-SSKA")]
 [assembly: AssemblyCopyright("Copyright © Vladimir Zdravkov")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -51,6 +51,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.4.0.1")]
-[assembly: AssemblyFileVersion("1.4.0.1")]
+[assembly: AssemblyVersion("1.5.0.1")]
+[assembly: AssemblyFileVersion("1.5.0.1")]
 [assembly: NeutralResourcesLanguageAttribute("en-US")]
