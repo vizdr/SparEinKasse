@@ -76,7 +76,7 @@ namespace WpfApplication1.DAL
 
         public static string AppendSuffixToFileName(string fileName, string suffix)
         {
-            string newFilename = Path.GetFileNameWithoutExtension(fileName) + suffix + Path.GetExtension(fileName); 
+            string newFilename = Path.GetFileNameWithoutExtension(fileName) + suffix + Path.GetExtension(fileName).ToLower(); 
             return Path.Combine(Path.GetDirectoryName(fileName), newFilename);
         }
 

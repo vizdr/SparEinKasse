@@ -201,7 +201,7 @@
                                                         <ControlTemplate TargetType="chartingToolkit:AxisLabel" >
                                                             <TextBlock  Text="{TemplateBinding FormattedContent}" HorizontalAlignment="Left">
                                                                 <TextBlock.LayoutTransform>
-                                                                    <RotateTransform Angle="-60"/>
+                                                                    <RotateTransform Angle="-70"/>
                                                                 </TextBlock.LayoutTransform>
                                                             </TextBlock>
                                                         </ControlTemplate>
@@ -288,7 +288,7 @@
                                                 <ControlTemplate TargetType="chartingToolkit:AxisLabel" >
                                                     <TextBlock  Text="{TemplateBinding FormattedContent}" HorizontalAlignment="Left">
                                                         <TextBlock.LayoutTransform>
-                                                            <RotateTransform Angle="-60"/>
+                                                            <RotateTransform Angle="-70"/>
                                                         </TextBlock.LayoutTransform>
                                                     </TextBlock>
                                                 </ControlTemplate>
