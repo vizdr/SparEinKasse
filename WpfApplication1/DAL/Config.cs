@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Collections;
 using System.Collections.Specialized;
 using WpfApplication1.Properties;
 using System.Globalization;
-using System.IO;
 
 namespace WpfApplication1.DAL
 {
@@ -29,22 +24,22 @@ namespace WpfApplication1.DAL
         public static string AuftragsKontoField = Settings.Default.ContributorAccField[0];
         public static string BuchungstagField = Settings.Default.PaymentDateField[0];
         public static string WertDatumField = Settings.Default.BankOperDateField[0];
-        public static string BuchungsTextField = Settings.Default.BankOperTypeField[0];
+        public static string BuchungsTextField = Settings.Default.BankOperTypeField[0];   
         public static string VerwendZweckField = Settings.Default.PaymentPurposeField[0];
         public static string BeguenstigterField = Settings.Default.BeneficiaryField[0];
         public static string KontonummerField = Settings.Default.BeneficiaryAccField[0];
         public static string BLZField = Settings.Default.IntBankCodeField[0];
-        public static string BetragField = Settings.Default.BankOperValueField[0];//Settings.Default.Properties["StorageFileName"].Name;
+        public static string BetragField = Settings.Default.BankOperValueField[0];
         public static string WaehrungField = Settings.Default.CurrencyField[0];
         public static string CurrGroupSeparator = NumberFormatInfo.CurrentInfo.CurrencyGroupSeparator;
         public static string CurrDecimalSeparator = NumberFormatInfo.CurrentInfo.CurrencyDecimalSeparator;
-        public static string PathToXmlStorageFolder = Environment.GetFolderPath(
-                                                    Environment.SpecialFolder.MyDocuments) + @"\MySSKA\Arxiv";
+        public static string PathToXmlStorageFolder { get; } = Environment.GetFolderPath(
+           Environment.SpecialFolder.MyDocuments) + @"\MySSKA\Arxiv";
         public static readonly string PathToSskaDownloadsFolder = Environment.GetFolderPath(
                                                     Environment.SpecialFolder.MyDocuments) + @"\MySSKA";
-        public static int EncodePage = Int32.Parse(Settings.Default.CodePage[0]); // 1252 - West;  1251 - Cyrilic
+
         public static readonly string AppName = "SSKA analyzer";
-        public static StringCollection ContributorAccounts = Settings.Default.ContributorAccounts;
+        public static StringCollection ContributorAccounts { get; set; } = Settings.Default.ContributorAccounts;
         public static string ExchYearDay(string iniDateString)
         {
             //replaces DD-MM-CCYY or DD-MM-YY to ssd:date format CCYY.MM.DD
@@ -78,5 +73,14 @@ namespace WpfApplication1.DAL
         public static string CategoryIdField = "CategoryID";
         public static string CategoryField = "Category";
         public static string PathToCategorizationFile = PathToSskaDownloadsFolder + @"\Categorization\Categorization.csv";
+
+        private static int encodePage;
+
+        public static int EncodePage
+        {
+            get => encodePage;
+            set => encodePage = Int32.Parse(Settings.Default.CodePage[0]); // 1252 - West;  1251 - Cyrilic; 
+        }
+
     }
 }

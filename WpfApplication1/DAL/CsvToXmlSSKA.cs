@@ -19,10 +19,13 @@ namespace WpfApplication1.DAL
         private static bool isExceptionUnhandled = false;
         public static XElement DataSource { get; private set; }
         private readonly object _fileLock = new object();
-        public CsvToXmlSSKA()
-        {
 
+        static CsvToXmlSSKA()
+        {
             PathToStorageXmlFile = Config.PathToXmlStorageFolder + @"\" + Settings.Default.StorageFileName;
+        }
+        public CsvToXmlSSKA()
+        {           
             try
             {
                 if (File.Exists(PathToStorageXmlFile))
@@ -38,6 +41,7 @@ namespace WpfApplication1.DAL
                 MessageBox.Show(e.Message, Config.AppName + ": Xml Storage File was not load!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
         public static bool isInputCsvFilesAvailable()
         {

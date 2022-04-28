@@ -22,7 +22,7 @@ namespace WpfApplication1
         private List<KeyValuePair<string, decimal>> remittees;
 
         public static bool isNotRegistred;
-        public static DateTime expDate;
+        public static DateTime expirationDate;
         private readonly TextBlock popupChDateExpText;
         private readonly TextBlock popupChRemiteExpText;
         static Window1()
@@ -59,7 +59,7 @@ namespace WpfApplication1
             window1.buttonShowFilters.Click += delegate { window1.InitialaizeFiltersWindow(new WindowFilters()); };
             window1.buttonUpdateDataBankXML.Click += delegate
             {
-                if (!isNotRegistred || (expDate > DateTime.Now))
+                if (!isNotRegistred || (expirationDate > DateTime.Now))
                 {
                     window1.chP.ReloadXml();
                     window1.chP.Initialaze();
@@ -171,13 +171,13 @@ namespace WpfApplication1
         }
         public DateTime BeginDate
         {
-            get => datePickerBeginDate.SelectedDate ?? DateTime.Now.Date.AddDays(-30);
-            set => datePickerBeginDate.SelectedDate = value;
+            get => datePickerBeginDate.Value ?? DateTime.Now.Date.AddDays(-30);
+            set => datePickerBeginDate.Value = value;
         }
         public DateTime EndDate
         {
-            get => datePickerEndDate.SelectedDate ?? DateTime.Now.Date.Date;
-            set => datePickerEndDate.SelectedDate = value;
+            get => datePickerEndDate.Value ?? DateTime.Now.Date.Date;
+            set => datePickerEndDate.Value = value;
         }
         public List<KeyValuePair<string, string>> ExpensesOverview
         {
@@ -281,10 +281,10 @@ namespace WpfApplication1
                     }
                     if (kvalues.Contains("ed"))
                     {
-                        if (!DateTime.TryParse(sskaKey.GetValue("ed").ToString(), out expDate))
+                        if (!DateTime.TryParse(sskaKey.GetValue("ed").ToString(), out expirationDate))
                         {
-                            expDate = DateTime.Now.Date.AddDays(61);
-                            sskaKey.SetValue("ed", expDate.ToString("d"));
+                            expirationDate = DateTime.Now.Date.AddDays(61);
+                            sskaKey.SetValue("ed", expirationDate.ToString("d"));
                         }
                         else { }
                     }
@@ -299,7 +299,7 @@ namespace WpfApplication1
                     sskaKey.SetValue("isT", true);
                     sskaKey.SetValue("ed", DateTime.Now.Date.AddDays(61).ToString("d"));
                     isNotRegistred = true;
-                    expDate = DateTime.Now.Date.AddDays(61);
+                    expirationDate = DateTime.Now.Date.AddDays(61);
                 }
                 sskaKey.Close();
             }
