@@ -34,14 +34,14 @@ namespace WpfApplication1.DAL
                             else
                             {
                                 return true;
-                            }                            
+                            }
                         }
                     }
                 }
                 return true;
-            }            
+            }
             else
-            {                
+            {
                 return x.Value.Equals(y.Value);
             }
         }

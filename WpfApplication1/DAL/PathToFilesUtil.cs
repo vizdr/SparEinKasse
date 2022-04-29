@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using WpfApplication1.Properties;
-using System.Text;
 
 namespace WpfApplication1.DAL
 {
@@ -32,7 +30,7 @@ namespace WpfApplication1.DAL
         }
 
         public static string GetNameInputCategorizedCsvFile()
-        {          
+        {
             try
             {
                 categorizedInputCSVfiles = Directory.GetFiles(Config.PathToSskaDownloadsFolder, @"*categorized.csv");
@@ -49,6 +47,7 @@ namespace WpfApplication1.DAL
         {
             string pathToArxivFile = Path.Combine(Config.PathToXmlStorageFolder, Settings.Default.StorageFileName);
             if (!File.Exists(pathToArxivFile))
+            {
                 try
                 {
                     if (!Directory.Exists(Config.PathToXmlStorageFolder))
@@ -66,17 +65,18 @@ namespace WpfApplication1.DAL
                 {
                     MessageBox.Show(e.Message, Config.AppName + ": Unable to create new arxiv file", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+            }
             return string.Empty;
         }
 
         public static string GetArxivedCsvFilePath(string fileName)
         {
-            return Path.Combine(Config.PathToXmlStorageFolder, Path.GetFileName(fileName)); ;
+            return Path.Combine(Config.PathToXmlStorageFolder, Path.GetFileName(fileName));
         }
 
         public static string AppendSuffixToFileName(string fileName, string suffix)
         {
-            string newFilename = Path.GetFileNameWithoutExtension(fileName) + suffix + Path.GetExtension(fileName).ToLower(); 
+            string newFilename = Path.GetFileNameWithoutExtension(fileName) + suffix + Path.GetExtension(fileName).ToLower();
             return Path.Combine(Path.GetDirectoryName(fileName), newFilename);
         }
 
@@ -86,7 +86,7 @@ namespace WpfApplication1.DAL
             try
             {
                 FileStream fileStream = File.Create(categorizedFileName);
-                if(File.Exists(categorizedFileName))
+                if (File.Exists(categorizedFileName))
                 {
                     fileStream.Close();
                 }
@@ -95,7 +95,7 @@ namespace WpfApplication1.DAL
             catch (Exception ex)
             {
                 MessageBox.Show("Failure to create or move csv file with suffix categorized", ex.Message);
-                return String.Empty;
+                return string.Empty;
             }
         }
 
@@ -121,12 +121,17 @@ namespace WpfApplication1.DAL
                 lock (_fileLock)
                 {
                     if (!Directory.Exists(Config.PathToXmlStorageFolder))
+                    {
                         Directory.CreateDirectory(Config.PathToXmlStorageFolder);
+                    }
+
                     if (CsvToXmlSSKA.isInputCsvFilesCategorized())
                     {
                         string fileName = AppendSuffixToFileName(GetNameInputCategorizedCsvFile(), "_arxiv");
                         for (int i = 0; File.Exists(GetArxivedCsvFilePath(fileName)); i++)
+                        {
                             fileName = $"{fileName}_{i}";
+                        }
                         File.Move(GetNameInputCategorizedCsvFile(), GetArxivedCsvFilePath(fileName));
                     }
                 }

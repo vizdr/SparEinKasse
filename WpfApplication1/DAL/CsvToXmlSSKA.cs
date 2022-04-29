@@ -11,18 +11,20 @@ using CategoryFormatter;
 
 namespace WpfApplication1.DAL
 {
-    class CsvToXmlSSKA
+    internal class CsvToXmlSSKA
     {
-        static string[] rawCSVInputFiles;
-        static string[] categorizedCSVInputFiles;
-        public static string PathToStorageXmlFile { get; private set; }
+        private static string[] rawCSVInputFiles;
+        private static string[] categorizedCSVInputFiles;
+        private static string PathToStorageXmlFile { get; set; }
         private static bool isExceptionUnhandled = false;
         public static XElement DataSource { get; private set; }
         private readonly object _fileLock = new object();
-        public CsvToXmlSSKA()
+        static CsvToXmlSSKA()
         {
-
             PathToStorageXmlFile = Config.PathToXmlStorageFolder + @"\" + Settings.Default.StorageFileName;
+        }
+        public CsvToXmlSSKA()
+        {            
             try
             {
                 if (File.Exists(PathToStorageXmlFile))
