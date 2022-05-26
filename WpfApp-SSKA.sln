@@ -20,17 +20,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Categorization", "Categorization", "{34FD69AD-0392-43E2-9B34-B6801CA65E17}"
 	ProjectSection(SolutionItems) = preProject
 		Categorization\Categorization.csv = Categorization\Categorization.csv
-		Categorization\D3Dcompiler_47.dll = Categorization\D3Dcompiler_47.dll
-		Categorization\libEGL.dll = Categorization\libEGL.dll
-		Categorization\libGLESv2.dll = Categorization\libGLESv2.dll
 		Categorization\MT940_Test_umsatz.csv = Categorization\MT940_Test_umsatz.csv
-		Categorization\opengl32sw.dll = Categorization\opengl32sw.dll
 		Categorization\Qt5Core.dll = Categorization\Qt5Core.dll
 		Categorization\Qt5Gui.dll = Categorization\Qt5Gui.dll
-		Categorization\Qt5Svg.dll = Categorization\Qt5Svg.dll
 		Categorization\Qt5Widgets.dll = Categorization\Qt5Widgets.dll
 		Categorization\QtClassifcatorSSKA.exe = Categorization\QtClassifcatorSSKA.exe
-		Categorization\styles\qwindowsvistastyle.dll = Categorization\styles\qwindowsvistastyle.dll
 		Categorization\testOutput.csv = Categorization\testOutput.csv
 		Categorization\vc_redist.x64.exe = Categorization\vc_redist.x64.exe
 	EndProjectSection
@@ -48,7 +42,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "imageformats", "imageformat
 		Categorization\imageformats\qicns.dll = Categorization\imageformats\qicns.dll
 		Categorization\imageformats\qico.dll = Categorization\imageformats\qico.dll
 		Categorization\imageformats\qjpeg.dll = Categorization\imageformats\qjpeg.dll
-		Categorization\imageformats\qsvg.dll = Categorization\imageformats\qsvg.dll
 		Categorization\imageformats\qtga.dll = Categorization\imageformats\qtga.dll
 		Categorization\imageformats\qtiff.dll = Categorization\imageformats\qtiff.dll
 		Categorization\imageformats\qwbmp.dll = Categorization\imageformats\qwbmp.dll
@@ -63,33 +56,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "styles", "styles", "{423B4986-E6DB-4417-BBDF-D1CA7A40A8D3}"
 	ProjectSection(SolutionItems) = preProject
 		Categorization\styles\qwindowsvistastyle.dll = Categorization\styles\qwindowsvistastyle.dll
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "translations", "translations", "{BE45CD7E-5493-4D22-AEC4-96ABED455684}"
-	ProjectSection(SolutionItems) = preProject
-		Categorization\translations\qt_ar.qm = Categorization\translations\qt_ar.qm
-		Categorization\translations\qt_bg.qm = Categorization\translations\qt_bg.qm
-		Categorization\translations\qt_ca.qm = Categorization\translations\qt_ca.qm
-		Categorization\translations\qt_cs.qm = Categorization\translations\qt_cs.qm
-		Categorization\translations\qt_da.qm = Categorization\translations\qt_da.qm
-		Categorization\translations\qt_de.qm = Categorization\translations\qt_de.qm
-		Categorization\translations\qt_en.qm = Categorization\translations\qt_en.qm
-		Categorization\translations\qt_es.qm = Categorization\translations\qt_es.qm
-		Categorization\translations\qt_fi.qm = Categorization\translations\qt_fi.qm
-		Categorization\translations\qt_fr.qm = Categorization\translations\qt_fr.qm
-		Categorization\translations\qt_gd.qm = Categorization\translations\qt_gd.qm
-		Categorization\translations\qt_he.qm = Categorization\translations\qt_he.qm
-		Categorization\translations\qt_hu.qm = Categorization\translations\qt_hu.qm
-		Categorization\translations\qt_it.qm = Categorization\translations\qt_it.qm
-		Categorization\translations\qt_ja.qm = Categorization\translations\qt_ja.qm
-		Categorization\translations\qt_ko.qm = Categorization\translations\qt_ko.qm
-		Categorization\translations\qt_lv.qm = Categorization\translations\qt_lv.qm
-		Categorization\translations\qt_pl.qm = Categorization\translations\qt_pl.qm
-		Categorization\translations\qt_ru.qm = Categorization\translations\qt_ru.qm
-		Categorization\translations\qt_sk.qm = Categorization\translations\qt_sk.qm
-		Categorization\translations\qt_tr.qm = Categorization\translations\qt_tr.qm
-		Categorization\translations\qt_uk.qm = Categorization\translations\qt_uk.qm
-		Categorization\translations\qt_zh_TW.qm = Categorization\translations\qt_zh_TW.qm
 	EndProjectSection
 EndProject
 Global
@@ -128,7 +94,6 @@ Global
 		{9177711E-D35B-4136-8C87-6510FC890BDA} = {34FD69AD-0392-43E2-9B34-B6801CA65E17}
 		{CBEC65BF-C063-41D4-8E24-EA52E8BDFC58} = {34FD69AD-0392-43E2-9B34-B6801CA65E17}
 		{423B4986-E6DB-4417-BBDF-D1CA7A40A8D3} = {34FD69AD-0392-43E2-9B34-B6801CA65E17}
-		{BE45CD7E-5493-4D22-AEC4-96ABED455684} = {34FD69AD-0392-43E2-9B34-B6801CA65E17}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {14BA3560-D646-4E77-AC3A-EE29368CE4C7}
