@@ -174,6 +174,8 @@ namespace WpfApplication1
                 ResponseModel.ExpensesAtDate = GetExpensesAtDate(Request);
             if (Request.SelectedRemittee != null)
                 ResponseModel.Dates4RemiteeOverDateRange = Request.SelectedRemittee == string.Empty? ResponseModel.Dates4RemiteeOverDateRange : GetDates4RemiteeOverDateRange(Request);
+            if (Request.SelectedCategory != null)
+                ResponseModel.ExpenceBeneficiary4CategoryOverDateRange = Request.SelectedCategory == string.Empty ? ResponseModel.ExpenceBeneficiary4CategoryOverDateRange : GetExpenseBeneficiary4CategoryOverDateRange(Request);
         }
         #endregion
 
@@ -654,8 +656,39 @@ namespace WpfApplication1
             }
             return null;
         }
+        protected List<KeyValuePair<string, decimal>> GetExpenseBeneficiary4CategoryOverDateRange(DataRequest request)
+        {
+            try
+            {
+                var res =
+                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                                        && request.SelectedCategory.Equals(r.Element(Config.CategoryField).Value)
+                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= decimal.Zero
+                                        &&
+                                        (
+                                        r.Element(Config.BeguenstigterField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.BeguenstigterField).Value : preprocessedRequest.ToFind)
+                                        || r.Element(Config.VerwendZweckField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.VerwendZweckField).Value : preprocessedRequest.ToFind)
+                                        )
+                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                    orderby DateTime.Parse(r.Element(Config.WertDatumField).Value)
 
-        private int GetPercentage(int numerator, int denominator)
+                    select new KeyValuePair<string, decimal>(r.Element(Config.WertDatumField).Value + " : " + r.Element(Config.BeguenstigterField).Value,
+                          (-ConvertStringToDecimal(r.Element(Config.BetragField).Value)));
+
+                res = ApplyRangeFilter(res);
+                return res.ToList<KeyValuePair<string, decimal>>();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message + "**BuisenessLogicSSKA-GetDates4RemiteeOverDateRange**",
+                    Config.AppName + ": Unable to get Data", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return null;
+        }
+            private int GetPercentage(int numerator, int denominator)
         {
             int res;
             if (numerator++ >= denominator)

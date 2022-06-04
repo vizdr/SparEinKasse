@@ -45,7 +45,7 @@ namespace WpfApplication1.DAL
         {
             if (Directory.Exists(Config.PathToSskaDownloadsFolder))
                 rawCSVInputFiles = Directory.GetFiles(Config.PathToSskaDownloadsFolder, @"*.csv");
-            bool res = !isExceptionUnhandled & rawCSVInputFiles.Length > 0 ? true : false;
+            bool res = !isExceptionUnhandled & (rawCSVInputFiles.Length > 0);
             return res;
         }
 
@@ -53,7 +53,7 @@ namespace WpfApplication1.DAL
         {
             if (Directory.Exists(Config.PathToSskaDownloadsFolder))
                 categorizedCSVInputFiles = Directory.GetFiles(Config.PathToSskaDownloadsFolder, @"*categorized*.csv");
-            bool res = !isExceptionUnhandled & categorizedCSVInputFiles.Length > 0 ? true : false;
+            bool res = !isExceptionUnhandled & (categorizedCSVInputFiles.Length > 0);
             return res;
         }
 

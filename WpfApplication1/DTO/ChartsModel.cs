@@ -27,6 +27,7 @@ namespace WpfApplication1.DTO
             expensesAtDate = new List<KeyValuePair<string, decimal>>();
             dates4RemiteeOverDateRange = new List<KeyValuePair<string, decimal>>();
 
+            expenceBeneficiary4CategoryOverDateRange = new List<KeyValuePair<string, decimal>>();
             expensesOverCategory = new List<KeyValuePair<string, decimal>>();
         }
         public static ResponseModel GetInstance()
@@ -52,6 +53,7 @@ namespace WpfApplication1.DTO
         private List<KeyValuePair<string, decimal>> expensesAtDate;
         private List<KeyValuePair<string, decimal>> dates4RemiteeOverDateRange;
 
+        private List<KeyValuePair<string, decimal>> expenceBeneficiary4CategoryOverDateRange;
         private List<KeyValuePair<string, decimal>> expensesOverCategory;
 
         public List<KeyValuePair<string, string>> IncomesInfoOverDateRange
@@ -212,6 +214,19 @@ namespace WpfApplication1.DTO
                 if (dates4RemiteeOverDateRange != value)
                 {
                     dates4RemiteeOverDateRange = value;
+                    OnViewPropertyChanged();
+                }
+            }
+        }
+
+        public List<KeyValuePair<string, decimal>> ExpenceBeneficiary4CategoryOverDateRange
+        {
+            get => expenceBeneficiary4CategoryOverDateRange;
+            set
+            {
+                if (expenceBeneficiary4CategoryOverDateRange != value)
+                {
+                    expenceBeneficiary4CategoryOverDateRange = value;
                     OnViewPropertyChanged();
                 }
             }

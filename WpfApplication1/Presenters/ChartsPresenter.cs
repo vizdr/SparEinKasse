@@ -229,5 +229,17 @@ namespace WpfApplication1
             }
             return resString.Trim();
         }
+
+        public string GetDateBeneficiary(string category)
+        {
+            string resString = "";
+            bl.Request.SelectedCategory = category;
+            List<KeyValuePair<string, decimal>> resList = bl.ResponseModel.ExpenceBeneficiary4CategoryOverDateRange;
+            foreach (KeyValuePair<string, decimal> el in resList)
+            {
+                resString += el.Key + ": " + el.Value.ToString() + "\n";
+            }
+            return resString.Trim();
+        }
     }
 }

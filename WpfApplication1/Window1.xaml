@@ -10,10 +10,13 @@
             <Setter Property="Control.Width" Value="0"></Setter>
         </Style>
         <Style x:Key="chartDateExpence" TargetType="{x:Type chartingToolkit:ColumnDataPoint}">
-            <EventSetter Event="MouseUp" Handler="BarDataPoint_MouseUp"  />
+            <EventSetter Event="MouseUp" Handler="BarDataPoint_MouseUpDatExp"  />
         </Style>
         <Style x:Key="chartRemeteeExpence" TargetType="{x:Type chartingToolkit:ColumnDataPoint}">
-            <EventSetter Event="MouseUp"  Handler="BarDataPoint_MouseUp2" />
+            <EventSetter Event="MouseUp"  Handler="BarDataPoint_MouseUpRemExp" />
+        </Style>
+        <Style x:Key="chartCategoryExpence" TargetType="{x:Type chartingToolkit:ColumnDataPoint}">
+            <EventSetter Event="MouseUp"  Handler="BarDataPoint_MouseUpCatExp" />
         </Style>
     </Window.Resources>
 
@@ -24,7 +27,7 @@
             <ColumnDefinition Width="*" MinWidth="180" ></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Grid Name="grid_1_1" Grid.Column="0" VerticalAlignment="Stretch"  Margin="1,0.5,0,1" HorizontalAlignment="Stretch">
+        <Grid Name="grid_1_1" Grid.Column="0" VerticalAlignment="Stretch"  Margin="1,0,0,1" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3.4*" ></ColumnDefinition>
                 <ColumnDefinition Width="auto" MinWidth="10"></ColumnDefinition>
@@ -47,7 +50,7 @@
                 </Expander.Style>
                 <chartingToolkit:Chart Grid.Column="0" Background="White"  LegendStyle="{StaticResource MyInvisibleLegendStyle}"  Name="chartCategoryExpence" Title="Category-Expence" Padding="0.5,0,1,1" Margin="1,1,0.5,1" >
                     <chartingToolkit:BarSeries  DependentValuePath="Value" IndependentValuePath="Key" ItemsSource="{Binding}" 
-                        IsSelectionEnabled="True"  AnimationSequence="FirstToLast" Padding="0,1,3,1" ScrollViewer.HorizontalScrollBarVisibility="Auto" FontSize="10" VerticalContentAlignment="Stretch" Margin="1,0,4,1" RenderTransformOrigin="0.5,0.5" >
+                        IsSelectionEnabled="True" MouseUp="BarDataPoint_MouseUpCatExp" AnimationSequence="FirstToLast" Padding="0,1,3,1" ScrollViewer.HorizontalScrollBarVisibility="Auto" FontSize="10" VerticalContentAlignment="Stretch" Margin="1,0,4,1" RenderTransformOrigin="0.5,0.5" >
                         <chartingToolkit:BarSeries.IndependentAxis>
                             <chartingToolkit:CategoryAxis Orientation="Y" >
                                 <chartingToolkit:CategoryAxis.AxisLabelStyle>
@@ -85,8 +88,9 @@
                         </chartingToolkit:BarSeries.DependentRangeAxis>
                     </chartingToolkit:BarSeries>
                 </chartingToolkit:Chart>
+                
             </Expander>
-            <Expander Name="expRemitties" ExpandDirection="Down" Header="Aufwendungen" Grid.Column="0" VerticalContentAlignment="Stretch"  IsExpanded="True" IsEnabled="True" Margin="0,21,0,0" Opacity="1">
+            <Expander Name="expRemitties" ExpandDirection="Down" Header="Aufwendungen" Grid.Column="0" VerticalContentAlignment="Stretch"  IsExpanded="True" IsEnabled="True" Margin="0,21,1,0" Opacity="1">
                 <Expander.Style>
                     <Style>
                         <Style.Setters>
@@ -110,7 +114,7 @@
                     </Grid.RowDefinitions>
                     <chartingToolkit:Chart Grid.Column="0" Background="White"  LegendStyle="{StaticResource MyInvisibleLegendStyle}"  Name="chartRemeteeExpence" Title="Remittee-Expence" Padding="0.5,0,1,1" Margin="1,1,0,0.5" Grid.ColumnSpan="2" >
                         <chartingToolkit:BarSeries  DependentValuePath="Value" IndependentValuePath="Key" ItemsSource="{Binding}" 
-                        IsSelectionEnabled="True" MouseUp="BarDataPoint_MouseUp2" AnimationSequence="FirstToLast" Padding="0,1,3,1" ScrollViewer.HorizontalScrollBarVisibility="Auto" FontSize="10" VerticalContentAlignment="Stretch" Margin="1,0,4,1" RenderTransformOrigin="0.5,0.5" >
+                        IsSelectionEnabled="True" MouseUp="BarDataPoint_MouseUpRemExp" AnimationSequence="FirstToLast" Padding="0,1,3,1" ScrollViewer.HorizontalScrollBarVisibility="Auto" FontSize="10" VerticalContentAlignment="Stretch" Margin="1,0,4,1" RenderTransformOrigin="0.5,0.5" >
                             <chartingToolkit:BarSeries.IndependentAxis>
                                 <chartingToolkit:CategoryAxis Orientation="Y" >
                                     <chartingToolkit:CategoryAxis.AxisLabelStyle>
@@ -150,6 +154,8 @@
                     </chartingToolkit:Chart>
                     <Popup  x:Name="popupChartDateRemitte" Grid.Row="1" Placement="Mouse" Grid.ColumnSpan="2" Margin="0,0.42,0.12,-0.42" >
                     </Popup>
+                    <Popup  x:Name="popupChartCategExp" Grid.Row="1" Placement="Mouse" Grid.ColumnSpan="2" Margin="0,0.42,0.12,-0.42" >
+                    </Popup>
                 </Grid>
             </Expander>
 
@@ -165,7 +171,7 @@
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Expander Header="Inc.&#x9;&#x9;&#x9;" Name="expInc" Grid.Column="2" Grid.Row="0" ExpandDirection="Down" IsExpanded="True" IsEnabled="True" Margin="0,3,0,0"  Opacity="1">
+                <Expander Header="Income+;" Name="expInc" Grid.Column="2" Grid.Row="0" ExpandDirection="Down" IsExpanded="True" IsEnabled="True" Margin="0,3,0,0"  Opacity="1">
                     <Expander.Style>
                         <Style>
                             <Style.Setters>
@@ -183,13 +189,13 @@
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="0"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <chartingToolkit:Chart Name="chartDateExpence" Grid.Column="2" Grid.Row="0" Title="Date-Expence" MaxHeight="385" Background="White" >
+                        <chartingToolkit:Chart Name="chartDateExpence" Grid.Column="2" Grid.Row="0" Title="Date-Expence"  Background="White" >
                             <chartingToolkit:Chart.LegendStyle>
                                 <Style TargetType="datavis:Legend">
                                     <Setter Property="Width" Value="0"></Setter>
                                 </Style>
                             </chartingToolkit:Chart.LegendStyle>
-                            <chartingToolkit:ColumnSeries  Name="lineSeries2" DependentValuePath="Value" IndependentValuePath="Key"  ItemsSource="{Binding}" 
+                            <chartingToolkit:ColumnSeries  Name="lineSeriesDateExp" DependentValuePath="Value" IndependentValuePath="Key"  ItemsSource="{Binding}" 
                             IsSelectionEnabled="True" IsEnabled="True"  AnimationSequence="FirstToLast">
                                 <chartingToolkit:ColumnSeries.IndependentAxis>
                                     <chartingToolkit:DateTimeAxis Orientation="X" IsEnabled="True" Block.TextAlignment="Left" >
@@ -221,7 +227,7 @@
                     </Grid>
                 </Expander>
                 
-                <Expander Header="Exp2." Name="expRemGroups" Grid.Column="2" Grid.Row="1" ExpandDirection="Down" IsExpanded="False" IsEnabled="True" Margin="0,2,0,0"  Opacity="1">
+                <Expander Header="Expence+" Name="expRemGroups" Grid.Column="2" Grid.Row="1" ExpandDirection="Down" IsExpanded="False" IsEnabled="True" Margin="0,2,0,0"  Opacity="1">
                     <Expander.Style>
                         <Style>
                             <Style.Setters>
@@ -304,8 +310,8 @@
                         </chartingToolkit:AreaSeries.DependentRangeAxis>
                     </chartingToolkit:AreaSeries>
                 </chartingToolkit:Chart>
-                <TextBox Height="24" Margin="70,3,70,0" MinWidth="60" Text="Total:" Padding="3" TextAlignment="Left"  Background="Lavender" BorderBrush="Red"   Name="textBoxTotal" VerticalAlignment="Top" HorizontalAlignment="Center" />
-                <Button Height="24"  HorizontalAlignment="Right" Margin="0,3,1,0" Name="buttonShowFilters" VerticalAlignment="Top" Width="65" Panel.ZIndex="2">Filter</Button>
+                <TextBox Height="23" Margin="70,3,70,0" MinWidth="60" Text="Total:" Padding="3" TextAlignment="Left"  Background="Lavender" BorderBrush="Red"   Name="textBoxTotal" VerticalAlignment="Top" HorizontalAlignment="Center" />
+                <Button Height="23"  HorizontalAlignment="Right" Margin="0,3,1,0" Name="buttonShowFilters" VerticalAlignment="Top" Width="65" Panel.ZIndex="2">Filter</Button>
             </Grid>
         </Grid>
         <Grid Name="grid1_1_2" Grid.Column="1" Panel.ZIndex="1" Margin="0,0,1,0"  HorizontalAlignment="Stretch">

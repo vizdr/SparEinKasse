@@ -13,7 +13,8 @@ namespace WpfApplication1.DTO
         private DateTime endDate;
 
         private DateTime atDate;
-        private String selectedRemittee;
+        private string selectedRemittee;
+        private string selectedCategory;
 
         private FilterParams filters;
 
@@ -85,6 +86,19 @@ namespace WpfApplication1.DTO
                 if (selectedRemittee != value)
                 {
                     selectedRemittee = value;
+                    OnViewDataRequested();
+                }
+            }
+        }
+
+        public String SelectedCategory
+        {
+            get => selectedCategory;
+            set
+            {
+                if (selectedCategory != value)
+                {
+                    selectedCategory = value;
                     OnViewDataRequested();
                 }
             }

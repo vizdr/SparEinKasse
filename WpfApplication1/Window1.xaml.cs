@@ -25,6 +25,7 @@ namespace WpfApplication1
         public static DateTime expDate;
         private readonly TextBlock popupChDateExpText;
         private readonly TextBlock popupChRemiteExpText;
+        private readonly TextBlock popupChCategExpText;
         static Window1()
         {
             HandleRegistration();
@@ -66,13 +67,18 @@ namespace WpfApplication1
                 }
             };
             window1.buttonSettings.Click += delegate { new WindowFieldsDictionary().ShowDialog(); };
-            window1.lineSeries2.MouseUp += window1.BarDataPoint_MouseUp;  // event handler popup for chart date-expence
+            window1.lineSeriesDateExp.MouseUp += window1.BarDataPoint_MouseUpDatExp;  // event handler popup for chart date-expence
             popupChDateExpText = new TextBlock
             {
                 Background = Brushes.LightBlue,
                 Padding = new Thickness(2.0d)
             };
             popupChRemiteExpText = new TextBlock
+            {
+                Background = Brushes.LightBlue,
+                Padding = new Thickness(2.0d)
+            };
+            popupChCategExpText = new TextBlock
             {
                 Background = Brushes.LightBlue,
                 Padding = new Thickness(2.0d)
@@ -235,7 +241,7 @@ namespace WpfApplication1
         public event RoutedEventHandler OnDateIntervalChanged;
 
         // handlers of event setters for attached in xaml styles, resources for chart popups   
-        private void BarDataPoint_MouseUp(object sender, MouseButtonEventArgs e)
+        private void BarDataPoint_MouseUpDatExp(object sender, MouseButtonEventArgs e)
         {
             // also accessible via object o = (chartDateExpence.Series[0] as DataPointSeries).SelectedItem;
             if ((sender as DataPointSeries).SelectedItem is KeyValuePair<DateTime, decimal> kv)
@@ -246,7 +252,7 @@ namespace WpfApplication1
                 popupChartDateExpenes.StaysOpen = false;
             }
         }
-        private void BarDataPoint_MouseUp2(object sender, MouseButtonEventArgs e)
+        private void BarDataPoint_MouseUpRemExp(object sender, MouseButtonEventArgs e)
         {
             if ((sender as DataPointSeries).SelectedItem is KeyValuePair<string, decimal> kv)
             {
@@ -256,7 +262,18 @@ namespace WpfApplication1
                 popupChartDateRemitte.StaysOpen = false;
             }
         }
-       
+
+        private void BarDataPoint_MouseUpCatExp(object sender, MouseButtonEventArgs e)
+        {
+            if ((sender as DataPointSeries).SelectedItem is KeyValuePair<string, decimal> kv)
+            {
+                popupChCategExpText.Text = chP.GetDateBeneficiary(kv.Key);
+                popupChartCategExp.Child = popupChCategExpText;
+                popupChartCategExp.IsOpen = true;
+                popupChartCategExp.StaysOpen = false;
+            }
+        }
+
         private static void HandleRegistration()
         {
             using (RegistryKey currentUserKey = Registry.CurrentUser.OpenSubKey("SOFTWARE", true))
