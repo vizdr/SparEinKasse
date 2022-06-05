@@ -147,12 +147,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_CC3C212A97B149D8B2AB75A2165B8560"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_D199A95AE52241A28A4E9A4D5FE9E9E0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -308,7 +302,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:3.5.30729     "
+                "FrameworkVersion" = "8:3.5.30729      "
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=76617"
                 }
@@ -751,26 +745,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CC3C212A97B149D8B2AB75A2165B8560"
-            {
-            "SourcePath" = "8:..\\Categorization\\iconengines\\qsvgicon.dll"
-            "TargetName" = "8:qsvgicon.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_469919D72B864C3FBC0F9EFCD8D54CDF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D199A95AE52241A28A4E9A4D5FE9E9E0"
             {
             "SourcePath" = "8:..\\Categorization\\QtClassifcatorSSKA.exe"
@@ -947,17 +921,6 @@
                                     "Condition" = "8:"
                                     "Transitive" = "11:FALSE"
                                     "Property" = "8:_8B78F7C3EADD43019C2047579A8965A9"
-                                        "Folders"
-                                        {
-                                        }
-                                    }
-                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_469919D72B864C3FBC0F9EFCD8D54CDF"
-                                    {
-                                    "Name" = "8:iconengines"
-                                    "AlwaysCreate" = "11:FALSE"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "Property" = "8:_6E317821F17A468DAC18E4B86B1F5227"
                                         "Folders"
                                         {
                                         }
