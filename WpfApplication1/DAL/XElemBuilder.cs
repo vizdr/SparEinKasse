@@ -78,9 +78,10 @@ namespace WpfApplication1.DAL
                 }
                 try
                 {
+                    bool isSourceCAMT = source.Count() == Config.CountCAMTFields;
                     XElement cust = new XElement(Config.XmlFileRoot,
                     from fields in source
-                    where !fields[0].Equals(string.Empty) & !fields[1].Equals(string.Empty)
+                    where !fields[0].Equals(string.Empty) & !fields[1].Equals(string.Empty) && isSourceCAMT ? !fields[16].Contains(Config.Preliminar) : !fields[10].Contains(Config.Preliminar)
                     // index of targrtHeaders from Settings
                     select new XElement(Config.TransactionField, new XAttribute(Config.AuftragsKontoField, targetedHeaderFieldsIndexes[0].Equals(String.Empty) ? BankAccount : fields[(int)targetedHeaderFieldsIndexes[0]]),  // Auftragskonto
                         new XElement(Config.BuchungstagField, fields[(int)targetedHeaderFieldsIndexes[1]]),                                                                                                     // Buchungstag   
@@ -143,9 +144,10 @@ namespace WpfApplication1.DAL
             {
                 try
                 {
+                    bool isSourceCAMT = source.Count() == Config.CountCAMTFields;
                     XElement cust = new XElement(Config.XmlFileRoot,
                        from fields in source
-                       where !fields[1].Equals(string.Empty) & !fields[2].Equals(string.Empty)                                                    // indexes of targetHeaders from Settings
+                       where !fields[1].Equals(string.Empty) & !fields[2].Equals(string.Empty) && isSourceCAMT ? !fields[16].Contains(Config.Preliminar) : !fields[10].Contains(Config.Preliminar)                                                  // indexes of targetHeaders from Settings
                        select new XElement(Config.TransactionField, new XAttribute(Config.AuftragsKontoField, fields[(int)targetedHeaderFieldsIndexes[0]]),                        // Auftragskonto
                            new XElement(Config.BuchungstagField, Config.ExchYearDay(fields[(int)targetedHeaderFieldsIndexes[1]]), new XAttribute("type", "date")),                 // Buchungstag   
                            new XElement(Config.WertDatumField, Config.ExchYearDay(fields[(int)targetedHeaderFieldsIndexes[2]]), new XAttribute("type", "date")),                   // Valutadatum

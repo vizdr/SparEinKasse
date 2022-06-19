@@ -73,5 +73,7 @@ namespace WpfApplication1.DAL
         public static string CategoryIdField = "CategoryID";
         public static string CategoryField = "Category";
         public static string PathToCategorizationFile = PathToSskaDownloadsFolder + @"\Categorization\Categorization.csv";
+        public static int CountCAMTFields = 16;
+        public static string Preliminar = "vorgemerkt";
     }
 }
