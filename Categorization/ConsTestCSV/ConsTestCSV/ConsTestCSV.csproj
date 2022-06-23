@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="CategoryFormatter">
       <HintPath>..\..\CategoryFormatter\bin\Debug\CategoryFormatter.dll</HintPath>
     </Reference>

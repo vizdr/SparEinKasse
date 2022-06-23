@@ -22,7 +22,7 @@ namespace CategoryFormatter
 
         private string[] rowInputCSV;
         List<string> collectedTokensFromRow;
-
+        private readonly Encoding csvSSKAEncoding;
         private List<Tuple<KeyValuePair<int, string> /*category*/,
             HashSet<string> /*beneficiary*/, HashSet<string> /* reasonForPayment*/ , HashSet<string> /*bookingText*/>> categoryContexts;
         private List<Tuple<long /* row number */, KeyValuePair<int /* category ID */, string /* Category */>>> categoryInfo;
@@ -53,7 +53,9 @@ namespace CategoryFormatter
             this.indexBookingTextField = indexBookingTextField;
             try
             {
-                lines = File.ReadAllLines(pathToInputCSV).ToList();
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                csvSSKAEncoding = Encoding.GetEncoding(1252);
+                lines = File.ReadAllLines(pathToInputCSV, csvSSKAEncoding).ToList();
             }
             catch (Exception ex)
             {
@@ -217,7 +219,7 @@ namespace CategoryFormatter
             {
                 try
                 {
-                    File.WriteAllLines(pathToOutputCSV, lines);
+                    File.WriteAllLines(pathToOutputCSV, lines, csvSSKAEncoding);
                 }
                 catch (Exception ex)
                 {
