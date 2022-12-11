@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using WpfApplication1.DTO;
 using System.ComponentModel;
 
 namespace WpfApplication1
@@ -20,7 +19,6 @@ namespace WpfApplication1
             _viewCharts = viewChart ?? throw new ArgumentNullException(nameof(viewChart));            
             _viewCharts.BeginDate = bl.Request.BeginDate;
             _viewCharts.EndDate = bl.Request.EndDate;
-            _viewCharts.OnDateIntervalChanged += delegate { Initialaze(); };
             bl.ResponseModel.PropertyChanged += ReactOnPropertyChange;
             bl.ResponseModel.ViewPropertyChanged += ReactOnViewPropertyChange;
         }
@@ -39,7 +37,7 @@ namespace WpfApplication1
         {
             bl.Request.BeginDate = _viewCharts.BeginDate;
             bl.Request.EndDate = _viewCharts.EndDate;
-            Thread.Sleep(120);
+            Thread.Sleep(150);
         }
 
         public void FinalizeChP()

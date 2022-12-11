@@ -8,7 +8,7 @@ using System.Windows.Media;
 using System.Xml;
 using System.Windows.Controls.DataVisualization.Charting;
 using Microsoft.Win32;
-
+using System.Collections.ObjectModel;
 
 namespace WpfApplication1
 {
@@ -18,7 +18,7 @@ namespace WpfApplication1
     public partial class Window1 : Window, IViewCharts
     {
         private ChartsPresenter chP;
-        private List<KeyValuePair<string, decimal>> incomes;
+        private ObservableCollection<KeyValuePair<string, decimal>> incomes;
         private List<KeyValuePair<string, decimal>> remittees;
 
         public static bool isNotRegistred;
@@ -56,7 +56,7 @@ namespace WpfApplication1
                 aw.Activate();
                 aw.ShowDialog();
             }
-            window1.buttonUpdateSpan.Click += OnDateIntervalChanged;
+            window1.buttonUpdateSpan.Click += delegate { window1.chP.Initialaze(); InitializeComponent(); };
             window1.buttonShowFilters.Click += delegate { window1.InitialaizeFiltersWindow(new WindowFilters()); };
             window1.buttonUpdateDataBankXML.Click += delegate
             {
@@ -64,6 +64,7 @@ namespace WpfApplication1
                 {
                     window1.chP.ReloadXml();
                     window1.chP.Initialaze();
+                    InitializeComponent();
                 }
             };
             window1.buttonSettings.Click += delegate { new WindowFieldsDictionary().ShowDialog(); };
@@ -136,8 +137,8 @@ namespace WpfApplication1
                     default:
                         (chartRemeteeExpence.Series[0] as BarSeries).MaxHeight = double.PositiveInfinity;
                         break;
-                }
-                (chartRemeteeExpence.Series[0] as DataPointSeries).ItemsSource = remittees;
+                }               
+                (chartRemeteeExpence.Series[0] as DataPointSeries).ItemsSource = value;             
             }
         }
         public List<KeyValuePair<DateTime, decimal>> Expenses
@@ -154,12 +155,13 @@ namespace WpfApplication1
                 (chartDateBalance.Series[0] as DataPointSeries).ItemsSource = value;
             }
         }
-        public List<KeyValuePair<string, decimal>> Incomes
+        public ObservableCollection<KeyValuePair<string, decimal>> Incomes
         {
             set
             {
                 incomes = value;
                 int qtyBars = incomes.Count;
+                
                 switch (qtyBars)
                 {
                     case 1:
@@ -172,7 +174,7 @@ namespace WpfApplication1
                         (chartIncomes.Series[0] as BarSeries).MaxHeight = double.PositiveInfinity;
                         break;
                 }
-                 (chartIncomes.Series[0] as DataPointSeries).ItemsSource = incomes;
+                (chartIncomes.Series[0] as DataPointSeries).ItemsSource = value;
             }
         }
         public DateTime BeginDate
@@ -237,8 +239,6 @@ namespace WpfApplication1
         }
 
         #endregion
-
-        public event RoutedEventHandler OnDateIntervalChanged;
 
         // handlers of event setters for attached in xaml styles, resources for chart popups   
         private void BarDataPoint_MouseUpDatExp(object sender, MouseButtonEventArgs e)

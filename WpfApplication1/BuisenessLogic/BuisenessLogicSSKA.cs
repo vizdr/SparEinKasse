@@ -50,16 +50,17 @@ namespace WpfApplication1
 
         private void RegisterMethodsForProgressBar()
         {
+            updateChart += delegate { ResponseModel.ExpensesOverDateRange = GetExpensesOverDateRange(); };
             updateChart += delegate { ResponseModel.TransactionsAccounts = GetTransactionsAccounts(); };
             updateChart += delegate { ResponseModel.IncomesOverDatesRange = GetIncomesOverDatesRange(); };
-            updateChart += delegate { ResponseModel.BalanceOverDateRange = GetBalanceOverDateRange(); };
-            updateChart += delegate { ResponseModel.ExpensesOverDateRange = GetExpensesOverDateRange(); };
+            updateChart += delegate { ResponseModel.BalanceOverDateRange = GetBalanceOverDateRange(); };           
             updateChart += delegate { ResponseModel.ExpensesInfoOverDateRange = GetExpensesInfoOverDateRange(); };
             updateChart += delegate { ResponseModel.ExpensesOverRemiteeGroupsInDateRange = GetExpensesOverRemiteeGroupsInDateRange(); };
             updateChart += delegate { ResponseModel.ExpensesOverRemiteeInDateRange = GetExpensesOverRemiteeInDateRange(); };
             updateChart += delegate { ResponseModel.Summary = GetSummary(); };
             updateChart += delegate { ResponseModel.IncomesInfoOverDateRange = GetIncomesInfoOverDateRange(); };
             updateChart += delegate { ResponseModel.ExpensesOverCategory = GetExpensesOverCategory(); };
+            
         }
         private decimal ConvertStringToDecimal(string src)
         {
@@ -140,21 +141,23 @@ namespace WpfApplication1
             IProgress<int> progress = new Progress<int>(s => progrBar.pbStatus.Value = s);
 
             int qty2Invoke = updateChart.GetInvocationList().Length;
-            for (int ctr = 0; ctr < qty2Invoke; ++ctr)
+            for (int ctr = 0; ctr < qty2Invoke; ctr++)
             {
                 // (ctr + 1) would be adjusted to 9 calls of functions 
-                int progr = ctr  * 10;
+                int progr = (ctr+1)  * 10;
 
                 var updChart = updateChart.GetInvocationList()[ctr];
                 updChart.DynamicInvoke(Request);
+                Thread.Sleep(60);
+
                 await Task.Factory.StartNew<int>(
                                              () =>
                                              {
                                                  progress.Report(progr);
-                                                 Thread.Sleep(35);
+                                                 Thread.Sleep(120);
                                                  return 0;
                                              },
-                                             TaskCreationOptions.LongRunning);
+                                             TaskCreationOptions.PreferFairness);
             }
 
             if (progrBar.IsVisible)
@@ -346,7 +349,7 @@ namespace WpfApplication1
             return null;
 
         }
-        protected List<KeyValuePair<string, decimal>> GetIncomesOverDatesRange()
+        protected ObservableCollection<KeyValuePair<string, decimal>> GetIncomesOverDatesRange()
         {
             try
             {
@@ -363,7 +366,7 @@ namespace WpfApplication1
                            n => ConvertStringToDecimal(n)));
                    
                 res = res.Where(paar => (paar.Value >= preprocessedRequest.IncomsLowestValue) && (paar.Value <= preprocessedRequest.IncomsHighestValue));
-                return res.ToList<KeyValuePair<string, decimal>>();
+                return new ObservableCollection<KeyValuePair<string, decimal>>(res.ToList<KeyValuePair<string, decimal>>());
             }
             catch (Exception e)
             {

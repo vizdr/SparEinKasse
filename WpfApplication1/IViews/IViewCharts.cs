@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace WpfApplication1
@@ -11,7 +12,7 @@ namespace WpfApplication1
         Decimal AxeExpencesCategoryMaxValue { set; }
         List<KeyValuePair<DateTime, decimal>> Expenses { set; }
         List<KeyValuePair<DateTime, decimal>> Balance { set;}
-        List<KeyValuePair<string, decimal>> Incomes { set; }
+        ObservableCollection<KeyValuePair<string, decimal>> Incomes { set; }
         List<KeyValuePair<string, string>> ExpensesOverview { set; }
         List<KeyValuePair<string, string>> IncomsOverview { set; }
         List<KeyValuePair<string, decimal>> RemittieeGroups { set; }
@@ -20,6 +21,5 @@ namespace WpfApplication1
         DateTime EndDate { get; set; }
         string Summary { set; }
         List<string> Accounts { set; }
-        event RoutedEventHandler OnDateIntervalChanged;
     }
 }

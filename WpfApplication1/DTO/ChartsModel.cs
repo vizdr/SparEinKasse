@@ -12,7 +12,7 @@ namespace WpfApplication1.DTO
         private ResponseModel()
         {
             expensesOverDateRange = new List<KeyValuePair<string, decimal>>();
-            incomesOverDatesRange = new List<KeyValuePair<string, decimal>>();
+            incomesOverDatesRange = new ObservableCollection<KeyValuePair<string, decimal>>();
             balanceOverDateRange = new List<KeyValuePair<DateTime, decimal>>();
             expensesOverRemiteeInDateRange = new List<KeyValuePair<string, decimal>>();
             expensesOverRemiteeGroupsInDateRange = new List<KeyValuePair<string, decimal>>();
@@ -39,7 +39,7 @@ namespace WpfApplication1.DTO
         public event PropertyChangedEventHandler ViewPropertyChanged;
 
         private List<KeyValuePair<string, decimal>> expensesOverDateRange;
-        private List<KeyValuePair<string, decimal>> incomesOverDatesRange;
+        private ObservableCollection<KeyValuePair<string, decimal>> incomesOverDatesRange;
         private List<KeyValuePair<DateTime, decimal>> balanceOverDateRange;
         private List<KeyValuePair<string, decimal>> expensesOverRemiteeInDateRange;
         private List<KeyValuePair<string, decimal>> expensesOverRemiteeGroupsInDateRange;
@@ -68,7 +68,7 @@ namespace WpfApplication1.DTO
                 }
             }
         }
-        public List<KeyValuePair<string, decimal>> IncomesOverDatesRange
+        public ObservableCollection<KeyValuePair<string, decimal>> IncomesOverDatesRange
         {
             get => incomesOverDatesRange;
             set
