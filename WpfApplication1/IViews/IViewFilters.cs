@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace WpfApplication1
 {
-    interface IViewFilters
+    public interface IViewFilters
     {
         ObservableCollection<BoolTextCouple> BuchungstextValues { set; get; }
         ObservableCollection<BoolTextCouple> UserAccounts { set; get; }

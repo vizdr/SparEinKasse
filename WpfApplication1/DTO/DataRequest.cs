@@ -16,7 +16,7 @@ namespace WpfApplication1.DTO
         private string selectedRemittee;
         private string selectedCategory;
 
-        private FilterParams filters;
+        private static FilterParams filters;
 
         public event EventHandler DataRequested;
         public event EventHandler FilterValuesRequested;

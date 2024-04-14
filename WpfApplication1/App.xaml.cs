@@ -33,7 +33,7 @@ namespace WpfApplication1
             Application.Current.MainWindow.Show(); 
             if(!Application.Current.MainWindow.ShowActivated)
                 Application.Current.MainWindow.Activate();
-            //Application.Current.MainWindow.HorizontalAlignment = HorizontalAlignment.Stretch;                     
+            Application.Current.MainWindow.HorizontalAlignment = HorizontalAlignment.Stretch;
             oldWindow.Close();
 
         }

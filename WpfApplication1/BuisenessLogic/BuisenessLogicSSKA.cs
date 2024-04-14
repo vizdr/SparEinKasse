@@ -86,7 +86,7 @@ namespace WpfApplication1
 
             if (request.Filters != null)
             {
-                if(request.Filters.Accounts.Count > 0)
+                if(request.Filters.UserAccounts.Count > 0)
                 {
                     if (!decimal.TryParse(request.Filters.ExpenciesLessThan, out decimal expLessThan))
                     {
@@ -109,7 +109,7 @@ namespace WpfApplication1
                     {
                         preprocessedRequest.Accounts.Clear();
                     }
-                    preprocessedRequest.Accounts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.Accounts));
+                    preprocessedRequest.Accounts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.UserAccounts));
                     preprocessedRequest.ToFind = request.Filters.ToFind;
 
                     preprocessedRequest.ExpencesLowestValue = expMoreThan;

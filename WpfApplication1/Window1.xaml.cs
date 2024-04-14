@@ -113,7 +113,7 @@ namespace WpfApplication1
             window.Owner = GetWindow(this);
             chP.ViewFilters = window;
             window.RegisterEventHandlers();
-            chP.InitializeFilters(ChartsPresenter.FilterValues);
+            chP.InitializeFilters(new FilterParams(chP.ViewFilters));
             window.Activate();
             window.Show();
         }

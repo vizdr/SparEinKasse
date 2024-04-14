@@ -152,10 +152,11 @@
                             </chartingToolkit:BarSeries.DependentRangeAxis>
                         </chartingToolkit:BarSeries>
                     </chartingToolkit:Chart>
+                    <Popup  x:Name="popupChartCategExp" Grid.Row="2" Placement="Mouse"  Grid.ColumnSpan="2" Margin="0,0.42,0.12,-0.42" >
+                    </Popup>
                     <Popup  x:Name="popupChartDateRemitte" Grid.Row="1" Placement="Mouse" Grid.ColumnSpan="2" Margin="0,0.42,0.12,-0.42" >
                     </Popup>
-                    <Popup  x:Name="popupChartCategExp" Grid.Row="1" Placement="Mouse" Grid.ColumnSpan="2" Margin="0,0.42,0.12,-0.42" >
-                    </Popup>
+                    
                 </Grid>
             </Expander>
 

@@ -11,7 +11,6 @@ namespace WpfApplication1
         private readonly IViewCharts _viewCharts;
         private IViewFilters _viewFilters;
         private readonly IBuisenessLogic bl;
-        public static FilterParams FilterValues { get; private set; }
 
         public ChartsPresenter(IViewCharts viewChart, IBuisenessLogic bl)
         {
@@ -95,7 +94,7 @@ namespace WpfApplication1
             }
         }
 
-        // draft, currently set for viewProperty xx occurs via mouse up event handlers 
+        // Draft, currently set for viewProperty xx occurs via mouse up event handlers 
         public void ReactOnViewPropertyChange(object sender, PropertyChangedEventArgs e)
         {
             String s = e.PropertyName;
@@ -131,24 +130,9 @@ namespace WpfApplication1
         }
 
         #region Filters
-        public void InitializeFilters(FilterParams FilterValues)
+        public void InitializeFilters(FilterParams filterValues)
         {
-            if (FilterValues == null)
-            {
-                FilterValues = new FilterParams(_viewFilters.ExpenciesLessThan, _viewFilters.ExpenciesMoreThan,
-                _viewFilters.IncomesLessThan, _viewFilters.IncomesMoreThan, _viewFilters.ToFind, _viewFilters.BuchungstextValues, _viewFilters.UserAccounts);
-                bl.Request.Filters = FilterValues;
-            }
-            else
-            {
-                _viewFilters.BuchungstextValues = FilterValues.BuchungstextValues;
-                _viewFilters.UserAccounts = FilterValues.Accounts;
-                _viewFilters.ExpenciesLessThan = FilterValues.ExpenciesLessThan;
-                _viewFilters.ExpenciesMoreThan = FilterValues.ExpenciesMoreThan;
-                _viewFilters.IncomesLessThan = FilterValues.IncomesLessThan;
-                _viewFilters.IncomesMoreThan = FilterValues.IncomesMoreThan;
-                _viewFilters.ToFind = FilterValues.ToFind;
-            }
+            bl.Request.Filters = filterValues ?? new FilterParams(null);
         }
 
         private void RegisterFiltersHandlers()
@@ -161,19 +145,24 @@ namespace WpfApplication1
         {
             _viewFilters.ExpenciesLessThan = _viewFilters.ExpenciesMoreThan = _viewFilters.IncomesLessThan =
                 _viewFilters.IncomesMoreThan = _viewFilters.ToFind = String.Empty;
-            if (FilterValues != null)
+
+            foreach (BoolTextCouple val in _viewFilters.BuchungstextValues)
             {
-                FilterValues.ResetValues();
+                val.IsSelected = true;
             }
-            InitializeFilters(null);
+            foreach (BoolTextCouple val in _viewFilters.UserAccounts)
+            {
+                val.IsSelected = true;
+            }
+
+            InitializeFilters(new FilterParams(ViewFilters));
         }
 
         // apply if selection of params is completed
         private void ApplyFilters()
         {
-            FilterValues = new FilterParams(_viewFilters.ExpenciesLessThan, _viewFilters.ExpenciesMoreThan,
-                _viewFilters.IncomesLessThan, _viewFilters.IncomesMoreThan, _viewFilters.ToFind, _viewFilters.BuchungstextValues, _viewFilters.UserAccounts);
-            bl.Request.Filters = FilterValues;
+            FilterParams FilterValues = new FilterParams(_viewFilters);
+            bl.Request.Filters = FilterValues;            
         }
 
         public IViewFilters ViewFilters
@@ -203,7 +192,7 @@ namespace WpfApplication1
             return maxVal.Count() > 0 ? maxVal.Max() + 2 : 0m;
         }
 
-        // for the defined in xaml mouse up event handlers, presentationFramework - external dll
+        // For the defined in xaml mouse up event handlers, presentationFramework - external dll
         public string GetExpencesAtDate(DateTime inDate)
         {
             string resString = "";

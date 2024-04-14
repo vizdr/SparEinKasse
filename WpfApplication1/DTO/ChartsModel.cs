@@ -22,7 +22,7 @@ namespace WpfApplication1.DTO
             transactionsAccounts = new List<string>();
 
             buchungstextOverDateRange = FilterParams.GetInstance().BuchungstextValues;
-            transactionsAccountsObsCollBoolTextCouple = FilterParams.GetInstance().Accounts;
+            transactionsAccountsObsCollBoolTextCouple = FilterParams.GetInstance().UserAccounts;
 
             expensesAtDate = new List<KeyValuePair<string, decimal>>();
             dates4RemiteeOverDateRange = new List<KeyValuePair<string, decimal>>();
