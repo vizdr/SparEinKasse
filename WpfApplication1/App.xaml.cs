@@ -15,10 +15,19 @@ namespace WpfApplication1
     /// </summary>
     public partial class App : Application
     {
-        public static void ChangeCulture(CultureInfo culture)
+        protected override void OnStartup(StartupEventArgs e)
         {
-            Thread.CurrentThread.CurrentCulture = culture;
-            Thread.CurrentThread.CurrentUICulture = culture;
+            CultureInfo CI = (CultureInfo)Thread.CurrentThread.CurrentCulture.Clone();
+            CI.DateTimeFormat.ShortDatePattern = "dd.MM.yyyy";
+            Thread.CurrentThread.CurrentCulture = CI;           
+            base.OnStartup(e);
+        }
+            public static void ChangeCulture(CultureInfo culture)
+        {
+            CultureInfo CI = (CultureInfo)culture.Clone();
+            CI.DateTimeFormat.ShortDatePattern= "dd.MM.yyyy";
+            Thread.CurrentThread.CurrentCulture = CI;
+            Thread.CurrentThread.CurrentUICulture = CI;
             var oldWindow = Application.Current.MainWindow;
 
             // Calculation of Display Resolution

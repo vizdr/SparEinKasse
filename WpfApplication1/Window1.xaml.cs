@@ -20,7 +20,7 @@ namespace WpfApplication1
         private ChartsPresenter chP;
         private ObservableCollection<KeyValuePair<string, decimal>> incomes;
         private List<KeyValuePair<string, decimal>> remittees;
-
+        
         public static bool isNotRegistred;
         public static DateTime expDate;
         private readonly TextBlock popupChDateExpText;
@@ -28,18 +28,21 @@ namespace WpfApplication1
         private readonly TextBlock popupChCategExpText;
         static Window1()
         {
+            isNotRegistred = true;
+            expDate = DateTime.Today;
             HandleRegistration();
         }
         public Window1()
         {
             try
-            {
-                InitializeComponent();
+            { 
+                InitializeComponent();               
             }
             catch (XmlException exc)
             {
                 MessageBox.Show(exc.InnerException.ToString(), "SSKA analyzer: Unable to initialize XAML components", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
 
             Window1 window1 = this;
             window1.chP = new ChartsPresenter(window1);
@@ -60,7 +63,7 @@ namespace WpfApplication1
             window1.buttonShowFilters.Click += delegate { window1.InitialaizeFiltersWindow(new WindowFilters()); };
             window1.buttonUpdateDataBankXML.Click += delegate
             {
-                if (!isNotRegistred || (expDate > DateTime.Now))
+                if (!isNotRegistred || (expDate > DateTime.Today))
                 {
                     window1.chP.ReloadXml();
                     window1.chP.Initialaze();
@@ -72,7 +75,7 @@ namespace WpfApplication1
             popupChDateExpText = new TextBlock
             {
                 Background = Brushes.LightBlue,
-                Padding = new Thickness(2.0d)
+                Padding = new Thickness(2.0d),
             };
             popupChRemiteExpText = new TextBlock
             {
@@ -138,7 +141,7 @@ namespace WpfApplication1
                         (chartRemeteeExpence.Series[0] as BarSeries).MaxHeight = double.PositiveInfinity;
                         break;
                 }               
-                (chartRemeteeExpence.Series[0] as DataPointSeries).ItemsSource = value;             
+                (chartRemeteeExpence.Series[0] as BarSeries).ItemsSource = value;             
             }
         }
         public List<KeyValuePair<DateTime, decimal>> Expenses
@@ -179,12 +182,12 @@ namespace WpfApplication1
         }
         public DateTime BeginDate
         {
-            get => datePickerBeginDate.SelectedDate ?? DateTime.Now.Date.AddDays(-30);
+            get => datePickerBeginDate?.SelectedDate ?? DateTime.Today.Date.AddDays(-30);
             set => datePickerBeginDate.SelectedDate = value;
         }
         public DateTime EndDate
         {
-            get => datePickerEndDate.SelectedDate ?? DateTime.Now.Date.Date;
+            get => datePickerEndDate?.SelectedDate ?? DateTime.Today.Date.Date;
             set => datePickerEndDate.SelectedDate = value;
         }
         public List<KeyValuePair<string, string>> ExpensesOverview
@@ -250,6 +253,7 @@ namespace WpfApplication1
                 popupChartDateExpenes.Child = popupChDateExpText;
                 popupChartDateExpenes.IsOpen = true;
                 popupChartDateExpenes.StaysOpen = false;
+                popupChartDateExpenes.BringIntoView();
             }
         }
         private void BarDataPoint_MouseUpRemExp(object sender, MouseButtonEventArgs e)
@@ -260,6 +264,9 @@ namespace WpfApplication1
                 popupChartDateRemitte.Child = popupChRemiteExpText;
                 popupChartDateRemitte.IsOpen = true;
                 popupChartDateRemitte.StaysOpen = false;
+                popupChartDateRemitte.ForceCursor = true;
+                popupChartDateRemitte.BringIntoView();
+
             }
         }
 
@@ -271,6 +278,7 @@ namespace WpfApplication1
                 popupChartCategExp.Child = popupChCategExpText;
                 popupChartCategExp.IsOpen = true;
                 popupChartCategExp.StaysOpen = false;
+                popupChartCategExp.BringIntoView();
             }
         }
 
@@ -286,21 +294,21 @@ namespace WpfApplication1
                     {
                         if (!bool.TryParse(sskaKey.GetValue("isT").ToString(), out isNotRegistred))
                         {
-                            isNotRegistred = true;
+                            // isNotRegistred = true;
                             sskaKey.SetValue("isT", isNotRegistred);
                         }
                         else { }
                     }
                     else
                     {
-                        isNotRegistred = true;
+                        // isNotRegistred = true;
                         sskaKey.SetValue("isT", true);
                     }
                     if (kvalues.Contains("ed"))
                     {
                         if (!DateTime.TryParse(sskaKey.GetValue("ed").ToString(), out expDate))
                         {
-                            expDate = DateTime.Now.Date.AddDays(61);
+                            expDate = DateTime.Today.Date.AddDays(61);
                             sskaKey.SetValue("ed", expDate.ToString("d"));
                         }
                         else { }
@@ -315,11 +323,12 @@ namespace WpfApplication1
                     sskaKey = currentUserKey.CreateSubKey("sskvz");
                     sskaKey.SetValue("isT", true);
                     sskaKey.SetValue("ed", DateTime.Now.Date.AddDays(61).ToString("d"));
-                    isNotRegistred = true;
-                    expDate = DateTime.Now.Date.AddDays(61);
+                    // isNotRegistred = true;
+                    expDate = DateTime.Today.Date.AddDays(61);
                 }
                 sskaKey.Close();
             }
         }
+
     }
 }
