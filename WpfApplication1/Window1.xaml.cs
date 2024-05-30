@@ -9,23 +9,29 @@ using System.Xml;
 using System.Windows.Controls.DataVisualization.Charting;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace WpfApplication1
 {
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class Window1 : Window, IViewCharts
+    public partial class Window1 : Window, IViewCharts, INotifyPropertyChanged
     {
         private ChartsPresenter chP;
+        private WindowFilters windowFilter;
+
         private ObservableCollection<KeyValuePair<string, decimal>> incomes;
         private List<KeyValuePair<string, decimal>> remittees;
-        
+       
         public static bool isNotRegistred;
         public static DateTime expDate;
         private readonly TextBlock popupChDateExpText;
         private readonly TextBlock popupChRemiteExpText;
         private readonly TextBlock popupChCategExpText;
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
         static Window1()
         {
             isNotRegistred = true;
@@ -43,24 +49,23 @@ namespace WpfApplication1
                 MessageBox.Show(exc.InnerException.ToString(), "SSKA analyzer: Unable to initialize XAML components", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-
             Window1 window1 = this;
             window1.chP = new ChartsPresenter(window1);
             chP.Initialaze();
-            window1.Closing += delegate { window1.chP.FinalizeChP(); };
+            window1.Closing += delegate { window1.chP.FinalizeChP(); };          
 
 #if DEBUG
             isNotRegistred = true;
 #endif
-
             if (isNotRegistred)
             {
                 WindowAc aw = new WindowAc();
                 aw.Activate();
                 aw.ShowDialog();
             }
-            window1.buttonUpdateSpan.Click += delegate { window1.chP.Initialaze(); InitializeComponent(); };
-            window1.buttonShowFilters.Click += delegate { window1.InitialaizeFiltersWindow(new WindowFilters()); };
+
+            window1.buttonUpdateSpan.Click += delegate { window1.chP.Initialaze(); };
+            window1.buttonShowFilters.Click += delegate { window1.InitialaizeFiltersWindow(); };
             window1.buttonUpdateDataBankXML.Click += delegate
             {
                 if (!isNotRegistred || (expDate > DateTime.Today))
@@ -71,6 +76,7 @@ namespace WpfApplication1
                 }
             };
             window1.buttonSettings.Click += delegate { new WindowFieldsDictionary().ShowDialog(); };
+
             window1.lineSeriesDateExp.MouseUp += window1.BarDataPoint_MouseUpDatExp;  // event handler popup for chart date-expence
             popupChDateExpText = new TextBlock
             {
@@ -87,6 +93,7 @@ namespace WpfApplication1
                 Background = Brushes.LightBlue,
                 Padding = new Thickness(2.0d)
             };
+
             InitializeResources();
         }
 
@@ -95,7 +102,7 @@ namespace WpfApplication1
             chartIncomes.Title = Local.Resource.Incomes;
             chartRemeteeExpence.Title = Local.Resource.ExpencesOverRemittee;
             chartDateExpence.Title = Local.Resource.ExpencesOverDate;
-            chartDateBalance.Title = Local.Resource.Balance;
+            chartDateBalance.Title = Local.Resource.Balance;           
             // expRemitties.Header = Local.Resource.Exp;
             expInc.Header = Local.Resource.Inc;
             groupBoxDateInterval.Header = Local.Resource.TimeSpan;
@@ -111,14 +118,23 @@ namespace WpfApplication1
             // chartRemGroupExpence.Title = Local.Resource.ExpencesOverRemitteeGroups;
         }
 
-        private void InitialaizeFiltersWindow(WindowFilters window)
+        private void InitialaizeFiltersWindow()
         {
-            window.Owner = GetWindow(this);
-            chP.ViewFilters = window;
-            window.RegisterEventHandlers();
-            chP.InitializeFilters(new FilterParams(chP.ViewFilters));
-            window.Activate();
-            window.Show();
+            if(windowFilter == null)
+            {
+                windowFilter = new WindowFilters();
+                windowFilter.Owner = GetWindow(this);
+                windowFilter.Show();
+                windowFilter.Activate();
+                               
+                chP.ViewFilters = windowFilter;
+                windowFilter.OnApplyFilter += delegate { chP.ApplyFilters(); };
+                windowFilter.OnResetFilters += delegate { chP.ResetFilters(); };
+                windowFilter.RegisterEventHandlers();
+            }
+                          
+            chP.InitializeFilters(windowFilter);
+            windowFilter.Show();
         }
 
         #region IViewCharts Members
@@ -140,7 +156,8 @@ namespace WpfApplication1
                     default:
                         (chartRemeteeExpence.Series[0] as BarSeries).MaxHeight = double.PositiveInfinity;
                         break;
-                }               
+                }
+                (chartRemeteeExpence.Series[0] as BarSeries).Refresh();
                 (chartRemeteeExpence.Series[0] as BarSeries).ItemsSource = value;             
             }
         }
@@ -148,23 +165,27 @@ namespace WpfApplication1
         {
             set
             {
-                (chartDateExpence.Series[0] as DataPointSeries).ItemsSource = value;
+                (chartDateExpence.Series[0] as DataPointSeries).Refresh();
+                (chartDateExpence.Series[0] as DataPointSeries).DataContext = value;
+                
             }
         }
         public List<KeyValuePair<DateTime, decimal>> Balance
         {
             set
             {
-                (chartDateBalance.Series[0] as DataPointSeries).ItemsSource = value;
+                (chartDateBalance.Series[0] as DataPointSeries).Refresh();
+                (chartDateBalance.Series[0] as DataPointSeries).ItemsSource = value;               
             }
         }
         public ObservableCollection<KeyValuePair<string, decimal>> Incomes
         {
             set
             {
+                
                 incomes = value;
                 int qtyBars = incomes.Count;
-                
+
                 switch (qtyBars)
                 {
                     case 1:
@@ -177,7 +198,10 @@ namespace WpfApplication1
                         (chartIncomes.Series[0] as BarSeries).MaxHeight = double.PositiveInfinity;
                         break;
                 }
-                (chartIncomes.Series[0] as DataPointSeries).ItemsSource = value;
+                (chartIncomes.Series[0] as DataPointSeries).Refresh();
+                (chartIncomes.Series[0] as DataPointSeries).DataContext = incomes;
+                PropertyChanged(this, new PropertyChangedEventArgs(nameof(value)));
+                
             }
         }
         public DateTime BeginDate
@@ -202,12 +226,12 @@ namespace WpfApplication1
         {
             set
             {
-                LinearAxis adjustedAxis = new LinearAxis();
-                adjustedAxis.Orientation = AxisOrientation.X;
-                adjustedAxis.ShowGridLines = true;
-                adjustedAxis.ExtendRangeToOrigin = true;
-                adjustedAxis.Maximum = (double)value;
-                (chartRemeteeExpence.Series[0] as BarSeries).DependentRangeAxis = adjustedAxis;
+                LinearAxis adjustedAxis1 = new LinearAxis();
+                adjustedAxis1.Orientation = AxisOrientation.X;
+                adjustedAxis1.ShowGridLines = true;
+                adjustedAxis1.ExtendRangeToOrigin = true;
+                adjustedAxis1.Maximum = (double)value;
+                (chartRemeteeExpence.Series[0] as BarSeries).DependentRangeAxis = adjustedAxis1;
             }
         }
         public string Summary
@@ -222,12 +246,14 @@ namespace WpfApplication1
         {
             set => (chartRemGroupExpence.Series[0] as DataPointSeries).ItemsSource = value;
         }
-
         public List<KeyValuePair<string, decimal>> ExpensesCategory
         {
-            set => (chartCategoryExpence.Series[0] as DataPointSeries).ItemsSource = value;
+            set
+            {
+                (chartCategoryExpence.Series[0] as DataPointSeries).Refresh();
+                (chartCategoryExpence.Series[0] as DataPointSeries).ItemsSource = value;               
+            }
         }
-
         public decimal AxeExpencesCategoryMaxValue 
         {
             set
@@ -237,7 +263,8 @@ namespace WpfApplication1
                 adjustedAxis.ShowGridLines = true;
                 adjustedAxis.ExtendRangeToOrigin = true;
                 adjustedAxis.Maximum = (double)value;
-                (chartCategoryExpence.Series[0] as BarSeries).DependentRangeAxis = adjustedAxis;                
+                (chartCategoryExpence.Series[0] as BarSeries).DependentRangeAxis = adjustedAxis;
+                (chartCategoryExpence.Series[0] as BarSeries).Refresh();
             }
         }
 
@@ -269,7 +296,6 @@ namespace WpfApplication1
 
             }
         }
-
         private void BarDataPoint_MouseUpCatExp(object sender, MouseButtonEventArgs e)
         {
             if ((sender as DataPointSeries).SelectedItem is KeyValuePair<string, decimal> kv)
@@ -329,6 +355,5 @@ namespace WpfApplication1
                 sskaKey.Close();
             }
         }
-
     }
 }

@@ -16,11 +16,11 @@ namespace WpfApplication1
     public class BuisenessLogicSSKA : IBuisenessLogic
     {
         private readonly CsvToXmlSSKA dataGate;
-        public Action<DataRequest> updateChart = delegate { };
+        public Action<DataRequest> updateChart = delegate { }; // preinitialization with empty invokation list
         private readonly WindowProgrBar progrBar;
         private static PreprocessedDataRequest preprocessedRequest;
-        private static readonly BuisenessLogicSSKA instance = new BuisenessLogicSSKA();
 
+        private static readonly BuisenessLogicSSKA instance = new BuisenessLogicSSKA();
         public static BuisenessLogicSSKA GetInstance()
         {
             return instance;
@@ -28,8 +28,8 @@ namespace WpfApplication1
         private BuisenessLogicSSKA()
         {
             progrBar = new WindowProgrBar();
-
             dataGate = new CsvToXmlSSKA();
+
             Request = DataRequest.GetInstance();
             InitializeHandledRequest();
             RegisterDataRequestHandlers();
@@ -37,6 +37,8 @@ namespace WpfApplication1
             ResponseModel = ResponseModel.GetInstance();
             
             RegisterMethodsForProgressBar();
+
+            // Initial charts
             UpdateDataModel();
         }
 
@@ -78,47 +80,48 @@ namespace WpfApplication1
         }
         private static void PreProcessRequest(DataRequest request)
         {
+            if (request == null)
+                return;
+
             preprocessedRequest.AtDate = request.AtDate;
             preprocessedRequest.SelectedRemittee = request.SelectedRemittee;
 
-            preprocessedRequest.BeginDate = request.BeginDate;
-            preprocessedRequest.FinishDate = request.EndDate < request.BeginDate ? request.BeginDate : request.EndDate;
+            preprocessedRequest.BeginDate = request.TimeSpan.Item1;
+            preprocessedRequest.FinishDate = request.TimeSpan.Item2 < request.TimeSpan.Item1 ? request.TimeSpan.Item1 : request.TimeSpan.Item2;
 
-            if (request.Filters != null)
+            if(request.Filters.UserAccounts.Count > 0)
             {
-                if(request.Filters.UserAccounts.Count > 0)
+                if (!decimal.TryParse(request.Filters.ExpenciesLessThan, out decimal expLessThan))
                 {
-                    if (!decimal.TryParse(request.Filters.ExpenciesLessThan, out decimal expLessThan))
-                    {
-                        expLessThan = decimal.MaxValue;
-                    }
-
-                    decimal.TryParse(request.Filters.ExpenciesMoreThan, out decimal expMoreThan);
-                    if (!decimal.TryParse(request.Filters.IncomesLessThan, out decimal incomsHighestValue))
-                    {
-                        incomsHighestValue = decimal.MaxValue;
-                    }
-
-                    decimal.TryParse(request.Filters.IncomesMoreThan, out decimal incomsLowestValue);
-                    if(preprocessedRequest.Buchungstexts.Count > 0)
-                    {
-                        preprocessedRequest.Buchungstexts.Clear();
-                    }
-                    preprocessedRequest.Buchungstexts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.BuchungstextValues));
-                    if (preprocessedRequest.Accounts.Count > 0)
-                    {
-                        preprocessedRequest.Accounts.Clear();
-                    }
-                    preprocessedRequest.Accounts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.UserAccounts));
-                    preprocessedRequest.ToFind = request.Filters.ToFind;
-
-                    preprocessedRequest.ExpencesLowestValue = expMoreThan;
-                    preprocessedRequest.ExpencesHighestValue = expLessThan;
-                    preprocessedRequest.IncomsLowestValue = incomsLowestValue;
-                    preprocessedRequest.IncomsHighestValue = incomsHighestValue;
+                    expLessThan = decimal.MaxValue;
                 }
+
+                decimal.TryParse(request.Filters.ExpenciesMoreThan, out decimal expMoreThan);
+                if (!decimal.TryParse(request.Filters.IncomesLessThan, out decimal incomsHighestValue))
+                {
+                    incomsHighestValue = decimal.MaxValue;
+                }
+
+                decimal.TryParse(request.Filters.IncomesMoreThan, out decimal incomsLowestValue);
+                if(preprocessedRequest.Buchungstexts.Count > 0)
+                {
+                    preprocessedRequest.Buchungstexts.Clear();
+                }
+                preprocessedRequest.Buchungstexts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.BuchungstextValues));
+                if (preprocessedRequest.Accounts.Count > 0)
+                {
+                    preprocessedRequest.Accounts.Clear();
+                }
+                preprocessedRequest.Accounts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.UserAccounts));
+                preprocessedRequest.ToFind = request.Filters.ToFind;
+
+                preprocessedRequest.ExpencesLowestValue = expMoreThan;
+                preprocessedRequest.ExpencesHighestValue = expLessThan;
+                preprocessedRequest.IncomsLowestValue = incomsLowestValue;
+                preprocessedRequest.IncomsHighestValue = incomsHighestValue;
             }
         }
+       
 
         #region IBuisenessLogic Members
         public ResponseModel ResponseModel { get; }
@@ -133,6 +136,7 @@ namespace WpfApplication1
         public async void UpdateDataModel()
         {
             PreProcessRequest(Request);
+            ResponseModel.UpdateDataRequired = false;
             if (!progrBar.IsVisible)
             {
                 progrBar.Show();
@@ -159,10 +163,15 @@ namespace WpfApplication1
                                              },
                                              TaskCreationOptions.PreferFairness);
             }
-
+                       
             if (progrBar.IsVisible)
             {
                 progrBar.Hide();
+            }
+
+            if (ResponseModel.UpdateDataRequired == true)
+            {
+                ResponseModel.UpdateDataRequired = false;
             }
         }
         public void FilterData()

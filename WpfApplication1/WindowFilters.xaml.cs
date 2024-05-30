@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace WpfApplication1
 {
@@ -13,14 +14,14 @@ namespace WpfApplication1
         private ObservableCollection<BoolTextCouple> userAccounts;
         public WindowFilters()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            this.buttonCancel.Click += delegate { Hide(); };
         }
 
         public void RegisterEventHandlers()
         {
             this.buttonApply.Click += OnApplyFilter;
             this.buttonReset.Click += OnResetFilters;
-            this.buttonCancel.Click += delegate { Close(); };
         }
 
         #region IViewFilters Members
@@ -100,7 +101,10 @@ namespace WpfApplication1
         }
 
         #endregion
+        private void OnBuchungstextValuesChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            var receivedFrom = sender;
+        }
 
-        
     }
 }

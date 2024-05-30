@@ -190,7 +190,7 @@
     <Compile Include="DAL\Config.cs" />
     <Compile Include="DAL\PathToFilesUtil.cs" />
     <Compile Include="DTO\BoolTextCouple.cs" />
-    <Compile Include="DTO\FilterParams.cs" />
+    <Compile Include="DTO\FilterViewModel.cs" />
     <Compile Include="BuisenessLogic\IBuisenessLogic.cs" />
     <Compile Include="IViews\IViewAccounts.cs" />
     <Compile Include="IViews\IViewCharts.cs" />
