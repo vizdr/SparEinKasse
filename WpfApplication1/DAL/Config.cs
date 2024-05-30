@@ -40,7 +40,7 @@ namespace WpfApplication1.DAL
         public static int EncodePage = Int32.Parse(Settings.Default.CodePage[0]); // 1252 - West;  1251 - Cyrilic
         public static readonly string AppName = "SSKA analyzer";
         public static StringCollection ContributorAccounts = Settings.Default.ContributorAccounts;
-        public static string ExchYearDay(string iniDateString)
+        public static string ExchLeapYearDay(string iniDateString)
         {
             //replaces DD-MM-CCYY or DD-MM-YY to ssd:date format CCYY.MM.DD
             if (iniDateString.Length < 9)
@@ -49,6 +49,8 @@ namespace WpfApplication1.DAL
             string month = iniDateString.Substring(iniDateString.Length - 7, 2);
             string day = iniDateString.Substring(0, 2);
             if ((month + day).Equals("0229"))
+                day = "28";
+            if ((month + day).Equals("0230"))
                 day = "28";
             return year + "-" + month + "-" + day;
         }

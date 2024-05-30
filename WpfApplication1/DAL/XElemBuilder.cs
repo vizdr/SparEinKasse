@@ -85,7 +85,7 @@ namespace WpfApplication1.DAL
                     // index of targrtHeaders from Settings
                     select new XElement(Config.TransactionField, new XAttribute(Config.AuftragsKontoField, targetedHeaderFieldsIndexes[0].Equals(String.Empty) ? BankAccount : fields[(int)targetedHeaderFieldsIndexes[0]]),  // Auftragskonto
                         new XElement(Config.BuchungstagField, fields[(int)targetedHeaderFieldsIndexes[1]]),                                                                                                     // Buchungstag   
-                        new XElement(Config.WertDatumField, Config.ExchYearDay(fields[(int)targetedHeaderFieldsIndexes[2]]), new XAttribute("type", "date")),                                                   // Valutadatum
+                        new XElement(Config.WertDatumField, Config.ExchLeapYearDay(fields[(int)targetedHeaderFieldsIndexes[2]]), new XAttribute("type", "date")),                                                   // Valutadatum
                         new XElement(Config.BuchungsTextField, fields[(int)targetedHeaderFieldsIndexes[3]]),                                                                                                    // Buchungstext
                         new XElement(Config.VerwendZweckField, fields[(int)targetedHeaderFieldsIndexes[4]]),                                                                                                    // Verwendungszweck   
                         new XElement(Config.BeguenstigterField, fields[(int)targetedHeaderFieldsIndexes[5]].Equals(string.Empty) ? "---" : fields[(int)targetedHeaderFieldsIndexes[5]]),                                      // Begünstigter
@@ -149,8 +149,8 @@ namespace WpfApplication1.DAL
                        from fields in source
                        where !fields[1].Equals(string.Empty) & !fields[2].Equals(string.Empty) && isSourceCAMT ? !fields[16].Contains(Config.Preliminar) : !fields[10].Contains(Config.Preliminar)                                                  // indexes of targetHeaders from Settings
                        select new XElement(Config.TransactionField, new XAttribute(Config.AuftragsKontoField, fields[(int)targetedHeaderFieldsIndexes[0]]),                        // Auftragskonto
-                           new XElement(Config.BuchungstagField, Config.ExchYearDay(fields[(int)targetedHeaderFieldsIndexes[1]]), new XAttribute("type", "date")),                 // Buchungstag   
-                           new XElement(Config.WertDatumField, Config.ExchYearDay(fields[(int)targetedHeaderFieldsIndexes[2]]), new XAttribute("type", "date")),                   // Valutadatum
+                           new XElement(Config.BuchungstagField, Config.ExchLeapYearDay(fields[(int)targetedHeaderFieldsIndexes[1]]), new XAttribute("type", "date")),                 // Buchungstag   
+                           new XElement(Config.WertDatumField, Config.ExchLeapYearDay(fields[(int)targetedHeaderFieldsIndexes[2]]), new XAttribute("type", "date")),                   // Valutadatum
                            new XElement(Config.BuchungsTextField, fields[(int)targetedHeaderFieldsIndexes[3]]),                                                                    // Buchungstext
                            new XElement(Config.VerwendZweckField, fields[(int)targetedHeaderFieldsIndexes[4]]),                                                                    // Verwendungszweck   
                            new XElement(Config.BeguenstigterField, fields[(int)targetedHeaderFieldsIndexes[5]].Equals(string.Empty) ? "---" : fields[(int)targetedHeaderFieldsIndexes[5]]),      // Begünstigter
