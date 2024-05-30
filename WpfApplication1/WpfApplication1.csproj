@@ -17,7 +17,7 @@
     <ApplicationIcon>IconSSKAapp.ico</ApplicationIcon>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetZone>LocalIntranet</TargetZone>
-    <GenerateManifests>false</GenerateManifests>
+    <GenerateManifests>true</GenerateManifests>
     <ManifestCertificateThumbprint>0AB0D96AB4A45247B60EB1AC91330A61676BF7BF</ManifestCertificateThumbprint>
     <ManifestKeyFile>WpfApplication1_TemporaryKey.pfx</ManifestKeyFile>
     <SignManifests>false</SignManifests>
@@ -40,7 +40,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.2.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -53,8 +53,11 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>0</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>
+    </DocumentationFile>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -86,8 +89,6 @@
     <Reference Include="System.ServiceModel">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Windows.Controls.DataVisualization.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
-    <Reference Include="System.Windows.Controls.DataVisualization.Toolkit.VisualStudio.Design, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -109,7 +110,6 @@
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="WPFToolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -190,7 +190,7 @@
     <Compile Include="DAL\Config.cs" />
     <Compile Include="DAL\PathToFilesUtil.cs" />
     <Compile Include="DTO\BoolTextCouple.cs" />
-    <Compile Include="DTO\FilterParams.cs" />
+    <Compile Include="DTO\FilterViewModel.cs" />
     <Compile Include="BuisenessLogic\IBuisenessLogic.cs" />
     <Compile Include="IViews\IViewAccounts.cs" />
     <Compile Include="IViews\IViewCharts.cs" />
@@ -353,6 +353,14 @@
     <None Include="Service References\ServiceRefServARCode\ServARCode1.disco" />
     <None Include="Service References\ServiceRefServARCode\ServARCode31.xsd" />
     <None Include="Service References\ServiceRefServARCode\ServARCode32.xsd" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DotNetProjects.WpfToolkit.DataVisualization">
+      <Version>6.1.94</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.1</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

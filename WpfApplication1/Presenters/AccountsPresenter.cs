@@ -3,6 +3,7 @@ using WpfApplication1.DAL;
 
 namespace WpfApplication1
 {
+    // Presenter
     class AccountsPresenter
     {
         private IViewAccounts _viewAccounts;

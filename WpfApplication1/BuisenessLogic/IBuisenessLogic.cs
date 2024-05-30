@@ -9,6 +9,7 @@ namespace WpfApplication1
         void FilterData();
         void UpdateViewData();
         void FinalizeBL();
+       // FilterViewModel Filter { get; set; }
         DataRequest Request { get; }
         ResponseModel ResponseModel { get; }
     }

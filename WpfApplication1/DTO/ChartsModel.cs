@@ -21,8 +21,8 @@ namespace WpfApplication1.DTO
             summary = String.Empty;
             transactionsAccounts = new List<string>();
 
-            buchungstextOverDateRange = FilterParams.GetInstance().BuchungstextValues;
-            transactionsAccountsObsCollBoolTextCouple = FilterParams.GetInstance().Accounts;
+            buchungstextOverDateRange = FilterViewModel.GetInstance().BuchungstextValues;
+            transactionsAccountsObsCollBoolTextCouple = FilterViewModel.GetInstance().UserAccounts;
 
             expensesAtDate = new List<KeyValuePair<string, decimal>>();
             dates4RemiteeOverDateRange = new List<KeyValuePair<string, decimal>>();
@@ -56,6 +56,8 @@ namespace WpfApplication1.DTO
         private List<KeyValuePair<string, decimal>> expenceBeneficiary4CategoryOverDateRange;
         private List<KeyValuePair<string, decimal>> expensesOverCategory;
 
+        private bool updateDataRequired = false;
+
         public List<KeyValuePair<string, string>> IncomesInfoOverDateRange
         {
             get => incomesInfoOverDateRange;
@@ -64,6 +66,7 @@ namespace WpfApplication1.DTO
                 if (incomesInfoOverDateRange != value)
                 {
                     incomesInfoOverDateRange = value;
+                    updateDataRequired = true;
                     OnPropertyChanged();
                 }
             }
@@ -76,6 +79,7 @@ namespace WpfApplication1.DTO
                 if (incomesOverDatesRange != value)
                 {
                     incomesOverDatesRange = value;
+                    updateDataRequired = true;
                     OnPropertyChanged();
                 }
             }
@@ -89,6 +93,7 @@ namespace WpfApplication1.DTO
                 if (balanceOverDateRange != value)
                 {
                     balanceOverDateRange = value;
+                    updateDataRequired = true;
                     OnPropertyChanged();
                 }
             }
@@ -102,6 +107,7 @@ namespace WpfApplication1.DTO
                 if (expensesOverDateRange != value)
                 {
                     expensesOverDateRange = value;
+                    updateDataRequired = true;
                     OnPropertyChanged();
                 }
             }
@@ -114,6 +120,7 @@ namespace WpfApplication1.DTO
                 if (expensesInfoOverDateRange != value)
                 {
                     expensesInfoOverDateRange = value;
+                    updateDataRequired = true;
                     OnPropertyChanged();
                 }
             }
@@ -126,6 +133,7 @@ namespace WpfApplication1.DTO
                 if (expensesOverRemiteeInDateRange != value)
                 {
                     expensesOverRemiteeInDateRange = value;
+                    updateDataRequired = true;
                     OnPropertyChanged();
                 }
             }
@@ -138,6 +146,7 @@ namespace WpfApplication1.DTO
                 if (expensesOverRemiteeGroupsInDateRange != value)
                 {
                     expensesOverRemiteeGroupsInDateRange = value;
+                    updateDataRequired = true;
                     OnPropertyChanged();
                 }
             }
@@ -164,6 +173,7 @@ namespace WpfApplication1.DTO
                 if (transactionsAccounts != value)
                 {
                     transactionsAccounts = value;
+                    updateDataRequired = true;
                     OnPropertyChanged();
                 }
             }
@@ -240,8 +250,21 @@ namespace WpfApplication1.DTO
                 if (expensesOverCategory != value)
                 {
                     expensesOverCategory = value;
+                    updateDataRequired = true;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        public bool UpdateDataRequired { 
+            get => updateDataRequired;
+            set 
+            { 
+                if(updateDataRequired != value)
+                {
+                    updateDataRequired = value;
+                    OnPropertyChanged();
+                }               
             }
         }
 

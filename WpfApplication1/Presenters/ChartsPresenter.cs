@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
-using System.ComponentModel;
 
 namespace WpfApplication1
 {
@@ -11,33 +11,27 @@ namespace WpfApplication1
         private readonly IViewCharts _viewCharts;
         private IViewFilters _viewFilters;
         private readonly IBuisenessLogic bl;
-        public static FilterParams FilterValues { get; private set; }
 
         public ChartsPresenter(IViewCharts viewChart, IBuisenessLogic bl)
         {
             this.bl = bl ?? throw new ArgumentNullException(nameof(bl));
-            _viewCharts = viewChart ?? throw new ArgumentNullException(nameof(viewChart));            
-            _viewCharts.BeginDate = bl.Request.BeginDate;
-            _viewCharts.EndDate = bl.Request.EndDate;
+            _viewCharts = viewChart ?? throw new ArgumentNullException(nameof(viewChart));
+
+            _viewCharts.BeginDate = bl.Request.TimeSpan.Item1.Date;
+            _viewCharts.EndDate = bl.Request.TimeSpan.Item2.Date;
             bl.ResponseModel.PropertyChanged += ReactOnPropertyChange;
             bl.ResponseModel.ViewPropertyChanged += ReactOnViewPropertyChange;
         }
 
         public ChartsPresenter(IViewCharts viewChC)
-            : this(viewChC, BuisenessLogicSSKA.GetInstance())
-        {
-        }
+            : this(viewChC, BuisenessLogicSSKA.GetInstance()) {}
 
-        static ChartsPresenter()
-        {
-        }
+        static ChartsPresenter() {}
 
         // Initiate update of data model by change of xxDate property for DataRequest 
         public void Initialaze()
         {
-            bl.Request.BeginDate = _viewCharts.BeginDate;
-            bl.Request.EndDate = _viewCharts.EndDate;
-            Thread.Sleep(150);
+            bl.Request.TimeSpan = new Tuple<DateTime, DateTime>(_viewCharts.BeginDate, _viewCharts.EndDate);           
         }
 
         public void FinalizeChP()
@@ -51,43 +45,28 @@ namespace WpfApplication1
             switch (s)
             {
                 case "ExpensesOverDateRange":
-                    _viewCharts.Expenses = ConvertToDatesList(bl.ResponseModel.ExpensesOverDateRange);
-                    break;
                 case "IncomesOverDatesRange":
-                    _viewCharts.Incomes = bl.ResponseModel.IncomesOverDatesRange;
-                    break;
-                case "BalanceOverDateRange":
-                    _viewCharts.Balance = bl.ResponseModel.BalanceOverDateRange;
-                    break;
-                case "Summary":
-                    _viewCharts.Summary = bl.ResponseModel.Summary;
-                    break;
+                case "BalanceOverDateRange":               
                 case "ExpensesOverRemiteeInDateRange":
-                    InitializeExpencsesOverRemitee(bl.ResponseModel.ExpensesOverRemiteeInDateRange);
-                    break;
                 case "IncomesInfoOverDateRange":
-                    _viewCharts.IncomsOverview = bl.ResponseModel.IncomesInfoOverDateRange;
-                    break;
                 case "ExpensesInfoOverDateRange":
-                    _viewCharts.ExpensesOverview = bl.ResponseModel.ExpensesInfoOverDateRange;
-                    break;
                 case "TransactionsAccounts":
-                    _viewCharts.Accounts = bl.ResponseModel.TransactionsAccounts;
-                    break;
                 case "ExpensesOverRemiteeGroupsInDateRange":
-                    _viewCharts.RemittieeGroups = bl.ResponseModel.ExpensesOverRemiteeGroupsInDateRange;
-                    break;
                 case "Balance":
-                    _viewCharts.Balance = bl.ResponseModel.BalanceOverDateRange;
+                case "ExpensesOverCategory":
                     break;
                 case "BuchungstextOverDateRange":
-                    _viewFilters.BuchungstextValues = bl.ResponseModel.BuchungstextOverDateRange;
+                    _viewFilters.BuchungstextValues = bl.ResponseModel.BuchungstextOverDateRange; 
                     break;
                 case "TransactionsAccountsObsCollBoolTextCouple":
                     _viewFilters.UserAccounts = bl.ResponseModel.TransactionsAccountsObsCollBoolTextCouple;
                     break;
-                case "ExpensesOverCategory":
-                    InitializeExpencsesOverCategory(bl.ResponseModel.ExpensesOverCategory);
+                case "Summary":
+                    _viewCharts.Summary = bl.ResponseModel.Summary;
+                    break;
+           
+                case "UpdateDataRequired":
+                    feedUpdatedData();
                     break;
                 default:
                     { };
@@ -95,7 +74,21 @@ namespace WpfApplication1
             }
         }
 
-        // draft, currently set for viewProperty xx occurs via mouse up event handlers 
+        private void feedUpdatedData()
+        { 
+            _viewCharts.Expenses = ConvertToDatesList(bl.ResponseModel.ExpensesOverDateRange);
+            _viewCharts.Incomes = bl.ResponseModel.IncomesOverDatesRange;
+            InitializeExpencsesOverRemitee(bl.ResponseModel.ExpensesOverRemiteeInDateRange);
+            _viewCharts.IncomsOverview = bl.ResponseModel.IncomesInfoOverDateRange;
+            _viewCharts.ExpensesOverview = bl.ResponseModel.ExpensesInfoOverDateRange;
+            _viewCharts.IncomsOverview = bl.ResponseModel.IncomesInfoOverDateRange;
+            _viewCharts.Accounts = bl.ResponseModel.TransactionsAccounts;
+            _viewCharts.RemittieeGroups = bl.ResponseModel.ExpensesOverRemiteeGroupsInDateRange;
+            _viewCharts.Balance = bl.ResponseModel.BalanceOverDateRange;
+            InitializeExpencsesOverCategory(bl.ResponseModel.ExpensesOverCategory);
+        }
+
+        // Draft, currently set for viewProperty xx occurs via mouse up event handlers 
         public void ReactOnViewPropertyChange(object sender, PropertyChangedEventArgs e)
         {
             String s = e.PropertyName;
@@ -120,9 +113,9 @@ namespace WpfApplication1
         }
 
         private void InitializeExpencsesOverCategory(List<KeyValuePair<string, decimal>> dataSourceExpensesOverCategory)
-        {
-            _viewCharts.ExpensesCategory = dataSourceExpensesOverCategory;
-            _viewCharts.AxeExpencesCategoryMaxValue = CalculateMaxValue(dataSourceExpensesOverCategory);
+        {            
+            _viewCharts.AxeExpencesCategoryMaxValue = CalculateMaxValue(dataSourceExpensesOverCategory);            
+            _viewCharts.ExpensesCategory = dataSourceExpensesOverCategory;           
         }
 
         public void ReloadXml()
@@ -131,49 +124,37 @@ namespace WpfApplication1
         }
 
         #region Filters
-        public void InitializeFilters(FilterParams FilterValues)
+        public void InitializeFilters(IViewFilters viewFilters)
         {
-            if (FilterValues == null)
-            {
-                FilterValues = new FilterParams(_viewFilters.ExpenciesLessThan, _viewFilters.ExpenciesMoreThan,
-                _viewFilters.IncomesLessThan, _viewFilters.IncomesMoreThan, _viewFilters.ToFind, _viewFilters.BuchungstextValues, _viewFilters.UserAccounts);
-                bl.Request.Filters = FilterValues;
-            }
+            if (!bl.Request.Filters.IsFilterPrepared())
+                bl.Request.Filters = FilterViewModel.GetInstance();
             else
-            {
-                _viewFilters.BuchungstextValues = FilterValues.BuchungstextValues;
-                _viewFilters.UserAccounts = FilterValues.Accounts;
-                _viewFilters.ExpenciesLessThan = FilterValues.ExpenciesLessThan;
-                _viewFilters.ExpenciesMoreThan = FilterValues.ExpenciesMoreThan;
-                _viewFilters.IncomesLessThan = FilterValues.IncomesLessThan;
-                _viewFilters.IncomesMoreThan = FilterValues.IncomesMoreThan;
-                _viewFilters.ToFind = FilterValues.ToFind;
-            }
+                FilterViewModel.SetViewFilters(viewFilters);
         }
 
-        private void RegisterFiltersHandlers()
-        {
-            _viewFilters.OnApplyFilter += delegate { ApplyFilters(); };
-            _viewFilters.OnResetFilters += delegate { ResetFilters(); };
-        }
-
-        private void ResetFilters()
+        public void ResetFilters()
         {
             _viewFilters.ExpenciesLessThan = _viewFilters.ExpenciesMoreThan = _viewFilters.IncomesLessThan =
                 _viewFilters.IncomesMoreThan = _viewFilters.ToFind = String.Empty;
-            if (FilterValues != null)
+
+            foreach (BoolTextCouple val in _viewFilters.BuchungstextValues)
             {
-                FilterValues.ResetValues();
+                val.IsSelected = true;
             }
-            InitializeFilters(null);
+            foreach (BoolTextCouple val in _viewFilters.UserAccounts)
+            {
+                val.IsSelected = true;
+            }
+
+            FilterViewModel.SetViewFilters(ViewFilters);
+            bl.Request.Filters = FilterViewModel.GetInstance();
         }
 
         // apply if selection of params is completed
-        private void ApplyFilters()
+        public void ApplyFilters()
         {
-            FilterValues = new FilterParams(_viewFilters.ExpenciesLessThan, _viewFilters.ExpenciesMoreThan,
-                _viewFilters.IncomesLessThan, _viewFilters.IncomesMoreThan, _viewFilters.ToFind, _viewFilters.BuchungstextValues, _viewFilters.UserAccounts);
-            bl.Request.Filters = FilterValues;
+            FilterViewModel.SetViewFilters(ViewFilters);
+            bl.Request.Filters = FilterViewModel.GetInstance();
         }
 
         public IViewFilters ViewFilters
@@ -182,7 +163,6 @@ namespace WpfApplication1
             set
             {
                 _viewFilters = value;
-                RegisterFiltersHandlers();
             }
         }
         #endregion
@@ -203,7 +183,7 @@ namespace WpfApplication1
             return maxVal.Count() > 0 ? maxVal.Max() + 2 : 0m;
         }
 
-        // for the defined in xaml mouse up event handlers, presentationFramework - external dll
+        // For the defined in xaml mouse up event handlers, presentationFramework - external dll
         public string GetExpencesAtDate(DateTime inDate)
         {
             string resString = "";
@@ -215,7 +195,7 @@ namespace WpfApplication1
             }
             return resString.Trim();
         }
-        
+
         public string GetDates4Remitee(string remittee)
         {
             string resString = "";

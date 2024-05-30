@@ -9,14 +9,14 @@ namespace WpfApplication1.DTO
     {
         private static readonly DataRequest instance = new DataRequest();
 
-        private DateTime beginDate;
-        private DateTime endDate;
+        // beginDate endDate;
+        private Tuple<DateTime, DateTime> timeSpan;
 
         private DateTime atDate;
         private string selectedRemittee;
         private string selectedCategory;
 
-        private FilterParams filters;
+        private FilterViewModel filters;
 
         public event EventHandler DataRequested;
         public event EventHandler FilterValuesRequested;
@@ -28,40 +28,29 @@ namespace WpfApplication1.DTO
             set => OnDataBankUpdateRequested(); 
         }
 
-        public DateTime BeginDate
+        public Tuple<DateTime, DateTime> TimeSpan
         {
-            get => beginDate;
+            get => timeSpan;
             set
             {
-                if (beginDate != value)
+                if (timeSpan.Item1 != value.Item1 || timeSpan.Item2 != value.Item2)
                 {
-                    beginDate = value;
+                    timeSpan = value;
                     OnDataRequested();
                 }
             }
         }
-        public DateTime EndDate
-        {
-            get => endDate;
-            set
-            {
-                if (endDate != value)
-                {
-                    endDate = value;
-                    OnDataRequested();
-                }
-            }
-        }
-        public FilterParams Filters
+        
+        public FilterViewModel Filters
         {
             get => filters;
 
             set
             {
-                if (filters != value)
-                {
-                    filters = value;
+                if (!filters.IsFilterPrepared() || FilterViewModel.isFilterDirty())
+                {  
                     OnFilterValuesRequested();
+                    FilterViewModel.flopDirty();
                 }
             }
         }
@@ -110,9 +99,8 @@ namespace WpfApplication1.DTO
         }
         private DataRequest()
         {
-            BeginDate = DateTime.Now.Date.AddDays(-30);
-            EndDate = DateTime.Now.Date;
-            filters = FilterParams.GetInstance();
+            timeSpan = new Tuple<DateTime, DateTime>(DateTime.Now.Date.AddDays(-30), DateTime.Now.Date);
+            filters = FilterViewModel.GetInstance();
         }
 
         protected void OnDataRequested()
