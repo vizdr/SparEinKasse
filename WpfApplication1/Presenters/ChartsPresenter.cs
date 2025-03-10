@@ -12,7 +12,7 @@ namespace WpfApplication1
         private IViewFilters _viewFilters;
         private readonly IBuisenessLogic bl;
 
-        public ChartsPresenter(IViewCharts viewChart, IBuisenessLogic bl)
+        public ChartsPresenter(IViewCharts viewChart, BuisenessLogicSSKA bl)
         {
             this.bl = bl ?? throw new ArgumentNullException(nameof(bl));
             _viewCharts = viewChart ?? throw new ArgumentNullException(nameof(viewChart));

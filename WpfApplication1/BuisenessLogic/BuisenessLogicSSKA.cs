@@ -9,7 +9,9 @@ using WpfApplication1.DAL;
 using WpfApplication1.DTO;
 using System.Threading;
 using System.Threading.Tasks;
-
+using System.ComponentModel;
+using System.Windows.Threading;
+using WpfApplication1.BuisenessLogic;
 
 namespace WpfApplication1
 {
@@ -19,25 +21,36 @@ namespace WpfApplication1
         public Action<DataRequest> updateChart = delegate { }; // preinitialization with empty invokation list
         private readonly WindowProgrBar progrBar;
         private static PreprocessedDataRequest preprocessedRequest;
+        BackgroundWorker worker;
+        private ResponseModel responseModel = ResponseModel.GetInstance();
+        public ResponseModel ResponseModel
+        {
+            get => responseModel;
+        }
+        private static AccountsLogic al;
+        private static readonly BuisenessLogicSSKA instance = new BuisenessLogicSSKA(al);
 
-        private static readonly BuisenessLogicSSKA instance = new BuisenessLogicSSKA();
         public static BuisenessLogicSSKA GetInstance()
         {
             return instance;
         }
-        private BuisenessLogicSSKA()
+        private BuisenessLogicSSKA(AccountsLogic accountsLogic)
         {
+            al = accountsLogic;
             progrBar = new WindowProgrBar();
-            dataGate = new CsvToXmlSSKA();
+            dataGate = new CsvToXmlSSKA(al);
 
             Request = DataRequest.GetInstance();
             InitializeHandledRequest();
             RegisterDataRequestHandlers();
-
-            ResponseModel = ResponseModel.GetInstance();
             
             RegisterMethodsForProgressBar();
-
+            worker = new BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+            worker.DoWork += worker_DoWork;
+            worker.ProgressChanged += worker_ProgressChanged;
+            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            worker.RunWorkerAsync();
             // Initial charts
             UpdateDataModel();
         }
@@ -52,18 +65,87 @@ namespace WpfApplication1
 
         private void RegisterMethodsForProgressBar()
         {
-            updateChart += delegate { ResponseModel.ExpensesOverDateRange = GetExpensesOverDateRange(); };
-            updateChart += delegate { ResponseModel.TransactionsAccounts = GetTransactionsAccounts(); };
-            updateChart += delegate { ResponseModel.IncomesOverDatesRange = GetIncomesOverDatesRange(); };
-            updateChart += delegate { ResponseModel.BalanceOverDateRange = GetBalanceOverDateRange(); };           
-            updateChart += delegate { ResponseModel.ExpensesInfoOverDateRange = GetExpensesInfoOverDateRange(); };
-            updateChart += delegate { ResponseModel.ExpensesOverRemiteeGroupsInDateRange = GetExpensesOverRemiteeGroupsInDateRange(); };
-            updateChart += delegate { ResponseModel.ExpensesOverRemiteeInDateRange = GetExpensesOverRemiteeInDateRange(); };
-            updateChart += delegate { ResponseModel.Summary = GetSummary(); };
-            updateChart += delegate { ResponseModel.IncomesInfoOverDateRange = GetIncomesInfoOverDateRange(); };
-            updateChart += delegate { ResponseModel.ExpensesOverCategory = GetExpensesOverCategory(); };
-            
+            updateChart += delegate { responseModel.ExpensesOverDateRange = GetExpensesOverDateRange(); };
+            updateChart += delegate { responseModel.TransactionsAccounts = GetTransactionsAccounts(); };
+            updateChart += delegate { responseModel.IncomesOverDatesRange = GetIncomesOverDatesRange(); };
+            updateChart += delegate { responseModel.BalanceOverDateRange = GetBalanceOverDateRange(); };           
+            updateChart += delegate { responseModel.ExpensesInfoOverDateRange = GetExpensesInfoOverDateRange(); };
+            updateChart += delegate { responseModel.ExpensesOverRemiteeGroupsInDateRange = GetExpensesOverRemiteeGroupsInDateRange(); };
+            updateChart += delegate { responseModel.ExpensesOverRemiteeInDateRange = GetExpensesOverRemiteeInDateRange(); };
+            updateChart += delegate { responseModel.ExpensesOverCategory = GetExpensesOverCategory(); };           
+            updateChart += delegate { responseModel.IncomesInfoOverDateRange = GetIncomesInfoOverDateRange(); };
+            updateChart += delegate { responseModel.Summary = GetSummary(); };
         }
+
+        void worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            int qty2Invoke = updateChart.GetInvocationList().Length;
+            for (int ctr = 0; ctr < qty2Invoke; ctr++)
+            {
+                // (ctr + 1) would be adjusted to 9 calls of functions 
+                int progr = (ctr + 1) * 10;
+
+                var updChart = updateChart.GetInvocationList()[ctr];
+                updChart.DynamicInvoke(Request);
+                Thread.Sleep(60);
+
+                (sender as BackgroundWorker).ReportProgress(progr);
+
+                Thread.Sleep(60);
+            }
+            e.Result = 0;
+            Thread.Sleep(10);           
+        }
+
+        void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            // Checking if this thread has access to the object.
+        if (progrBar.pbStatus.Dispatcher.CheckAccess())
+            {
+                // This thread has access so it can update the UI thread.
+                progrBar.pbStatus.Value = e.ProgressPercentage;
+            }
+            else
+            {
+                // This thread does not have access to the UI thread.
+                // Place the update method on the Dispatcher of the UI thread.
+                progrBar.pbStatus.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    new UpdateUIDelegateProgrBar(delegate { progrBar.pbStatus.Value = e.ProgressPercentage; }), progrBar.pbStatus);
+            }
+ 
+            if (e.UserState != null)
+                MessageBox.Show("UserState is " + e.UserState.ToString());
+        }
+
+        void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (progrBar.IsVisible)
+            {
+                if (progrBar.pbStatus.Dispatcher.CheckAccess())
+                {
+                    // This thread has access so it can update the UI thread.
+                    progrBar.Hide();
+                }
+                else
+                {
+                    // This thread does not have access to the UI thread.
+                    // Place the update method on the Dispatcher of the UI thread.
+                    progrBar.pbStatus.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                        new UpdateUIDelegateProgrBar(delegate { progrBar.Hide(); }), progrBar.pbStatus);
+                }
+                try 
+                {
+                    if (Thread.CurrentThread.IsBackground)
+                        Thread.CurrentThread.Abort();
+                }
+                catch (ThreadAbortException ex)
+                {
+                    Console.WriteLine("Background thread is intentionaly aborted, UI thread becomes owner");
+                }               
+            }
+            responseModel.UpdateDataRequired = !responseModel.UpdateDataRequired;
+        }
+
         private decimal ConvertStringToDecimal(string src)
         {
             decimal res = 0m;
@@ -124,7 +206,7 @@ namespace WpfApplication1
        
 
         #region IBuisenessLogic Members
-        public ResponseModel ResponseModel { get; }
+        //public ResponseModel ResponseModel { get; }
         public DataRequest Request { get; }
         public void UpdateData()
         {
@@ -133,61 +215,39 @@ namespace WpfApplication1
                 UpdateDataModel();
             }
         }
-        public async void UpdateDataModel()
+        public void UpdateDataModel()
         {
             PreProcessRequest(Request);
-            ResponseModel.UpdateDataRequired = false;
+
             if (!progrBar.IsVisible)
             {
                 progrBar.Show();
                 progrBar.pbStatus.Value = 0;
             }
-            IProgress<int> progress = new Progress<int>(s => progrBar.pbStatus.Value = s);
-
-            int qty2Invoke = updateChart.GetInvocationList().Length;
-            for (int ctr = 0; ctr < qty2Invoke; ctr++)
+            // IProgress<int> progress = new Progress<int>(s => progrBar.pbStatus.Value = s);
+            //  progress.Report( int value )
+            if (!worker.IsBusy)
             {
-                // (ctr + 1) would be adjusted to 9 calls of functions 
-                int progr = (ctr+1)  * 10;
-
-                var updChart = updateChart.GetInvocationList()[ctr];
-                updChart.DynamicInvoke(Request);
-                Thread.Sleep(60);
-
-                await Task.Factory.StartNew<int>(
-                                             () =>
-                                             {
-                                                 progress.Report(progr);
-                                                 Thread.Sleep(120);
-                                                 return 0;
-                                             },
-                                             TaskCreationOptions.PreferFairness);
-            }
-                       
-            if (progrBar.IsVisible)
-            {
-                progrBar.Hide();
+                worker.RunWorkerAsync();
+                Thread.Sleep(50);
             }
 
-            if (ResponseModel.UpdateDataRequired == true)
-            {
-                ResponseModel.UpdateDataRequired = false;
-            }
+            responseModel.UpdateDataRequired = !responseModel.UpdateDataRequired;
         }
         public void FilterData()
         {
             UpdateDataModel();
-            ResponseModel.BuchungstextOverDateRange = GetBuchungstextOverDateRange();
-            ResponseModel.TransactionsAccountsObsCollBoolTextCouple = GetTransactionsAccountsObsCollBoolTextCouple();
+            responseModel.BuchungstextOverDateRange = GetBuchungstextOverDateRange();
+            responseModel.TransactionsAccountsObsCollBoolTextCouple = GetTransactionsAccountsObsCollBoolTextCouple();
         }
         public void UpdateViewData()
         {
             if (Request.AtDate != DateTime.MinValue)
-                ResponseModel.ExpensesAtDate = GetExpensesAtDate(Request);
+                responseModel.ExpensesAtDate = GetExpensesAtDate(Request);
             if (Request.SelectedRemittee != null)
-                ResponseModel.Dates4RemiteeOverDateRange = Request.SelectedRemittee == string.Empty? ResponseModel.Dates4RemiteeOverDateRange : GetDates4RemiteeOverDateRange(Request);
+                responseModel.Dates4RemiteeOverDateRange = Request.SelectedRemittee == string.Empty? responseModel.Dates4RemiteeOverDateRange : GetDates4RemiteeOverDateRange(Request);
             if (Request.SelectedCategory != null)
-                ResponseModel.ExpenceBeneficiary4CategoryOverDateRange = Request.SelectedCategory == string.Empty ? ResponseModel.ExpenceBeneficiary4CategoryOverDateRange : GetExpenseBeneficiary4CategoryOverDateRange(Request);
+                responseModel.ExpenceBeneficiary4CategoryOverDateRange = Request.SelectedCategory == string.Empty ? responseModel.ExpenceBeneficiary4CategoryOverDateRange : GetExpenseBeneficiary4CategoryOverDateRange(Request);
         }
         #endregion
 
@@ -495,8 +555,7 @@ namespace WpfApplication1
                     Config.AppName + ": Unable to get Accounts", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return null;
-        }
- 
+        } 
         
         protected ObservableCollection<BoolTextCouple> GetTransactionsAccountsObsCollBoolTextCouple()
         {
@@ -623,24 +682,6 @@ namespace WpfApplication1
                     Config.AppName + ": Unable to get Data", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             return null;
-
-
-        }
-        public List<string> GetUserAccounts()
-        {
-            try
-            {
-                var accs =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField) // .Elements
-                    select r.Attribute(Config.AuftragsKontoField).Value;
-                return accs.Distinct<string>().ToList<string>();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message + "**BuisenessLogicSSKA-GetUserAccounts**",
-                    Config.AppName + ": Unable to get Accounts", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            return null;
         }
 
         protected List<KeyValuePair<string, decimal>> GetExpensesOverCategory()
@@ -735,4 +776,7 @@ namespace WpfApplication1
             return res.Where(paar => (paar.Value >= preprocessedRequest.ExpencesLowestValue) && (paar.Value <= preprocessedRequest.ExpencesHighestValue));
         }
     }
+
+    delegate void UpdateUIDelegateProgrBar( System.Windows.Controls.ProgressBar progressBar);
+    delegate void UpdateUIDelegateTextBox(System.Windows.Controls.TextBox textBox);
 }

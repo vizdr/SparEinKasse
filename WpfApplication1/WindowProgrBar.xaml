@@ -4,5 +4,6 @@
     Title="Progress" Background="LightGray" Height="100" Width="300">
     <Grid Margin="20">
         <ProgressBar  Minimum="0" Maximum="100" Foreground="LightBlue" Background="AliceBlue"   Name="pbStatus"/>
+        <TextBlock Text="{Binding ElementName=pbStatus, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
     </Grid>
 </Window>

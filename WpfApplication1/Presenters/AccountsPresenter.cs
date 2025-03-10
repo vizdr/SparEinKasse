@@ -1,4 +1,5 @@
 ﻿using System;
+using WpfApplication1.BuisenessLogic;
 using WpfApplication1.DAL;
 
 namespace WpfApplication1
@@ -7,24 +8,24 @@ namespace WpfApplication1
     class AccountsPresenter
     {
         private IViewAccounts _viewAccounts;
-        private BuisenessLogicSSKA bl;
+        private AccountsLogic al;
 
-        public AccountsPresenter(IViewAccounts viewAccounts)
+        public AccountsPresenter(IViewAccounts viewAccounts, AccountsLogic accountsLogic)
         {
             _viewAccounts = viewAccounts;
-            bl = BuisenessLogicSSKA.GetInstance();
+            al = accountsLogic;
             RegisterViewAccountsHandlers();
         }
 
         public void Initialize()
         {
-            _viewAccounts.UserAccounts = bl.GetUserAccounts();
-            _viewAccounts.SelectedAccount = XBaseElemBuilder.BankAccount ?? String.Empty;
+            _viewAccounts.UserAccounts = al.GetUserAccounts();
+            _viewAccounts.SelectedAccount = AccountsLogic.BankAccount ?? String.Empty;
         }
 
         private void RegisterViewAccountsHandlers()
         {
-            _viewAccounts.OnAccountsAdd += delegate { XBaseElemBuilder.BankAccount = _viewAccounts.SelectedAccount; };
+            _viewAccounts.OnAccountsAdd += delegate { AccountsLogic.BankAccount = _viewAccounts.SelectedAccount; };
         }
     }
 }

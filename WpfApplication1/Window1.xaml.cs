@@ -10,6 +10,7 @@ using System.Windows.Controls.DataVisualization.Charting;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Threading;
 
 namespace WpfApplication1
 {
@@ -236,7 +237,18 @@ namespace WpfApplication1
         }
         public string Summary
         {
-            set { textBoxTotal.Text = value; }
+            set 
+            {
+                if(textBoxTotal.Dispatcher.CheckAccess())
+                { 
+                    textBoxTotal.Text = value;
+                }
+                else 
+                {
+                    textBoxTotal.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                    new UpdateUIDelegateTextBox(delegate { textBoxTotal.Text = value; }), textBoxTotal);
+                }
+            }
         }
         public List<string> Accounts
         {

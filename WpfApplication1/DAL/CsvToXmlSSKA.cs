@@ -8,6 +8,7 @@ using System.IO;
 using WpfApplication1.Properties;
 using System.Xml;
 using CategoryFormatter;
+using WpfApplication1.BuisenessLogic;
 
 namespace WpfApplication1.DAL
 {
@@ -19,12 +20,14 @@ namespace WpfApplication1.DAL
         private static bool isExceptionUnhandled = false;
         public static XElement DataSource { get; private set; }
         private readonly object _fileLock = new object();
+        private AccountsLogic aclogicSSKA;
         static CsvToXmlSSKA()
         {
             PathToStorageXmlFile = Config.PathToXmlStorageFolder + @"\" + Settings.Default.StorageFileName;
         }
-        public CsvToXmlSSKA()
-        {            
+        public CsvToXmlSSKA(AccountsLogic acLogicSSKA)
+        {
+            this.aclogicSSKA = acLogicSSKA;
             try
             {
                 if (File.Exists(PathToStorageXmlFile))
@@ -249,7 +252,7 @@ namespace WpfApplication1.DAL
                     if (sourceHeaders.Length > 0)
                     {
                         source = RemoveHeader(source);
-                        XElemBuilder XElemsBuilder = new X10ElemBuilder(sourceHeaders);
+                        XElemBuilder XElemsBuilder = new X10ElemBuilder(sourceHeaders, aclogicSSKA);
                         res = XElemsBuilder.BuildXElement(source);
                         if (res != null)
                             return res; //XElemsBuilder.BuildXElement(source) ?? new XElement("Root");
