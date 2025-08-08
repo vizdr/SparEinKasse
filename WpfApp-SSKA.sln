@@ -20,11 +20,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Categorization", "Categorization", "{34FD69AD-0392-43E2-9B34-B6801CA65E17}"
 	ProjectSection(SolutionItems) = preProject
 		Categorization\Categorization.csv = Categorization\Categorization.csv
+		Categorization\Categorizer.exe = Categorization\Categorizer.exe
 		Categorization\MT940_Test_umsatz.csv = Categorization\MT940_Test_umsatz.csv
 		Categorization\Qt5Core.dll = Categorization\Qt5Core.dll
 		Categorization\Qt5Gui.dll = Categorization\Qt5Gui.dll
 		Categorization\Qt5Widgets.dll = Categorization\Qt5Widgets.dll
-		Categorization\QtClassifcatorSSKA.exe = Categorization\QtClassifcatorSSKA.exe
 		Categorization\testOutput.csv = Categorization\testOutput.csv
 		Categorization\vc_redist.x64.exe = Categorization\vc_redist.x64.exe
 	EndProjectSection

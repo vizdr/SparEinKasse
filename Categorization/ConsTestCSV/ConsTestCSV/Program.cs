@@ -8,7 +8,7 @@ namespace ConsTestCSV
         static void Main(string[] args)
         {
             Console.WriteLine("Hello CSV Categories");
-            FormatterCSVCategories worker = new();
+            FormatterCSVCategories worker = new FormatterCSVCategories();
             worker.GetCategoriesAndKeywordsFromFile();
             worker.ProcessCSVInput();
             worker.FormCSVOutput();
