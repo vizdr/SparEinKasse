@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,12 +10,18 @@ using WpfApplication1;
 
 public class App : Application
 {
-    readonly Window1 mainWindow;
+    private readonly Window1 mainWindow;
+    private readonly BusinessLogicSSKA businessLogic;
+    private static App _instance;
 
-    // через систему внедрения зависимостей получаем объект главного окна
-    public App(Window1 mainWindow)
+    /// <summary>
+    /// Constructor for DI container. Receives dependencies via injection.
+    /// </summary>
+    public App(Window1 mainWindow, BusinessLogicSSKA businessLogic)
     {
         this.mainWindow = mainWindow;
+        this.businessLogic = businessLogic;
+        _instance = this;
     }
 
     protected override void OnStartup(StartupEventArgs e)
@@ -25,7 +31,8 @@ public class App : Application
         Thread.CurrentThread.CurrentCulture = CI;
         mainWindow.Show();
         base.OnStartup(e);
-     }
+    }
+
     public static void ChangeCulture(CultureInfo culture)
     {
         CultureInfo CI = (CultureInfo)culture.Clone();
@@ -34,20 +41,12 @@ public class App : Application
         Thread.CurrentThread.CurrentUICulture = CI;
         var oldWindow = Application.Current.MainWindow;
 
-// Calculation of Display Resolution
-//PresentationSource MainWindowPresentationSource = PresentationSource.FromVisual(oldWindow);
-//Matrix m = MainWindowPresentationSource.CompositionTarget.TransformToDevice;
-//// DpiWidthFactor = m.M11;
-//// DpiHeightFactor = m.M22;
-//double ScreenHeight = SystemParameters.PrimaryScreenHeight * m.M22;
-//double ScreenWidth = SystemParameters.PrimaryScreenWidth * m.M11;
-
-        Application.Current.MainWindow =  new Window1();
+        // Create new Window1 using the BusinessLogicSSKA from DI
+        Application.Current.MainWindow = new Window1(_instance.businessLogic);
         Application.Current.MainWindow.Show();
         if (!Application.Current.MainWindow.ShowActivated)
             Application.Current.MainWindow.Activate();
         Application.Current.MainWindow.HorizontalAlignment = HorizontalAlignment.Stretch;
         oldWindow.Close();
-
     }
 }

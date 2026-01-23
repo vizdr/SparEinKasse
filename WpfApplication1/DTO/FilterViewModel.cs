@@ -7,15 +7,18 @@ namespace WpfApplication1
 {
     public class FilterViewModel : IViewFilters
     {
-        private static readonly FilterViewModel instance = new FilterViewModel();
+        private static FilterViewModel _instance;
         private static bool isDirty = false;
 
         public event RoutedEventHandler OnApplyFilter;
         public event RoutedEventHandler OnResetFilters;
 
+        /// <summary>
+        /// Gets the singleton instance. Prefer constructor injection over this method.
+        /// </summary>
         public static FilterViewModel GetInstance()
         {
-            return instance;
+            return _instance ?? throw new InvalidOperationException("FilterViewModel not initialized. Use DI container.");
         }
 
         // Observable collection to sync visual representation of ListView with data sources
@@ -26,12 +29,18 @@ namespace WpfApplication1
         public string IncomesLessThan { get;  set; } = string.Empty;
         public string IncomesMoreThan { get;  set; } = string.Empty;
         public string ToFind { get; set; } = string.Empty;
-        
-        private FilterViewModel()
+
+        /// <summary>
+        /// Constructor for DI container.
+        /// </summary>
+        public FilterViewModel()
         {
             BuchungstextValues = new ObservableCollection<BoolTextCouple>();
             UserAccounts = new ObservableCollection<BoolTextCouple>();
             BuchungstextValues.CollectionChanged += OnBuchungstextValuesChanged;
+
+            // Set static instance for legacy GetInstance() calls during transition
+            _instance = this;
         }
         public void ResetFilterViewModel()           
         { 
@@ -51,12 +60,12 @@ namespace WpfApplication1
 
         public static void SetViewFilters(IViewFilters view)
         {
-            instance.BuchungstextValues = view.BuchungstextValues;
-            instance.UserAccounts = view.UserAccounts;
-            instance.ExpenciesLessThan = view.ExpenciesLessThan;
-            instance.ExpenciesMoreThan = view.ExpenciesMoreThan;
-            instance.IncomesLessThan = view.IncomesLessThan;
-            instance.IncomesMoreThan = view.IncomesMoreThan;
+            _instance.BuchungstextValues = view.BuchungstextValues;
+            _instance.UserAccounts = view.UserAccounts;
+            _instance.ExpenciesLessThan = view.ExpenciesLessThan;
+            _instance.ExpenciesMoreThan = view.ExpenciesMoreThan;
+            _instance.IncomesLessThan = view.IncomesLessThan;
+            _instance.IncomesMoreThan = view.IncomesMoreThan;
             isDirty = true;
         }
 

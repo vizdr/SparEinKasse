@@ -12,7 +12,7 @@ using WpfApplication1.BusinessLogic;
 
 namespace WpfApplication1.DAL
 {
-    internal class CsvToXmlSSKA
+    public class CsvToXmlSSKA
     {
         private static string[] rawCSVInputFiles;
         private static string[] categorizedCSVInputFiles;

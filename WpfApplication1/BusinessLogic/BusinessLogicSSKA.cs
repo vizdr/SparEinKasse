@@ -22,25 +22,35 @@ namespace WpfApplication1
         private readonly WindowProgrBar progrBar;
         private static PreprocessedDataRequest preprocessedRequest;
         BackgroundWorker worker;
-        private ResponseModel responseModel = ResponseModel.GetInstance();
+        private readonly ResponseModel responseModel;
         public ResponseModel ResponseModel
         {
             get => responseModel;
         }
-        private static AccountsLogic al;
-        private static readonly BusinessLogicSSKA instance = new BusinessLogicSSKA(al);
+        private static BusinessLogicSSKA _instance;
 
+        /// <summary>
+        /// Gets the singleton instance. Prefer constructor injection over this method.
+        /// </summary>
         public static BusinessLogicSSKA GetInstance()
         {
-            return instance;
+            return _instance ?? throw new InvalidOperationException("BusinessLogicSSKA not initialized. Use DI container.");
         }
-        private BusinessLogicSSKA(AccountsLogic accountsLogic)
-        {
-            al = accountsLogic;
-            progrBar = new WindowProgrBar();
-            dataGate = new CsvToXmlSSKA(al);
 
-            Request = DataRequest.GetInstance();
+        /// <summary>
+        /// Constructor for DI container. Receives all dependencies via injection.
+        /// </summary>
+        public BusinessLogicSSKA(
+            DataRequest dataRequest,
+            ResponseModel responseModel,
+            CsvToXmlSSKA csvToXmlSSKA)
+        {
+            Request = dataRequest ?? throw new ArgumentNullException(nameof(dataRequest));
+            this.responseModel = responseModel ?? throw new ArgumentNullException(nameof(responseModel));
+            dataGate = csvToXmlSSKA ?? throw new ArgumentNullException(nameof(csvToXmlSSKA));
+
+            progrBar = new WindowProgrBar();
+
             InitializeHandledRequest();
             RegisterDataRequestHandlers();
 
@@ -51,6 +61,10 @@ namespace WpfApplication1
             worker.ProgressChanged += worker_ProgressChanged;
             worker.RunWorkerCompleted += worker_RunWorkerCompleted;
             worker.RunWorkerAsync();
+
+            // Set static instance for legacy GetInstance() calls during transition
+            _instance = this;
+
             // Initial charts
             UpdateDataModel();
         }
