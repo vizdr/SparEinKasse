@@ -27,15 +27,6 @@ namespace WpfApplication1
         {
             get => responseModel;
         }
-        private static BusinessLogicSSKA _instance;
-
-        /// <summary>
-        /// Gets the singleton instance. Prefer constructor injection over this method.
-        /// </summary>
-        public static BusinessLogicSSKA GetInstance()
-        {
-            return _instance ?? throw new InvalidOperationException("BusinessLogicSSKA not initialized. Use DI container.");
-        }
 
         /// <summary>
         /// Constructor for DI container. Receives all dependencies via injection.
@@ -61,9 +52,6 @@ namespace WpfApplication1
             worker.ProgressChanged += worker_ProgressChanged;
             worker.RunWorkerCompleted += worker_RunWorkerCompleted;
             worker.RunWorkerAsync();
-
-            // Set static instance for legacy GetInstance() calls during transition
-            _instance = this;
 
             // Initial charts
             UpdateDataModel();

@@ -8,8 +8,6 @@ namespace WpfApplication1.DTO
 {
     public class ResponseModel : INotifyPropertyChanged
     {
-        private static ResponseModel _instance;
-
         /// <summary>
         /// Constructor for DI container. Receives FilterViewModel via injection.
         /// </summary>
@@ -36,17 +34,6 @@ namespace WpfApplication1.DTO
 
             expenceBeneficiary4CategoryOverDateRange = new List<KeyValuePair<string, decimal>>();
             expensesOverCategory = new List<KeyValuePair<string, decimal>>();
-
-            // Set static instance for legacy GetInstance() calls during transition
-            _instance = this;
-        }
-
-        /// <summary>
-        /// Gets the singleton instance. Prefer constructor injection over this method.
-        /// </summary>
-        public static ResponseModel GetInstance()
-        {
-            return _instance ?? throw new InvalidOperationException("ResponseModel not initialized. Use DI container.");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
