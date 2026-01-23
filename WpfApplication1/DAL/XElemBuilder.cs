@@ -6,7 +6,7 @@ using WpfApplication1.Properties;
 using System.Windows;
 using System.Globalization;
 using CategoryFormatter;
-using WpfApplication1.BuisenessLogic;
+using WpfApplication1.BusinessLogic;
 
 namespace WpfApplication1.DAL
 {

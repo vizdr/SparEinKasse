@@ -1,0 +1,10 @@
+<Project Sdk="WixToolset.Sdk/5.0.0">
+  <PropertyGroup>
+    <OutputType>Package</OutputType>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <!--
+      Build WpfApplication1 first with MSBuild before building this project:
+      msbuild ..\WpfApplication1\WpfApplication1.csproj /p:Configuration=Release
+    -->
+  </PropertyGroup>
+</Project>

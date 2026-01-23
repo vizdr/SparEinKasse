@@ -8,7 +8,7 @@ using System.IO;
 using WpfApplication1.Properties;
 using System.Xml;
 using CategoryFormatter;
-using WpfApplication1.BuisenessLogic;
+using WpfApplication1.BusinessLogic;
 
 namespace WpfApplication1.DAL
 {

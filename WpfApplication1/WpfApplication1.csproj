@@ -155,7 +155,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="App.cs" />
-    <Compile Include="BuisenessLogic\AccountsLogic.cs" />
+    <Compile Include="BusinessLogic\AccountsLogic.cs" />
     <Compile Include="DTO\ChartsModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Window1.xaml.cs">
@@ -164,7 +164,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BuisenessLogic\SettingsLogic.cs" />
+    <Compile Include="BusinessLogic\SettingsLogic.cs" />
     <Compile Include="DAL\CsvToXmlSSKA.cs" />
     <Compile Include="DAL\SSKA_XmlEqualityComparer.cs" />
     <Compile Include="DTO\DataRequest.cs" />
@@ -177,14 +177,14 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Presenters\AccountsPresenter.cs" />
-    <Compile Include="BuisenessLogic\BuisenessLogicSSKA.cs" />
+    <Compile Include="BusinessLogic\BusinessLogicSSKA.cs" />
     <Compile Include="Presenters\ChartsPresenter.cs" />
     <Compile Include="DAL\CsvHeaderResolver.cs" />
     <Compile Include="DAL\Config.cs" />
     <Compile Include="DAL\PathToFilesUtil.cs" />
     <Compile Include="DTO\BoolTextCouple.cs" />
     <Compile Include="DTO\FilterViewModel.cs" />
-    <Compile Include="BuisenessLogic\IBuisenessLogic.cs" />
+    <Compile Include="BusinessLogic\IBusinessLogic.cs" />
     <Compile Include="IViews\IViewAccounts.cs" />
     <Compile Include="IViews\IViewCharts.cs" />
     <Compile Include="IViews\IViewFilters.cs" />

@@ -1,5 +1,5 @@
 ﻿using System;
-using WpfApplication1.BuisenessLogic;
+using WpfApplication1.BusinessLogic;
 using WpfApplication1.DAL;
 
 namespace WpfApplication1

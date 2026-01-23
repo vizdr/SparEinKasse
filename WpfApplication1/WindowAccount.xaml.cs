@@ -11,7 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
-using WpfApplication1.BuisenessLogic;
+using WpfApplication1.BusinessLogic;
 
 namespace WpfApplication1
 {
