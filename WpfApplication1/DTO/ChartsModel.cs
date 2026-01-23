@@ -8,9 +8,16 @@ namespace WpfApplication1.DTO
 {
     public class ResponseModel : INotifyPropertyChanged
     {
-        private static readonly ResponseModel instance = new ResponseModel();
-        private ResponseModel()
+        private static ResponseModel _instance;
+
+        /// <summary>
+        /// Constructor for DI container. Receives FilterViewModel via injection.
+        /// </summary>
+        public ResponseModel(FilterViewModel filterViewModel)
         {
+            if (filterViewModel == null)
+                throw new ArgumentNullException(nameof(filterViewModel));
+
             expensesOverDateRange = new List<KeyValuePair<string, decimal>>();
             incomesOverDatesRange = new ObservableCollection<KeyValuePair<string, decimal>>();
             balanceOverDateRange = new List<KeyValuePair<DateTime, decimal>>();
@@ -21,18 +28,25 @@ namespace WpfApplication1.DTO
             summary = String.Empty;
             transactionsAccounts = new List<string>();
 
-            buchungstextOverDateRange = FilterViewModel.GetInstance().BuchungstextValues;
-            transactionsAccountsObsCollBoolTextCouple = FilterViewModel.GetInstance().UserAccounts;
+            buchungstextOverDateRange = filterViewModel.BuchungstextValues;
+            transactionsAccountsObsCollBoolTextCouple = filterViewModel.UserAccounts;
 
             expensesAtDate = new List<KeyValuePair<string, decimal>>();
             dates4RemiteeOverDateRange = new List<KeyValuePair<string, decimal>>();
 
             expenceBeneficiary4CategoryOverDateRange = new List<KeyValuePair<string, decimal>>();
             expensesOverCategory = new List<KeyValuePair<string, decimal>>();
+
+            // Set static instance for legacy GetInstance() calls during transition
+            _instance = this;
         }
+
+        /// <summary>
+        /// Gets the singleton instance. Prefer constructor injection over this method.
+        /// </summary>
         public static ResponseModel GetInstance()
         {
-            return instance;
+            return _instance ?? throw new InvalidOperationException("ResponseModel not initialized. Use DI container.");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

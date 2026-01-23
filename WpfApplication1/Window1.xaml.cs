@@ -19,12 +19,13 @@ namespace WpfApplication1
     /// </summary>
     public partial class Window1 : Window, IViewCharts, INotifyPropertyChanged
     {
-        private ChartsPresenter chP;
+        private readonly ChartsPresenter chP;
+        private readonly BusinessLogicSSKA businessLogic;
         private WindowFilters windowFilter;
 
         private ObservableCollection<KeyValuePair<string, decimal>> incomes;
         private List<KeyValuePair<string, decimal>> remittees;
-       
+
         public static bool isNotRegistred;
         public static DateTime expDate;
         private readonly TextBlock popupChDateExpText;
@@ -39,21 +40,26 @@ namespace WpfApplication1
             expDate = DateTime.Today;
             HandleRegistration();
         }
-        public Window1()
+
+        /// <summary>
+        /// Constructor for DI container. Receives BusinessLogicSSKA via injection.
+        /// </summary>
+        public Window1(BusinessLogicSSKA businessLogic)
         {
+            this.businessLogic = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
+
             try
-            { 
-                InitializeComponent();               
+            {
+                InitializeComponent();
             }
             catch (XmlException exc)
             {
                 MessageBox.Show(exc.InnerException.ToString(), "SSKA analyzer: Unable to initialize XAML components", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            Window1 window1 = this;
-            window1.chP = new ChartsPresenter(window1);
+            chP = new ChartsPresenter(this, businessLogic);
             chP.Initialaze();
-            window1.Closing += delegate { window1.chP.FinalizeChP(); };          
+            this.Closing += delegate { chP.FinalizeChP(); };          
 
 #if DEBUG
             isNotRegistred = true;
@@ -65,20 +71,20 @@ namespace WpfApplication1
                 aw.ShowDialog();
             }
 
-            window1.buttonUpdateSpan.Click += delegate { window1.chP.Initialaze(); };
-            window1.buttonShowFilters.Click += delegate { window1.InitialaizeFiltersWindow(); };
-            window1.buttonUpdateDataBankXML.Click += delegate
+            buttonUpdateSpan.Click += delegate { chP.Initialaze(); };
+            buttonShowFilters.Click += delegate { InitialaizeFiltersWindow(); };
+            buttonUpdateDataBankXML.Click += delegate
             {
                 if (!isNotRegistred || (expDate > DateTime.Today))
                 {
-                    window1.chP.ReloadXml();
-                    window1.chP.Initialaze();
+                    chP.ReloadXml();
+                    chP.Initialaze();
                     InitializeComponent();
                 }
             };
-            window1.buttonSettings.Click += delegate { new WindowFieldsDictionary().ShowDialog(); };
+            buttonSettings.Click += delegate { new WindowFieldsDictionary().ShowDialog(); };
 
-            window1.lineSeriesDateExp.MouseUp += window1.BarDataPoint_MouseUpDatExp;  // event handler popup for chart date-expence
+            lineSeriesDateExp.MouseUp += BarDataPoint_MouseUpDatExp;  // event handler popup for chart date-expence
             popupChDateExpText = new TextBlock
             {
                 Background = Brushes.LightBlue,

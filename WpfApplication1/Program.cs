@@ -8,30 +8,45 @@ using Microsoft.Extensions.DependencyInjection;
 using WpfApplication1;
 using WpfApplication1.BusinessLogic;
 using WpfApplication1.DAL;
+using WpfApplication1.DTO;
 
 namespace WpfApplication1
- {
-class Program
+{
+    class Program
     {
         [STAThread]
         public static void Main()
         {
-            // создаем хост приложения
+            // Create application host
             var host = Host.CreateDefaultBuilder()
-                // внедряем сервисы
+                // Register services with DI container
                 .ConfigureServices(services =>
                 {
-                    services.AddSingleton<App>();
-                    services.AddSingleton<Window1>();
+                    // DTO singletons (order matters due to dependencies)
+                    services.AddSingleton<FilterViewModel>();
+                    services.AddSingleton<DataRequest>();
+                    services.AddSingleton<ResponseModel>();
+
+                    // DAL services
+                    services.AddSingleton<AccountsLogic>();
+                    services.AddSingleton<CsvToXmlSSKA>();
+
+                    // Business Logic
+                    services.AddSingleton<IBusinessLogic, BusinessLogicSSKA>();
                     services.AddSingleton<BusinessLogicSSKA>();
-                    services.AddTransient<AccountsLogic>();
-                    services.AddTransient<CsvToXmlSSKA>();
+
+                    // Presenters
+                    services.AddTransient<ChartsPresenter>();
+
+                    // UI
+                    services.AddSingleton<Window1>();
+                    services.AddSingleton<App>();
                 })
                 .Build();
-            // получаем сервис - объект класса App
+
+            // Get the App service and run
             var app = host.Services.GetService<App>();
-            // запускаем приложения
             app?.Run();
         }
     }
- }
+}

@@ -7,7 +7,7 @@ namespace WpfApplication1.DTO
 {
     public class DataRequest
     {
-        private static readonly DataRequest instance = new DataRequest();
+        private static DataRequest _instance;
 
         // beginDate endDate;
         private Tuple<DateTime, DateTime> timeSpan;
@@ -24,8 +24,8 @@ namespace WpfApplication1.DTO
         public event EventHandler ViewDataRequested;
 
         public bool DataBankUpdating
-        { 
-            set => OnDataBankUpdateRequested(); 
+        {
+            set => OnDataBankUpdateRequested();
         }
 
         public Tuple<DateTime, DateTime> TimeSpan
@@ -40,7 +40,7 @@ namespace WpfApplication1.DTO
                 }
             }
         }
-        
+
         public FilterViewModel Filters
         {
             get => filters;
@@ -48,7 +48,7 @@ namespace WpfApplication1.DTO
             set
             {
                 if (!filters.IsFilterPrepared() || FilterViewModel.isFilterDirty())
-                {  
+                {
                     OnFilterValuesRequested();
                     FilterViewModel.flopDirty();
                 }
@@ -93,14 +93,24 @@ namespace WpfApplication1.DTO
             }
         }
 
+        /// <summary>
+        /// Gets the singleton instance. Prefer constructor injection over this method.
+        /// </summary>
         public static DataRequest GetInstance()
         {
-            return instance;
+            return _instance ?? throw new InvalidOperationException("DataRequest not initialized. Use DI container.");
         }
-        private DataRequest()
+
+        /// <summary>
+        /// Constructor for DI container. Receives FilterViewModel via injection.
+        /// </summary>
+        public DataRequest(FilterViewModel filterViewModel)
         {
+            filters = filterViewModel ?? throw new ArgumentNullException(nameof(filterViewModel));
             timeSpan = new Tuple<DateTime, DateTime>(DateTime.Now.Date.AddDays(-30), DateTime.Now.Date);
-            filters = FilterViewModel.GetInstance();
+
+            // Set static instance for legacy GetInstance() calls during transition
+            _instance = this;
         }
 
         protected void OnDataRequested()

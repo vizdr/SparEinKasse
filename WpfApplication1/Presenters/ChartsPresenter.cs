@@ -12,21 +12,19 @@ namespace WpfApplication1
         private IViewFilters _viewFilters;
         private readonly IBusinessLogic bl;
 
-        public ChartsPresenter(IViewCharts viewChart, BusinessLogicSSKA bl)
+        /// <summary>
+        /// Constructor for DI container or direct instantiation.
+        /// </summary>
+        public ChartsPresenter(IViewCharts viewChart, BusinessLogicSSKA businessLogic)
         {
-            this.bl = bl ?? throw new ArgumentNullException(nameof(bl));
+            bl = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
             _viewCharts = viewChart ?? throw new ArgumentNullException(nameof(viewChart));
 
-            _viewCharts.BeginDate = bl.Request.TimeSpan.Item1.Date;
-            _viewCharts.EndDate = bl.Request.TimeSpan.Item2.Date;
-            bl.ResponseModel.PropertyChanged += ReactOnPropertyChange;
-            bl.ResponseModel.ViewPropertyChanged += ReactOnViewPropertyChange;
+            _viewCharts.BeginDate = businessLogic.Request.TimeSpan.Item1.Date;
+            _viewCharts.EndDate = businessLogic.Request.TimeSpan.Item2.Date;
+            businessLogic.ResponseModel.PropertyChanged += ReactOnPropertyChange;
+            businessLogic.ResponseModel.ViewPropertyChanged += ReactOnViewPropertyChange;
         }
-
-        public ChartsPresenter(IViewCharts viewChC)
-            : this(viewChC, BusinessLogicSSKA.GetInstance()) {}
-
-        static ChartsPresenter() {}
 
         // Initiate update of data model by change of xxDate property for DataRequest 
         public void Initialaze()
