@@ -12,15 +12,17 @@ public class App : Application
 {
     private readonly Window1 mainWindow;
     private readonly BusinessLogicSSKA businessLogic;
+    private readonly FilterViewModel filterViewModel;
     private static App _instance;
 
     /// <summary>
     /// Constructor for DI container. Receives dependencies via injection.
     /// </summary>
-    public App(Window1 mainWindow, BusinessLogicSSKA businessLogic)
+    public App(Window1 mainWindow, BusinessLogicSSKA businessLogic, FilterViewModel filterViewModel)
     {
         this.mainWindow = mainWindow;
         this.businessLogic = businessLogic;
+        this.filterViewModel = filterViewModel;
         _instance = this;
     }
 
@@ -41,8 +43,8 @@ public class App : Application
         Thread.CurrentThread.CurrentUICulture = CI;
         var oldWindow = Application.Current.MainWindow;
 
-        // Create new Window1 using the BusinessLogicSSKA from DI
-        Application.Current.MainWindow = new Window1(_instance.businessLogic);
+        // Create new Window1 using dependencies from DI
+        Application.Current.MainWindow = new Window1(_instance.businessLogic, _instance.filterViewModel);
         Application.Current.MainWindow.Show();
         if (!Application.Current.MainWindow.ShowActivated)
             Application.Current.MainWindow.Activate();

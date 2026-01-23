@@ -7,19 +7,10 @@ namespace WpfApplication1
 {
     public class FilterViewModel : IViewFilters
     {
-        private static FilterViewModel _instance;
-        private static bool isDirty = false;
+        private bool isDirty = false;
 
         public event RoutedEventHandler OnApplyFilter;
         public event RoutedEventHandler OnResetFilters;
-
-        /// <summary>
-        /// Gets the singleton instance. Prefer constructor injection over this method.
-        /// </summary>
-        public static FilterViewModel GetInstance()
-        {
-            return _instance ?? throw new InvalidOperationException("FilterViewModel not initialized. Use DI container.");
-        }
 
         // Observable collection to sync visual representation of ListView with data sources
         public ObservableCollection<BoolTextCouple> BuchungstextValues { set; get; }
@@ -38,9 +29,6 @@ namespace WpfApplication1
             BuchungstextValues = new ObservableCollection<BoolTextCouple>();
             UserAccounts = new ObservableCollection<BoolTextCouple>();
             BuchungstextValues.CollectionChanged += OnBuchungstextValuesChanged;
-
-            // Set static instance for legacy GetInstance() calls during transition
-            _instance = this;
         }
         public void ResetFilterViewModel()           
         { 
@@ -58,26 +46,23 @@ namespace WpfApplication1
             return BuchungstextValues.Count > 0 || UserAccounts.Count > 0;
         }
 
-        public static void SetViewFilters(IViewFilters view)
+        public void SetViewFilters(IViewFilters view)
         {
-            _instance.BuchungstextValues = view.BuchungstextValues;
-            _instance.UserAccounts = view.UserAccounts;
-            _instance.ExpenciesLessThan = view.ExpenciesLessThan;
-            _instance.ExpenciesMoreThan = view.ExpenciesMoreThan;
-            _instance.IncomesLessThan = view.IncomesLessThan;
-            _instance.IncomesMoreThan = view.IncomesMoreThan;
+            BuchungstextValues = view.BuchungstextValues;
+            UserAccounts = view.UserAccounts;
+            ExpenciesLessThan = view.ExpenciesLessThan;
+            ExpenciesMoreThan = view.ExpenciesMoreThan;
+            IncomesLessThan = view.IncomesLessThan;
+            IncomesMoreThan = view.IncomesMoreThan;
             isDirty = true;
         }
 
-        public static void flopDirty()
+        public void FlopDirty()
         {
-            if (isDirty)
-                isDirty = false;
-            else
-                isDirty = true;
+            isDirty = !isDirty;
         }
 
-        public static bool isFilterDirty()
+        public bool IsFilterDirty()
         {
             return isDirty;
         }

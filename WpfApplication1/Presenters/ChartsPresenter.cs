@@ -11,14 +11,16 @@ namespace WpfApplication1
         private readonly IViewCharts _viewCharts;
         private IViewFilters _viewFilters;
         private readonly IBusinessLogic bl;
+        private readonly FilterViewModel _filterViewModel;
 
         /// <summary>
         /// Constructor for DI container or direct instantiation.
         /// </summary>
-        public ChartsPresenter(IViewCharts viewChart, BusinessLogicSSKA businessLogic)
+        public ChartsPresenter(IViewCharts viewChart, BusinessLogicSSKA businessLogic, FilterViewModel filterViewModel)
         {
             bl = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
             _viewCharts = viewChart ?? throw new ArgumentNullException(nameof(viewChart));
+            _filterViewModel = filterViewModel ?? throw new ArgumentNullException(nameof(filterViewModel));
 
             _viewCharts.BeginDate = businessLogic.Request.TimeSpan.Item1.Date;
             _viewCharts.EndDate = businessLogic.Request.TimeSpan.Item2.Date;
@@ -125,9 +127,9 @@ namespace WpfApplication1
         public void InitializeFilters(IViewFilters viewFilters)
         {
             if (!bl.Request.Filters.IsFilterPrepared())
-                bl.Request.Filters = FilterViewModel.GetInstance();
+                bl.Request.Filters = _filterViewModel;
             else
-                FilterViewModel.SetViewFilters(viewFilters);
+                _filterViewModel.SetViewFilters(viewFilters);
         }
 
         public void ResetFilters()
@@ -144,15 +146,15 @@ namespace WpfApplication1
                 val.IsSelected = true;
             }
 
-            FilterViewModel.SetViewFilters(ViewFilters);
-            bl.Request.Filters = FilterViewModel.GetInstance();
+            _filterViewModel.SetViewFilters(ViewFilters);
+            bl.Request.Filters = _filterViewModel;
         }
 
         // apply if selection of params is completed
         public void ApplyFilters()
         {
-            FilterViewModel.SetViewFilters(ViewFilters);
-            bl.Request.Filters = FilterViewModel.GetInstance();
+            _filterViewModel.SetViewFilters(ViewFilters);
+            bl.Request.Filters = _filterViewModel;
         }
 
         public IViewFilters ViewFilters

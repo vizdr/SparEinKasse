@@ -21,6 +21,7 @@ namespace WpfApplication1
     {
         private readonly ChartsPresenter chP;
         private readonly BusinessLogicSSKA businessLogic;
+        private readonly FilterViewModel filterViewModel;
         private WindowFilters windowFilter;
 
         private ObservableCollection<KeyValuePair<string, decimal>> incomes;
@@ -42,11 +43,12 @@ namespace WpfApplication1
         }
 
         /// <summary>
-        /// Constructor for DI container. Receives BusinessLogicSSKA via injection.
+        /// Constructor for DI container. Receives dependencies via injection.
         /// </summary>
-        public Window1(BusinessLogicSSKA businessLogic)
+        public Window1(BusinessLogicSSKA businessLogic, FilterViewModel filterViewModel)
         {
             this.businessLogic = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
+            this.filterViewModel = filterViewModel ?? throw new ArgumentNullException(nameof(filterViewModel));
 
             try
             {
@@ -57,7 +59,7 @@ namespace WpfApplication1
                 MessageBox.Show(exc.InnerException.ToString(), "SSKA analyzer: Unable to initialize XAML components", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            chP = new ChartsPresenter(this, businessLogic);
+            chP = new ChartsPresenter(this, businessLogic, filterViewModel);
             chP.Initialaze();
             this.Closing += delegate { chP.FinalizeChP(); };          
 
