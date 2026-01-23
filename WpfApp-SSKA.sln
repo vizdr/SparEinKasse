@@ -1,14 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32228.343
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36915.13 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApplication1", "WpfApplication1\WpfApplication1.csproj", "{01A15E59-C31A-43D3-BE1D-2A3F567078C5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A01A79A0-7BB6-468A-93CA-1765A4CD3936} = {A01A79A0-7BB6-468A-93CA-1765A4CD3936}
 	EndProjectSection
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupSSKAmonitor", "SetupSSKAmonitor\SetupSSKAmonitor.vdproj", "{C465FE9C-16BA-4660-973D-403B7D955E29}"
+Project("{B7DD6F7E-DEF8-4E67-B5B7-07EF123DB6F0}") = "SetupSSKA.Wix", "SetupSSKA.Wix\SetupSSKA.Wix.wixproj", "{B2A5E8F1-9C3D-4A7B-8E1F-6D5C4B3A2E9F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{01A15E59-C31A-43D3-BE1D-2A3F567078C5} = {01A15E59-C31A-43D3-BE1D-2A3F567078C5}
+		{F1E04FA3-F114-462F-BFF1-CC45ACE274A0} = {F1E04FA3-F114-462F-BFF1-CC45ACE274A0}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSecurity", "SimpleSecurity\SimpleSecurity.csproj", "{F1E04FA3-F114-462F-BFF1-CC45ACE274A0}"
 EndProject
@@ -20,11 +24,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Categorization", "Categorization", "{34FD69AD-0392-43E2-9B34-B6801CA65E17}"
 	ProjectSection(SolutionItems) = preProject
 		Categorization\Categorization.csv = Categorization\Categorization.csv
+		Categorization\Categorizer.exe = Categorization\Categorizer.exe
 		Categorization\MT940_Test_umsatz.csv = Categorization\MT940_Test_umsatz.csv
 		Categorization\Qt5Core.dll = Categorization\Qt5Core.dll
 		Categorization\Qt5Gui.dll = Categorization\Qt5Gui.dll
 		Categorization\Qt5Widgets.dll = Categorization\Qt5Widgets.dll
-		Categorization\QtClassifcatorSSKA.exe = Categorization\QtClassifcatorSSKA.exe
 		Categorization\testOutput.csv = Categorization\testOutput.csv
 		Categorization\vc_redist.x64.exe = Categorization\vc_redist.x64.exe
 	EndProjectSection
@@ -75,18 +79,15 @@ Global
 		{01A15E59-C31A-43D3-BE1D-2A3F567078C5}.Release|ARM64.Build.0 = Release|Any CPU
 		{01A15E59-C31A-43D3-BE1D-2A3F567078C5}.Release|x64.ActiveCfg = Release|Any CPU
 		{01A15E59-C31A-43D3-BE1D-2A3F567078C5}.Release|x64.Build.0 = Release|Any CPU
-		{C465FE9C-16BA-4660-973D-403B7D955E29}.Debug|Any CPU.ActiveCfg = Debug
-		{C465FE9C-16BA-4660-973D-403B7D955E29}.Debug|Any CPU.Build.0 = Debug
-		{C465FE9C-16BA-4660-973D-403B7D955E29}.Debug|ARM64.ActiveCfg = Debug
-		{C465FE9C-16BA-4660-973D-403B7D955E29}.Debug|ARM64.Build.0 = Debug
-		{C465FE9C-16BA-4660-973D-403B7D955E29}.Debug|x64.ActiveCfg = Debug
-		{C465FE9C-16BA-4660-973D-403B7D955E29}.Debug|x64.Build.0 = Debug
-		{C465FE9C-16BA-4660-973D-403B7D955E29}.Release|Any CPU.ActiveCfg = Release
-		{C465FE9C-16BA-4660-973D-403B7D955E29}.Release|Any CPU.Build.0 = Release
-		{C465FE9C-16BA-4660-973D-403B7D955E29}.Release|ARM64.ActiveCfg = Release
-		{C465FE9C-16BA-4660-973D-403B7D955E29}.Release|ARM64.Build.0 = Release
-		{C465FE9C-16BA-4660-973D-403B7D955E29}.Release|x64.ActiveCfg = Release
-		{C465FE9C-16BA-4660-973D-403B7D955E29}.Release|x64.Build.0 = Release
+		{B2A5E8F1-9C3D-4A7B-8E1F-6D5C4B3A2E9F}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{B2A5E8F1-9C3D-4A7B-8E1F-6D5C4B3A2E9F}.Debug|ARM64.ActiveCfg = Debug|x64
+		{B2A5E8F1-9C3D-4A7B-8E1F-6D5C4B3A2E9F}.Debug|x64.ActiveCfg = Debug|x64
+		{B2A5E8F1-9C3D-4A7B-8E1F-6D5C4B3A2E9F}.Debug|x64.Build.0 = Debug|x64
+		{B2A5E8F1-9C3D-4A7B-8E1F-6D5C4B3A2E9F}.Release|Any CPU.ActiveCfg = Release|x64
+		{B2A5E8F1-9C3D-4A7B-8E1F-6D5C4B3A2E9F}.Release|Any CPU.Build.0 = Release|x64
+		{B2A5E8F1-9C3D-4A7B-8E1F-6D5C4B3A2E9F}.Release|ARM64.ActiveCfg = Release|x64
+		{B2A5E8F1-9C3D-4A7B-8E1F-6D5C4B3A2E9F}.Release|x64.ActiveCfg = Release|x64
+		{B2A5E8F1-9C3D-4A7B-8E1F-6D5C4B3A2E9F}.Release|x64.Build.0 = Release|x64
 		{F1E04FA3-F114-462F-BFF1-CC45ACE274A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F1E04FA3-F114-462F-BFF1-CC45ACE274A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F1E04FA3-F114-462F-BFF1-CC45ACE274A0}.Debug|ARM64.ActiveCfg = Debug|Any CPU

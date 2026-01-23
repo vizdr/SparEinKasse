@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  SSKA Analyzer Installer
+  Built with WiX Toolset v5
+
+  Prerequisites: Build WpfApplication1 first with MSBuild:
+    msbuild ..\WpfApplication1\WpfApplication1.csproj /p:Configuration=Release
+
+  Then build this installer:
+    dotnet build SetupSSKA.Wix.wixproj -c Release
+
+  Output: bin\Release\x64\SetupSSKA.Wix.msi
+-->
+
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package
+    Name="SSKA Analyzer"
+    Manufacturer="V_Zdravkov"
+    Version="2.1.0"
+    UpgradeCode="E8F5B9A1-7C3D-4E2F-9A1B-5C8D7E6F4A3B"
+    Scope="perMachine">
+
+    <MajorUpgrade
+      DowngradeErrorMessage="A newer version of [ProductName] is already installed."
+      AllowSameVersionUpgrades="yes" />
+
+    <!-- Application icon in Add/Remove Programs -->
+    <Icon Id="AppIcon.ico" SourceFile="..\WpfApplication1\IconSSKAapp.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
+
+    <!-- Installation directory structure -->
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="SSKAanalyzer">
+        <Directory Id="CategorizationFolder" Name="Categorization">
+          <Directory Id="ImageFormatsFolder" Name="imageformats" />
+          <Directory Id="PlatformsFolder" Name="platforms" />
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <!-- Program Menu shortcut (All Users) -->
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ApplicationProgramsFolder" Name="SSKA Analyzer" />
+    </StandardDirectory>
+
+    <!-- Main application files -->
+    <ComponentGroup Id="MainApplication" Directory="INSTALLFOLDER">
+      <!-- Main executable and config -->
+      <Component Id="MainExecutable">
+        <File Id="SSKAanalyzer.exe" Source="..\WpfApplication1\bin\Release\SSKAanalyzer.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="AppConfig">
+        <File Source="..\WpfApplication1\bin\Release\SSKAanalyzer.exe.config" />
+      </Component>
+
+      <!-- Project DLLs -->
+      <Component Id="SimpleSecurity">
+        <File Source="..\WpfApplication1\bin\Release\SimpleSecurity.dll" />
+      </Component>
+      <Component Id="CategoryFormatter">
+        <File Source="..\WpfApplication1\bin\Release\CategoryFormatter.dll" />
+      </Component>
+      <Component Id="DataVisualization">
+        <File Source="..\WpfApplication1\bin\Release\DotNetProjects.DataVisualization.Toolkit.dll" />
+      </Component>
+
+      <!-- Microsoft.Bcl -->
+      <Component Id="MsBclAsyncInterfaces">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Bcl.AsyncInterfaces.dll" />
+      </Component>
+
+      <!-- Microsoft.Extensions.Configuration -->
+      <Component Id="MsExtConfig">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.dll" />
+      </Component>
+      <Component Id="MsExtConfigAbs">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.Abstractions.dll" />
+      </Component>
+      <Component Id="MsExtConfigBinder">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.Binder.dll" />
+      </Component>
+      <Component Id="MsExtConfigCommandLine">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.CommandLine.dll" />
+      </Component>
+      <Component Id="MsExtConfigEnvVars">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.EnvironmentVariables.dll" />
+      </Component>
+      <Component Id="MsExtConfigFileExt">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.FileExtensions.dll" />
+      </Component>
+      <Component Id="MsExtConfigJson">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.Json.dll" />
+      </Component>
+      <Component Id="MsExtConfigUserSecrets">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.UserSecrets.dll" />
+      </Component>
+
+      <!-- Microsoft.Extensions.DependencyInjection -->
+      <Component Id="MsExtDI">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.DependencyInjection.dll" />
+      </Component>
+      <Component Id="MsExtDIAbs">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+      </Component>
+
+      <!-- Microsoft.Extensions.Diagnostics -->
+      <Component Id="MsExtDiagnostics">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Diagnostics.dll" />
+      </Component>
+      <Component Id="MsExtDiagnosticsAbs">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Diagnostics.Abstractions.dll" />
+      </Component>
+
+      <!-- Microsoft.Extensions.FileProviders -->
+      <Component Id="MsExtFileProvidersAbs">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.FileProviders.Abstractions.dll" />
+      </Component>
+      <Component Id="MsExtFileProvidersPhysical">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.FileProviders.Physical.dll" />
+      </Component>
+      <Component Id="MsExtFileSystemGlobbing">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.FileSystemGlobbing.dll" />
+      </Component>
+
+      <!-- Microsoft.Extensions.Hosting -->
+      <Component Id="MsExtHosting">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Hosting.dll" />
+      </Component>
+      <Component Id="MsExtHostingAbs">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Hosting.Abstractions.dll" />
+      </Component>
+
+      <!-- Microsoft.Extensions.Logging -->
+      <Component Id="MsExtLogging">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Logging.dll" />
+      </Component>
+      <Component Id="MsExtLoggingAbs">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Logging.Abstractions.dll" />
+      </Component>
+      <Component Id="MsExtLoggingConfig">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Logging.Configuration.dll" />
+      </Component>
+      <Component Id="MsExtLoggingConsole">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Logging.Console.dll" />
+      </Component>
+      <Component Id="MsExtLoggingDebug">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Logging.Debug.dll" />
+      </Component>
+      <Component Id="MsExtLoggingEventLog">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Logging.EventLog.dll" />
+      </Component>
+      <Component Id="MsExtLoggingEventSource">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Logging.EventSource.dll" />
+      </Component>
+
+      <!-- Microsoft.Extensions.Options -->
+      <Component Id="MsExtOptions">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Options.dll" />
+      </Component>
+      <Component Id="MsExtOptionsConfigExt">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Options.ConfigurationExtensions.dll" />
+      </Component>
+      <Component Id="MsExtPrimitives">
+        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Primitives.dll" />
+      </Component>
+
+      <!-- System DLLs -->
+      <Component Id="SysBuffers">
+        <File Source="..\WpfApplication1\bin\Release\System.Buffers.dll" />
+      </Component>
+      <Component Id="SysDiagnosticsDiagnosticSource">
+        <File Source="..\WpfApplication1\bin\Release\System.Diagnostics.DiagnosticSource.dll" />
+      </Component>
+      <Component Id="SysIOPipelines">
+        <File Source="..\WpfApplication1\bin\Release\System.IO.Pipelines.dll" />
+      </Component>
+      <Component Id="SysMemory">
+        <File Source="..\WpfApplication1\bin\Release\System.Memory.dll" />
+      </Component>
+      <Component Id="SysNumericsVectors">
+        <File Source="..\WpfApplication1\bin\Release\System.Numerics.Vectors.dll" />
+      </Component>
+      <Component Id="SysRuntimeUnsafe">
+        <File Source="..\WpfApplication1\bin\Release\System.Runtime.CompilerServices.Unsafe.dll" />
+      </Component>
+      <Component Id="SysTextEncodingCodePages">
+        <File Source="..\WpfApplication1\bin\Release\System.Text.Encoding.CodePages.dll" />
+      </Component>
+      <Component Id="SysTextEncodingsWeb">
+        <File Source="..\WpfApplication1\bin\Release\System.Text.Encodings.Web.dll" />
+      </Component>
+      <Component Id="SysTextJson">
+        <File Source="..\WpfApplication1\bin\Release\System.Text.Json.dll" />
+      </Component>
+      <Component Id="SysThreadingTasksExt">
+        <File Source="..\WpfApplication1\bin\Release\System.Threading.Tasks.Extensions.dll" />
+      </Component>
+      <Component Id="SysValueTuple">
+        <File Source="..\WpfApplication1\bin\Release\System.ValueTuple.dll" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Categorization tools -->
+    <ComponentGroup Id="CategorizationTools" Directory="CategorizationFolder">
+      <Component Id="Categorizer">
+        <File Id="Categorizer.exe" Source="..\Categorization\Categorizer.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="CategorizationCSV">
+        <File Id="Categorization.csv" Source="..\Categorization\Categorization.csv" />
+      </Component>
+      <!-- Qt Core DLLs -->
+      <Component Id="Qt5Core">
+        <File Source="..\Categorization\Qt5Core.dll" />
+      </Component>
+      <Component Id="Qt5Gui">
+        <File Source="..\Categorization\Qt5Gui.dll" />
+      </Component>
+      <Component Id="Qt5Widgets">
+        <File Source="..\Categorization\Qt5Widgets.dll" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Qt imageformats plugins -->
+    <ComponentGroup Id="QtImageFormats" Directory="ImageFormatsFolder">
+      <Component Id="qgif">
+        <File Source="..\Categorization\imageformats\qgif.dll" />
+      </Component>
+      <Component Id="qico">
+        <File Source="..\Categorization\imageformats\qico.dll" />
+      </Component>
+      <Component Id="qjpeg">
+        <File Source="..\Categorization\imageformats\qjpeg.dll" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Qt platforms plugins -->
+    <ComponentGroup Id="QtPlatforms" Directory="PlatformsFolder">
+      <Component Id="qwindows">
+        <File Source="..\Categorization\platforms\qwindows.dll" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Shortcuts -->
+    <ComponentGroup Id="Shortcuts" Directory="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut">
+        <Shortcut Id="AppStartMenuShortcut"
+                  Name="SSKA Analyzer"
+                  Description="Personal Finance Analyzer"
+                  Target="[INSTALLFOLDER]SSKAanalyzer.exe"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon.ico" />
+        <RemoveFolder Id="CleanUpShortcutFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\VZdravkov\SSKAanalyzer"
+                       Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Feature definition -->
+    <Feature Id="MainFeature" Title="SSKA Analyzer" Level="1">
+      <ComponentGroupRef Id="MainApplication" />
+      <ComponentGroupRef Id="CategorizationTools" />
+      <ComponentGroupRef Id="QtImageFormats" />
+      <ComponentGroupRef Id="QtPlatforms" />
+      <ComponentGroupRef Id="Shortcuts" />
+    </Feature>
+
+  </Package>
+</Wix>

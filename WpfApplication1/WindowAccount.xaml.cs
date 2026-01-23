@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using WpfApplication1.BusinessLogic;
 
 namespace WpfApplication1
 {
@@ -20,10 +21,10 @@ namespace WpfApplication1
     public partial class WindowAccount : Window, IViewAccounts
     {    
         private AccountsPresenter accPresenter;
-        public WindowAccount()
+        public WindowAccount(AccountsLogic al)
         {
             InitializeComponent();
-            accPresenter = new AccountsPresenter(this);
+            accPresenter = new AccountsPresenter(this, al);
             accPresenter.Initialize();
            
             buttonAddAccount.Click += OnButtonAddAccountClick;

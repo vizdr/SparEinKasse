@@ -10,9 +10,9 @@ namespace WpfApplication1
     {
         private readonly IViewCharts _viewCharts;
         private IViewFilters _viewFilters;
-        private readonly IBuisenessLogic bl;
+        private readonly IBusinessLogic bl;
 
-        public ChartsPresenter(IViewCharts viewChart, IBuisenessLogic bl)
+        public ChartsPresenter(IViewCharts viewChart, BusinessLogicSSKA bl)
         {
             this.bl = bl ?? throw new ArgumentNullException(nameof(bl));
             _viewCharts = viewChart ?? throw new ArgumentNullException(nameof(viewChart));
@@ -24,7 +24,7 @@ namespace WpfApplication1
         }
 
         public ChartsPresenter(IViewCharts viewChC)
-            : this(viewChC, BuisenessLogicSSKA.GetInstance()) {}
+            : this(viewChC, BusinessLogicSSKA.GetInstance()) {}
 
         static ChartsPresenter() {}
 
