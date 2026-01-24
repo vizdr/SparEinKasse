@@ -35,6 +35,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Categorization", "Categoriz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CategoryFormatter", "Categorization\CategoryFormatter\CategoryFormatter.csproj", "{A01A79A0-7BB6-468A-93CA-1765A4CD3936}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfApplication1.Tests", "WpfApplication1.Tests\WpfApplication1.Tests.csproj", "{E8F5C3A1-2B4D-4E6F-8A9C-1D2E3F4A5B6C}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "imageformats", "imageformats", "{9177711E-D35B-4136-8C87-6510FC890BDA}"
 	ProjectSection(SolutionItems) = preProject
 		Categorization\imageformats\qgif.dll = Categorization\imageformats\qgif.dll
@@ -124,6 +126,18 @@ Global
 		{A01A79A0-7BB6-468A-93CA-1765A4CD3936}.Release|ARM64.Build.0 = Release|Any CPU
 		{A01A79A0-7BB6-468A-93CA-1765A4CD3936}.Release|x64.ActiveCfg = Release|Any CPU
 		{A01A79A0-7BB6-468A-93CA-1765A4CD3936}.Release|x64.Build.0 = Release|Any CPU
+		{E8F5C3A1-2B4D-4E6F-8A9C-1D2E3F4A5B6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8F5C3A1-2B4D-4E6F-8A9C-1D2E3F4A5B6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8F5C3A1-2B4D-4E6F-8A9C-1D2E3F4A5B6C}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{E8F5C3A1-2B4D-4E6F-8A9C-1D2E3F4A5B6C}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{E8F5C3A1-2B4D-4E6F-8A9C-1D2E3F4A5B6C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E8F5C3A1-2B4D-4E6F-8A9C-1D2E3F4A5B6C}.Debug|x64.Build.0 = Debug|Any CPU
+		{E8F5C3A1-2B4D-4E6F-8A9C-1D2E3F4A5B6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8F5C3A1-2B4D-4E6F-8A9C-1D2E3F4A5B6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8F5C3A1-2B4D-4E6F-8A9C-1D2E3F4A5B6C}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{E8F5C3A1-2B4D-4E6F-8A9C-1D2E3F4A5B6C}.Release|ARM64.Build.0 = Release|Any CPU
+		{E8F5C3A1-2B4D-4E6F-8A9C-1D2E3F4A5B6C}.Release|x64.ActiveCfg = Release|Any CPU
+		{E8F5C3A1-2B4D-4E6F-8A9C-1D2E3F4A5B6C}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -10,18 +10,29 @@ namespace WpfApplication1.BusinessLogic
 {
     public class AccountsLogic
     {
-        //CsvToXmlSSKA csvToXml;
-        //AccountsLogic(CsvToXmlSSKA csvToXml)
-        //{
-        //    this.csvToXml = csvToXml;
-        //}
+        private readonly IDataSourceProvider _dataSourceProvider;
+
+        public AccountsLogic()
+        {
+            // Parameterless constructor for backward compatibility during DI setup
+        }
+
+        public AccountsLogic(IDataSourceProvider dataSourceProvider)
+        {
+            _dataSourceProvider = dataSourceProvider;
+        }
+
         public static string BankAccount { get; set; }  // to get from user input, may be missing in the recognized headers
+
         public List<string> GetUserAccounts()
         {
             try
             {
+                if (_dataSourceProvider?.DataSource == null)
+                    return new List<string>();
+
                 var accs =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField) // .Elements
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     select r.Attribute(Config.AuftragsKontoField).Value;
                 return accs.Distinct<string>().ToList<string>();
             }

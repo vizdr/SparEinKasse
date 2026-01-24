@@ -18,6 +18,7 @@ namespace WpfApplication1
     public class BusinessLogicSSKA : IBusinessLogic
     {
         private readonly CsvToXmlSSKA dataGate;
+        private readonly IDataSourceProvider _dataSourceProvider;
         public Action<DataRequest> updateChart = delegate { }; // preinitialization with empty invokation list
         private readonly WindowProgrBar progrBar;
         private static PreprocessedDataRequest preprocessedRequest;
@@ -34,11 +35,13 @@ namespace WpfApplication1
         public BusinessLogicSSKA(
             DataRequest dataRequest,
             ResponseModel responseModel,
-            CsvToXmlSSKA csvToXmlSSKA)
+            CsvToXmlSSKA csvToXmlSSKA,
+            IDataSourceProvider dataSourceProvider)
         {
             Request = dataRequest ?? throw new ArgumentNullException(nameof(dataRequest));
             this.responseModel = responseModel ?? throw new ArgumentNullException(nameof(responseModel));
             dataGate = csvToXmlSSKA ?? throw new ArgumentNullException(nameof(csvToXmlSSKA));
+            _dataSourceProvider = dataSourceProvider ?? throw new ArgumentNullException(nameof(dataSourceProvider));
 
             progrBar = new WindowProgrBar();
 
@@ -258,7 +261,7 @@ namespace WpfApplication1
             try
             {
                 var res =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                                         && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                                         && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
@@ -283,7 +286,7 @@ namespace WpfApplication1
             try
             {
                 var res =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                                         && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                                         && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
@@ -309,7 +312,7 @@ namespace WpfApplication1
             try
             {
                 var res =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                                         && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                                         && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
@@ -342,7 +345,7 @@ namespace WpfApplication1
             try
             {
                 var res =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField) // .Elements
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField) // .Elements
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                                         && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                                         && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
@@ -367,7 +370,7 @@ namespace WpfApplication1
             try
             {
                 var res =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) == request.AtDate
                                         && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
                                         && ConvertStringToDecimal(r.Element(Config.BetragField).Value) < decimal.Zero
@@ -391,7 +394,7 @@ namespace WpfApplication1
             try
             {
                 var res =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                         && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                         && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
@@ -425,7 +428,7 @@ namespace WpfApplication1
             try
             {
                 var res =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                                         && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                                         && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
@@ -452,7 +455,7 @@ namespace WpfApplication1
             try
             {
                 var res =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                                         && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                                         && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
@@ -496,7 +499,7 @@ namespace WpfApplication1
             try
             {
                 var resIncomes =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                                         && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                                         && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
@@ -507,7 +510,7 @@ namespace WpfApplication1
                                                                n => ConvertStringToDecimal(n.Value)
                                                                ));
                 var resExpences =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                                         && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                                         && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
@@ -518,7 +521,7 @@ namespace WpfApplication1
                                                                n => ConvertStringToDecimal(n.Value)
                                                                ));
                 var resBalances =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                                         && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                                         && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
@@ -544,7 +547,7 @@ namespace WpfApplication1
             try
             {
                 var accs =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                                         && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                                         && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
@@ -564,7 +567,7 @@ namespace WpfApplication1
             if (preprocessedRequest.Accounts.Count > 0)
             {
                 var accs =
-                        from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                        from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                         where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                                             && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                                             && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
@@ -577,7 +580,7 @@ namespace WpfApplication1
                 try
                 {
                     var accs =
-                        from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                        from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                         where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                                             && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                                             && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
@@ -601,7 +604,7 @@ namespace WpfApplication1
                 try
                 {
                     var res =
-                        from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                        from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                         where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                             && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                             && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
@@ -622,7 +625,7 @@ namespace WpfApplication1
                 try
                 {
                     var res =
-                        from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                        from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                         where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                             && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                             && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
@@ -658,7 +661,7 @@ namespace WpfApplication1
             try
             {
                 var res =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                                         && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                                         && request.SelectedRemittee.Equals(r.Element(Config.BeguenstigterField).Value)
@@ -691,7 +694,7 @@ namespace WpfApplication1
             try
             {
                 var res =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                                         && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                                         && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
@@ -716,7 +719,7 @@ namespace WpfApplication1
             try
             {
                 var res =
-                    from r in CsvToXmlSSKA.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
                                         && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
                                         && request.SelectedCategory.Equals(r.Element(Config.CategoryField).Value)

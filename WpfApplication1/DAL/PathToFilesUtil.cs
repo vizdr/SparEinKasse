@@ -125,14 +125,15 @@ namespace WpfApplication1.DAL
                         Directory.CreateDirectory(Config.PathToXmlStorageFolder);
                     }
 
-                    if (CsvToXmlSSKA.isInputCsvFilesCategorized())
+                    string categorizedFile = GetNameInputCategorizedCsvFile();
+                    if (!string.IsNullOrEmpty(categorizedFile))
                     {
-                        string fileName = AppendSuffixToFileName(GetNameInputCategorizedCsvFile(), "_arxiv");
+                        string fileName = AppendSuffixToFileName(categorizedFile, "_arxiv");
                         for (int i = 0; File.Exists(GetArxivedCsvFilePath(fileName)); i++)
                         {
                             fileName = $"{fileName}_{i}";
                         }
-                        File.Move(GetNameInputCategorizedCsvFile(), GetArxivedCsvFilePath(fileName));
+                        File.Move(categorizedFile, GetArxivedCsvFilePath(fileName));
                     }
                 }
             }
