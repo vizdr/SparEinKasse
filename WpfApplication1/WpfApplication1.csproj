@@ -181,6 +181,7 @@
     <Compile Include="Presenters\ChartsPresenter.cs" />
     <Compile Include="DAL\CsvHeaderResolver.cs" />
     <Compile Include="DAL\Config.cs" />
+    <Compile Include="DAL\IDataSourceProvider.cs" />
     <Compile Include="DAL\PathToFilesUtil.cs" />
     <Compile Include="DTO\BoolTextCouple.cs" />
     <Compile Include="DTO\FilterViewModel.cs" />

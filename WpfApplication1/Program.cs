@@ -27,9 +27,11 @@ namespace WpfApplication1
                     services.AddSingleton<DataRequest>();
                     services.AddSingleton<ResponseModel>();
 
-                    // DAL services
-                    services.AddSingleton<AccountsLogic>();
+                    // DAL services - CsvToXmlSSKA implements IDataSourceProvider
                     services.AddSingleton<CsvToXmlSSKA>();
+                    services.AddSingleton<IDataSourceProvider>(sp => sp.GetRequiredService<CsvToXmlSSKA>());
+                    services.AddSingleton<AccountsLogic>(sp =>
+                        new AccountsLogic(sp.GetRequiredService<IDataSourceProvider>()));
 
                     // Business Logic
                     services.AddSingleton<IBusinessLogic, BusinessLogicSSKA>();
@@ -43,6 +45,10 @@ namespace WpfApplication1
                     services.AddSingleton<App>();
                 })
                 .Build();
+
+            // Wire up circular dependency (CsvToXmlSSKA <-> AccountsLogic)
+            var csvToXml = host.Services.GetRequiredService<CsvToXmlSSKA>();
+            csvToXml.AccountsLogic = host.Services.GetRequiredService<AccountsLogic>();
 
             // Get the App service and run
             var app = host.Services.GetService<App>();

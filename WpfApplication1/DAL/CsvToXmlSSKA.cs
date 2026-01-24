@@ -12,22 +12,23 @@ using WpfApplication1.BusinessLogic;
 
 namespace WpfApplication1.DAL
 {
-    public class CsvToXmlSSKA
+    public class CsvToXmlSSKA : IDataSourceProvider
     {
-        private static string[] rawCSVInputFiles;
-        private static string[] categorizedCSVInputFiles;
-        private static string PathToStorageXmlFile { get; set; }
-        private static bool isExceptionUnhandled = false;
-        public static XElement DataSource { get; private set; }
+        private string[] rawCSVInputFiles;
+        private string[] categorizedCSVInputFiles;
+        private string PathToStorageXmlFile { get; set; }
+        private bool isExceptionUnhandled = false;
+        public XElement DataSource { get; private set; }
         private readonly object _fileLock = new object();
-        private AccountsLogic aclogicSSKA;
-        static CsvToXmlSSKA()
+
+        /// <summary>
+        /// AccountsLogic instance for CSV processing. Set via property injection to avoid circular dependency.
+        /// </summary>
+        public AccountsLogic AccountsLogic { get; set; }
+
+        public CsvToXmlSSKA()
         {
             PathToStorageXmlFile = Config.PathToXmlStorageFolder + @"\" + Settings.Default.StorageFileName;
-        }
-        public CsvToXmlSSKA(AccountsLogic acLogicSSKA)
-        {
-            this.aclogicSSKA = acLogicSSKA;
             try
             {
                 if (File.Exists(PathToStorageXmlFile))
@@ -44,7 +45,23 @@ namespace WpfApplication1.DAL
             }
         }
 
-        public static bool isInputCsvFilesAvailable()
+        /// <summary>
+        /// Reloads the data source from the XML storage file.
+        /// </summary>
+        public void Reload()
+        {
+            try
+            {
+                if (File.Exists(PathToStorageXmlFile))
+                    DataSource = XElement.Load(PathToStorageXmlFile);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, Config.AppName + ": Reload failed!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public bool isInputCsvFilesAvailable()
         {
             if (Directory.Exists(Config.PathToSskaDownloadsFolder))
                 rawCSVInputFiles = Directory.GetFiles(Config.PathToSskaDownloadsFolder, @"*.csv");
@@ -52,7 +69,7 @@ namespace WpfApplication1.DAL
             return res;
         }
 
-        public static bool isInputCsvFilesCategorized()
+        public bool isInputCsvFilesCategorized()
         {
             if (Directory.Exists(Config.PathToSskaDownloadsFolder))
                 categorizedCSVInputFiles = Directory.GetFiles(Config.PathToSskaDownloadsFolder, @"*categorized*.csv");
@@ -252,7 +269,7 @@ namespace WpfApplication1.DAL
                     if (sourceHeaders.Length > 0)
                     {
                         source = RemoveHeader(source);
-                        XElemBuilder XElemsBuilder = new X10ElemBuilder(sourceHeaders, aclogicSSKA);
+                        XElemBuilder XElemsBuilder = new X10ElemBuilder(sourceHeaders, AccountsLogic);
                         res = XElemsBuilder.BuildXElement(source);
                         if (res != null)
                             return res; //XElemsBuilder.BuildXElement(source) ?? new XElement("Root");
