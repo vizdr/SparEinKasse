@@ -7,4 +7,7 @@
       msbuild ..\WpfApplication1\WpfApplication1.csproj /p:Configuration=Release
     -->
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.UI.wixext" Version="5.0.0" />
+  </ItemGroup>
 </Project>
