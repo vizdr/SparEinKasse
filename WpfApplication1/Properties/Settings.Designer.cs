@@ -12,7 +12,7 @@ namespace WpfApplication1.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.13.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.14.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -29,174 +29,6 @@ namespace WpfApplication1.Properties {
         public string StorageFileName {
             get {
                 return ((string)(this["StorageFileName"]));
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>Transaction</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection TransactionField {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["TransactionField"]));
-            }
-            set {
-                this["TransactionField"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>Auftragskonto</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection ContributorAccField {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["ContributorAccField"]));
-            }
-            set {
-                this["ContributorAccField"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>Buchungstag</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection PaymentDateField {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["PaymentDateField"]));
-            }
-            set {
-                this["PaymentDateField"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>Valutadatum</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection BankOperDateField {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["BankOperDateField"]));
-            }
-            set {
-                this["BankOperDateField"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>Buchungstext</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection BankOperTypeField {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["BankOperTypeField"]));
-            }
-            set {
-                this["BankOperTypeField"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>Verwendungszweck</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection PaymentPurposeField {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["PaymentPurposeField"]));
-            }
-            set {
-                this["PaymentPurposeField"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>Kontonummer</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection BeneficiaryAccField {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["BeneficiaryAccField"]));
-            }
-            set {
-                this["BeneficiaryAccField"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>BLZ</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection IntBankCodeField {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["IntBankCodeField"]));
-            }
-            set {
-                this["IntBankCodeField"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>Betrag</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection BankOperValueField {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["BankOperValueField"]));
-            }
-            set {
-                this["BankOperValueField"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>IBAN</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection IBAN_Field {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["IBAN_Field"]));
-            }
-            set {
-                this["IBAN_Field"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>BIC</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection BIC_Field {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["BIC_Field"]));
-            }
-            set {
-                this["BIC_Field"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>Info</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection InfoField {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["InfoField"]));
-            }
-            set {
-                this["InfoField"] = value;
             }
         }
         
@@ -319,87 +151,6 @@ namespace WpfApplication1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>1372430361</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection ContributorAccounts {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["ContributorAccounts"]));
-            }
-            set {
-                this["ContributorAccounts"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <string>Begünstigter-Zahlungspflichtiger</string>
-  <string>Beguenstigter-Zahlungspflichtiger</string>
-  <string>Begünstigter/Zahlungspflichtiger</string>
-  <string>Beguenstigter/Zahlungspflichtiger</string>
-</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection BeneficiaryField {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["BeneficiaryField"]));
-            }
-            set {
-                this["BeneficiaryField"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>Währung</string>\r\n  <string>Waehrung</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection CurrencyField {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["CurrencyField"]));
-            }
-            set {
-                this["CurrencyField"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<ArrayOfString xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-  <string>1252</string>
-  <string>1251</string>
-  <string>1200</string>
-  <string>1201</string>
-  <string>65001</string>
-  <string>65000</string>
-</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection CodePage {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["CodePage"]));
-            }
-            set {
-                this["CodePage"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>en-US</string>\r\n  <string>ru-RU</string>\r\n  <string>de-DE</string>\r\n</Arra" +
-            "yOfString>")]
-        public global::System.Collections.Specialized.StringCollection AppCultures {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["AppCultures"]));
-            }
-            set {
-                this["AppCultures"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool IsTr {
             get {
@@ -491,20 +242,6 @@ namespace WpfApplication1.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
-            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <s" +
-            "tring>;</string>\r\n  <string>,</string>\r\n  <string>:</string>\r\n</ArrayOfString>")]
-        public global::System.Collections.Specialized.StringCollection DelimiterCSVInput {
-            get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["DelimiterCSVInput"]));
-            }
-            set {
-                this["DelimiterCSVInput"] = value;
-            }
-        }
-        
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("13")]
@@ -523,6 +260,269 @@ namespace WpfApplication1.Properties {
             }
             set {
                 this["CategoryFieldIndex"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>Transaction</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection TransactionField {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["TransactionField"]));
+            }
+            set {
+                this["TransactionField"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>Auftragskonto</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection ContributorAccField {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["ContributorAccField"]));
+            }
+            set {
+                this["ContributorAccField"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>Buchungstag</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection PaymentDateField {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["PaymentDateField"]));
+            }
+            set {
+                this["PaymentDateField"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>Valutadatum</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection BankOperDateField {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["BankOperDateField"]));
+            }
+            set {
+                this["BankOperDateField"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>Buchungstext</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection BankOperTypeField {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["BankOperTypeField"]));
+            }
+            set {
+                this["BankOperTypeField"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>Verwendungszweck</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection PaymentPurposeField {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["PaymentPurposeField"]));
+            }
+            set {
+                this["PaymentPurposeField"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>Kontonummer</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection BeneficiaryAccField {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["BeneficiaryAccField"]));
+            }
+            set {
+                this["BeneficiaryAccField"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>BLZ</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection IntBankCodeField {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["IntBankCodeField"]));
+            }
+            set {
+                this["IntBankCodeField"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>Betrag</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection BankOperValueField {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["BankOperValueField"]));
+            }
+            set {
+                this["BankOperValueField"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>IBAN</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection IBAN_Field {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["IBAN_Field"]));
+            }
+            set {
+                this["IBAN_Field"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>BIC</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection BIC_Field {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["BIC_Field"]));
+            }
+            set {
+                this["BIC_Field"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>Info</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection InfoField {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["InfoField"]));
+            }
+            set {
+                this["InfoField"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>1372430361</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection ContributorAccounts {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["ContributorAccounts"]));
+            }
+            set {
+                this["ContributorAccounts"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>Begünstigter-Zahlungspflichtiger</string>
+  <string>Beguenstigter-Zahlungspflichtiger</string>
+  <string>Begünstigter/Zahlungspflichtiger</string>
+  <string>Beguenstigter/Zahlungspflichtiger</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection BeneficiaryField {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["BeneficiaryField"]));
+            }
+            set {
+                this["BeneficiaryField"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>Währung</string>\r\n  <string>Waehrung</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection CurrencyField {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["CurrencyField"]));
+            }
+            set {
+                this["CurrencyField"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<ArrayOfString xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">
+  <string>1252</string>
+  <string>1251</string>
+  <string>1200</string>
+  <string>1201</string>
+  <string>65001</string>
+  <string>65000</string>
+</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection CodePage {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["CodePage"]));
+            }
+            set {
+                this["CodePage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>en-US</string>\r\n  <string>ru-RU</string>\r\n  <string>de-DE</string>\r\n</Arra" +
+            "yOfString>")]
+        public global::System.Collections.Specialized.StringCollection AppCultures {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["AppCultures"]));
+            }
+            set {
+                this["AppCultures"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsd=\"http://www.w3." +
+            "org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n  <s" +
+            "tring>;</string>\r\n  <string>,</string>\r\n  <string>:</string>\r\n</ArrayOfString>")]
+        public global::System.Collections.Specialized.StringCollection DelimiterCSVInput {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["DelimiterCSVInput"]));
+            }
+            set {
+                this["DelimiterCSVInput"] = value;
             }
         }
     }
