@@ -4,10 +4,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using WpfApplication1.Properties;
 using Microsoft.Win32;
-using WpfApplication1.ServiceRefServARCode;
-using System.ServiceModel;
 using SimpleSecurity;
 using WpfApplication1.DTO;
+using WpfApplication1.Services;
 using System.Threading;
 
 namespace WpfApplication1
@@ -84,7 +83,7 @@ namespace WpfApplication1
             else
             {
                 this.txtBlock_Status.Text =
-                    String.Format("Activation failed. Trial perriod: 60 days.\r\nPlease send your Activation Request Code\r\nfrom E-Mail: {0}  to vladzdravkov@gmail.com.\r\nSoon after payment You receive the activation code.",
+                    String.Format("Activation failed. Trial perriod: 60 days.\r\nPlease send your Activation Request Code\r\nfrom E-Mail: {0}  to {1}.\r\nSoon after payment You receive the activation code.",
                     txtBox_UEmail.Text);
             }
         }
@@ -97,51 +96,41 @@ namespace WpfApplication1
 
         private void button_SendAcReq_Click(object sender, RoutedEventArgs e)
         {
-            using (ServiceRefServARCode.ServARCodeClient serviceClient = new ServARCodeClient())
+            using (var authService = new FallbackAuthorizationService())
             {
-                AuthorizationRequest request = new AuthorizationRequest()
+                var request = new AuthorizationRequestData
                 {
                     AccountId = Settings.Default.AccId,
-                    AuthCode = aC,
+                    AuthCode = "0",
                     AuthRequestCode = Settings.Default.ActivationRequestCode,
                     UserEmail = Settings.Default.UserEmail,
                     UserName = Settings.Default.UserName,
                     UserFirstName = Settings.Default.UserFirstName
                 };
-                try
+
+                var result = authService.TryToRegisterAuthRequest(request);
+
+                if (result.Success && result.AccountId > 0)
                 {
-                    int resultedAccId = serviceClient.TryToRegisterAuthRequest(request);
-                    if (resultedAccId > 0)
-                    {
-                        this.txtBlock_Status.Text = "Activation request succeded. \r\nActivation Code will be sent after the payment.";
-                        button_ResetRequest.IsEnabled = true;
-                        button_SendAcReq.IsEnabled = false;
-                        btn_GetARC.IsEnabled = false;
-                        txtBlock_ARC.IsReadOnly = true;
-                        txtBox_UEmail.IsReadOnly = true;
-                        textBox_Name.IsReadOnly = true;
-                        textBox_FirstName.IsReadOnly = true;
-                        Settings.Default.IsActivationReqSent = true;
-                        Settings.Default.AccId = resultedAccId;
-                        Settings.Default.Save();
-                    }
-                    else this.txtBlock_Status.Text = String.Format("Activation request failed. \r\n Please send on E-mail {0} data from this form. \r\n Activation Code will be sent on your E-Mail after the payment.", Settings.Default.OwnerEmail);
+                    this.txtBlock_Status.Text = $"Activation request succeded ({result.ServiceUsed}). \r\nActivation Code will be sent after the payment.";
+                    button_ResetRequest.IsEnabled = true;
+                    button_SendAcReq.IsEnabled = false;
+                    btn_GetARC.IsEnabled = false;
+                    txtBlock_ARC.IsReadOnly = true;
+                    txtBox_UEmail.IsReadOnly = true;
+                    textBox_Name.IsReadOnly = true;
+                    textBox_FirstName.IsReadOnly = true;
+                    Settings.Default.IsActivationReqSent = true;
+                    Settings.Default.AccId = result.AccountId;
+                    Settings.Default.Save();
                 }
-                catch (TimeoutException ex)
+                else
                 {
-                    txtBlock_Status.Text = "Timeout: " + ex.InnerException;
-                }
-                catch (FaultException<AuthorizationRequestFault> ex)
-                {
-                    txtBlock_Status.Text = "Remote service Error: " + ex.Detail.FaultMessage;
-                }
-                catch (CommunicationException ex)
-                {
-                    txtBlock_Status.Text = "Remote communication Error: " + ex.Message;
-                }
-                catch (Exception ex)
-                {
-                    txtBlock_Status.Text = "Unknown remote service exception: " + ex.Message;
+                    this.txtBlock_Status.Text = String.Format(
+                        "Activation request failed ({0}): {1}\r\nPlease send on E-mail {2} data from this form.\r\nActivation Code will be sent on your E-Mail after the payment.",
+                        result.ServiceUsed ?? "Unknown",
+                        result.Message,
+                        Settings.Default.OwnerEmail);
                 }
             }
         }
@@ -197,34 +186,24 @@ namespace WpfApplication1
         private String GetActivationCode()
         {
             string recievedACode = String.Empty;
-            using (ServiceRefServARCode.ServARCodeClient serviceClient = new ServARCodeClient())
+            using (var authService = new FallbackAuthorizationService())
             {
-                try
+                var result = authService.GetAuthCode(Settings.Default.AccId, Settings.Default.ActivationRequestCode);
+
+                if (result.Success && !string.IsNullOrEmpty(result.AuthCode))
                 {
-                    recievedACode = serviceClient.GetAuthCode(Settings.Default.AccId, Settings.Default.ActivationRequestCode);
-                    txtBlock_Status.Text = "Activation Code received.\n Activation is unlocked.";
+                    recievedACode = result.AuthCode;
+                    txtBlock_Status.Text = $"Activation Code received ({result.ServiceUsed}).\n Activation is unlocked.";
                 }
-                catch (TimeoutException ex)
-                {
-                    txtBlock_Status.Text = "Timeout: " + ex.InnerException;
-                }
-                catch (FaultException<AuthorizationRequestFault> ex)
+                else
                 {
 #if DEBUG
-                    txtBlock_Status.Text = "Remote service Error: \r\n" + ex.Detail.FaultMessage;
+                    txtBlock_Status.Text = $"Remote service Error ({result.ServiceUsed}): \r\n{result.Message}";
 #else
                     txtBlock_Status.Text = String.Format("Remote service failed. \r\nYou can communicate with the owner via \r\n{0}.", Settings.Default.OwnerEmail);
 #endif
                 }
-                catch (CommunicationException ex)
-                {
-                    txtBlock_Status.Text = "Remote communication Error: " + ex.Message;
-                }
-                catch (Exception ex)
-                {
-                    txtBlock_Status.Text = "Unknown remote service exception: " + ex.Message;
-                }
-            }            
+            }
             return recievedACode;
         }
     }

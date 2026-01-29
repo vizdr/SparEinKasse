@@ -65,6 +65,9 @@
     <Setting Name="OwnerEmail" Type="System.String" Scope="Application">
       <Value Profile="(Default)">vladzdravkov@gmail.com</Value>
     </Setting>
+    <Setting Name="GrpcServerAddress" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">https://vizdr.somee.com</Value>
+    </Setting>
     <Setting Name="AccId" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>

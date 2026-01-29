@@ -229,7 +229,16 @@ namespace WpfApplication1.Properties {
                 return ((string)(this["OwnerEmail"]));
             }
         }
-        
+
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://vizdr.somee.com")]
+        public string GrpcServerAddress {
+            get {
+                return ((string)(this["GrpcServerAddress"]));
+            }
+        }
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
