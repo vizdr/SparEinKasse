@@ -11,7 +11,7 @@ Personal finance analysis application for Windows. Processes German bank CSV exp
 - Filter by date range, category, account
 - Localized UI (German, English, Russian)
 
-## Screenshots
+## Screenshot
 
 <p align="center">
   <img src="Screenshot-SSKA_data _analyzer.png" width="900">
