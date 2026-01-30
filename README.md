@@ -13,7 +13,9 @@ Personal finance analysis application for Windows. Processes German bank CSV exp
 
 ## Screenshots
 
-*Application dashboard with spending charts and category breakdown*
+<p align="center">
+  <img src="Screenshot-SSKA_data _analyzer.png" width="900">
+</p>
 
 ## Requirements
 
