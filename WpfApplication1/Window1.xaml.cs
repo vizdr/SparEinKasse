@@ -60,8 +60,8 @@ namespace WpfApplication1
             }
 
             chP = new ChartsPresenter(this, businessLogic, filterViewModel);
-            chP.Initialaze();
-            this.Closing += delegate { chP.FinalizeChP(); };          
+            chP.Initialize();
+            this.Closing += delegate { chP.FinalizeChP(); };
 
 #if DEBUG
             isNotRegistred = true;
@@ -73,14 +73,14 @@ namespace WpfApplication1
                 aw.ShowDialog();
             }
 
-            buttonUpdateSpan.Click += delegate { chP.Initialaze(); };
+            buttonUpdateSpan.Click += delegate { chP.Initialize(); };
             buttonShowFilters.Click += delegate { InitialaizeFiltersWindow(); };
             buttonUpdateDataBankXML.Click += delegate
             {
                 if (!isNotRegistred || (expDate > DateTime.Today))
                 {
                     chP.ReloadXml();
-                    chP.Initialaze();
+                    chP.Initialize();
                     InitializeComponent();
                 }
             };
@@ -167,7 +167,7 @@ namespace WpfApplication1
                         break;
                 }
                 (chartRemeteeExpence.Series[0] as BarSeries).Refresh();
-                (chartRemeteeExpence.Series[0] as BarSeries).ItemsSource = value;             
+                (chartRemeteeExpence.Series[0] as BarSeries).DataContext = value;             
             }
         }
         public List<KeyValuePair<DateTime, decimal>> Expenses
@@ -184,7 +184,7 @@ namespace WpfApplication1
             set
             {
                 (chartDateBalance.Series[0] as DataPointSeries).Refresh();
-                (chartDateBalance.Series[0] as DataPointSeries).ItemsSource = value;               
+                (chartDateBalance.Series[0] as DataPointSeries).DataContext = value;               
             }
         }
         public ObservableCollection<KeyValuePair<string, decimal>> Incomes
@@ -264,14 +264,18 @@ namespace WpfApplication1
         }
         public List<KeyValuePair<string, decimal>> RemittieeGroups
         {
-            set => (chartRemGroupExpence.Series[0] as DataPointSeries).ItemsSource = value;
+            set
+            {
+                (chartRemGroupExpence.Series[0] as DataPointSeries).Refresh();
+                (chartRemGroupExpence.Series[0] as DataPointSeries).DataContext = value;
+            }
         }
         public List<KeyValuePair<string, decimal>> ExpensesCategory
         {
             set
             {
                 (chartCategoryExpence.Series[0] as DataPointSeries).Refresh();
-                (chartCategoryExpence.Series[0] as DataPointSeries).ItemsSource = value;               
+                (chartCategoryExpence.Series[0] as DataPointSeries).DataContext = value;               
             }
         }
         public decimal AxeExpencesCategoryMaxValue 
@@ -296,7 +300,7 @@ namespace WpfApplication1
             // also accessible via object o = (chartDateExpence.Series[0] as DataPointSeries).SelectedItem;
             if ((sender as DataPointSeries).SelectedItem is KeyValuePair<DateTime, decimal> kv)
             {
-                popupChDateExpText.Text = chP.GetExpencesAtDate(kv.Key.Date);
+                popupChDateExpText.Text = chP.GetExpensesAtDate(kv.Key.Date);
                 popupChartDateExpenes.Child = popupChDateExpText;
                 popupChartDateExpenes.IsOpen = true;
                 popupChartDateExpenes.StaysOpen = false;

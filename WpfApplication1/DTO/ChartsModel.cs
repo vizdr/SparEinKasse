@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,265 +8,174 @@ namespace WpfApplication1.DTO
 {
     public class ResponseModel : INotifyPropertyChanged
     {
-        /// <summary>
-        /// Constructor for DI container. Receives FilterViewModel via injection.
-        /// </summary>
         public ResponseModel(FilterViewModel filterViewModel)
         {
             if (filterViewModel == null)
                 throw new ArgumentNullException(nameof(filterViewModel));
 
-            expensesOverDateRange = new List<KeyValuePair<string, decimal>>();
-            incomesOverDatesRange = new ObservableCollection<KeyValuePair<string, decimal>>();
-            balanceOverDateRange = new List<KeyValuePair<DateTime, decimal>>();
-            expensesOverRemiteeInDateRange = new List<KeyValuePair<string, decimal>>();
-            expensesOverRemiteeGroupsInDateRange = new List<KeyValuePair<string, decimal>>();
-            expensesInfoOverDateRange = new List<KeyValuePair<string, string>>();
-            incomesInfoOverDateRange = new List<KeyValuePair<string, string>>();
-            summary = String.Empty;
-            transactionsAccounts = new List<string>();
-
-            buchungstextOverDateRange = filterViewModel.BuchungstextValues;
-            transactionsAccountsObsCollBoolTextCouple = filterViewModel.UserAccounts;
-
-            expensesAtDate = new List<KeyValuePair<string, decimal>>();
-            dates4RemiteeOverDateRange = new List<KeyValuePair<string, decimal>>();
-
-            expenceBeneficiary4CategoryOverDateRange = new List<KeyValuePair<string, decimal>>();
-            expensesOverCategory = new List<KeyValuePair<string, decimal>>();
+            BuchungstextOverDateRange = filterViewModel.BuchungstextValues;
+            TransactionsAccountsObsCollBoolTextCouple = filterViewModel.UserAccounts;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public event PropertyChangedEventHandler ViewPropertyChanged;
 
-        private List<KeyValuePair<string, decimal>> expensesOverDateRange;
-        private ObservableCollection<KeyValuePair<string, decimal>> incomesOverDatesRange;
-        private List<KeyValuePair<DateTime, decimal>> balanceOverDateRange;
-        private List<KeyValuePair<string, decimal>> expensesOverRemiteeInDateRange;
-        private List<KeyValuePair<string, decimal>> expensesOverRemiteeGroupsInDateRange;
-        private List<KeyValuePair<string, string>> expensesInfoOverDateRange;
-        private List<KeyValuePair<string, string>> incomesInfoOverDateRange;
-        private string summary;
-        private List<string> transactionsAccounts;
-        private ObservableCollection<BoolTextCouple> buchungstextOverDateRange;
-        private ObservableCollection<BoolTextCouple> transactionsAccountsObsCollBoolTextCouple;
+        #region Chart Data Properties
 
-        private List<KeyValuePair<string, decimal>> expensesAtDate;
-        private List<KeyValuePair<string, decimal>> dates4RemiteeOverDateRange;
-
-        private List<KeyValuePair<string, decimal>> expenceBeneficiary4CategoryOverDateRange;
-        private List<KeyValuePair<string, decimal>> expensesOverCategory;
-
-        private bool updateDataRequired = false;
-
-        public List<KeyValuePair<string, string>> IncomesInfoOverDateRange
-        {
-            get => incomesInfoOverDateRange;
-            set
-            {
-                if (incomesInfoOverDateRange != value)
-                {
-                    incomesInfoOverDateRange = value;
-                    updateDataRequired = true;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        public ObservableCollection<KeyValuePair<string, decimal>> IncomesOverDatesRange
-        {
-            get => incomesOverDatesRange;
-            set
-            {
-                if (incomesOverDatesRange != value)
-                {
-                    incomesOverDatesRange = value;
-                    updateDataRequired = true;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public List<KeyValuePair<DateTime, decimal>> BalanceOverDateRange
-        {
-            get => balanceOverDateRange;
-            set
-            {
-                if (balanceOverDateRange != value)
-                {
-                    balanceOverDateRange = value;
-                    updateDataRequired = true;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
+        private List<KeyValuePair<string, decimal>> _expensesOverDateRange = new List<KeyValuePair<string, decimal>>();
         public List<KeyValuePair<string, decimal>> ExpensesOverDateRange
         {
-            get => expensesOverDateRange;
-            set
-            {
-                if (expensesOverDateRange != value)
-                {
-                    expensesOverDateRange = value;
-                    updateDataRequired = true;
-                    OnPropertyChanged();
-                }
-            }
+            get => _expensesOverDateRange;
+            set => SetProperty(ref _expensesOverDateRange, value);
         }
-        public List<KeyValuePair<string, string>> ExpensesInfoOverDateRange
+
+        private ObservableCollection<KeyValuePair<string, decimal>> _incomesOverDatesRange = new ObservableCollection<KeyValuePair<string, decimal>>();
+        public ObservableCollection<KeyValuePair<string, decimal>> IncomesOverDatesRange
         {
-            get => expensesInfoOverDateRange;
-            set
-            {
-                if (expensesInfoOverDateRange != value)
-                {
-                    expensesInfoOverDateRange = value;
-                    updateDataRequired = true;
-                    OnPropertyChanged();
-                }
-            }
+            get => _incomesOverDatesRange;
+            set => SetProperty(ref _incomesOverDatesRange, value);
         }
+
+        private List<KeyValuePair<DateTime, decimal>> _balanceOverDateRange = new List<KeyValuePair<DateTime, decimal>>();
+        public List<KeyValuePair<DateTime, decimal>> BalanceOverDateRange
+        {
+            get => _balanceOverDateRange;
+            set => SetProperty(ref _balanceOverDateRange, value);
+        }
+
+        private List<KeyValuePair<string, decimal>> _expensesOverRemiteeInDateRange = new List<KeyValuePair<string, decimal>>();
         public List<KeyValuePair<string, decimal>> ExpensesOverRemiteeInDateRange
         {
-            get => expensesOverRemiteeInDateRange;
-            set
-            {
-                if (expensesOverRemiteeInDateRange != value)
-                {
-                    expensesOverRemiteeInDateRange = value;
-                    updateDataRequired = true;
-                    OnPropertyChanged();
-                }
-            }
+            get => _expensesOverRemiteeInDateRange;
+            set => SetProperty(ref _expensesOverRemiteeInDateRange, value);
         }
+
+        private List<KeyValuePair<string, decimal>> _expensesOverRemiteeGroupsInDateRange = new List<KeyValuePair<string, decimal>>();
         public List<KeyValuePair<string, decimal>> ExpensesOverRemiteeGroupsInDateRange
         {
-            get => expensesOverRemiteeGroupsInDateRange;
-            set
-            {
-                if (expensesOverRemiteeGroupsInDateRange != value)
-                {
-                    expensesOverRemiteeGroupsInDateRange = value;
-                    updateDataRequired = true;
-                    OnPropertyChanged();
-                }
-            }
+            get => _expensesOverRemiteeGroupsInDateRange;
+            set => SetProperty(ref _expensesOverRemiteeGroupsInDateRange, value);
         }
 
-        public string Summary
+        private List<KeyValuePair<string, string>> _expensesInfoOverDateRange = new List<KeyValuePair<string, string>>();
+        public List<KeyValuePair<string, string>> ExpensesInfoOverDateRange
         {
-            get => summary;
-            set
-            {
-                if (summary != value)
-                {
-                    summary = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _expensesInfoOverDateRange;
+            set => SetProperty(ref _expensesInfoOverDateRange, value);
         }
 
-        public List<string> TransactionsAccounts
+        private List<KeyValuePair<string, string>> _incomesInfoOverDateRange = new List<KeyValuePair<string, string>>();
+        public List<KeyValuePair<string, string>> IncomesInfoOverDateRange
         {
-            get => transactionsAccounts;
-            set
-            {
-                if (transactionsAccounts != value)
-                {
-                    transactionsAccounts = value;
-                    updateDataRequired = true;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        public ObservableCollection<BoolTextCouple> TransactionsAccountsObsCollBoolTextCouple
-        {
-            get => transactionsAccountsObsCollBoolTextCouple;
-            set
-            {
-                if (transactionsAccountsObsCollBoolTextCouple != value)
-                {
-                    transactionsAccountsObsCollBoolTextCouple = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        public ObservableCollection<BoolTextCouple> BuchungstextOverDateRange
-        {
-            get => buchungstextOverDateRange;
-            set
-            {
-                if (buchungstextOverDateRange != value)
-                {
-                    buchungstextOverDateRange = value;
-                    OnPropertyChanged();
-                }
-            }
+            get => _incomesInfoOverDateRange;
+            set => SetProperty(ref _incomesInfoOverDateRange, value);
         }
 
-        public List<KeyValuePair<string, decimal>> ExpensesAtDate
-        {
-            get => expensesAtDate;
-            set
-            {
-                if (expensesAtDate != value)
-                {
-                    expensesAtDate = value;
-                    OnViewPropertyChanged();
-                }
-            }
-        }
-
-        public List<KeyValuePair<string, decimal>> Dates4RemiteeOverDateRange
-        {
-            get => dates4RemiteeOverDateRange;
-            set
-            {
-                if (dates4RemiteeOverDateRange != value)
-                {
-                    dates4RemiteeOverDateRange = value;
-                    OnViewPropertyChanged();
-                }
-            }
-        }
-
-        public List<KeyValuePair<string, decimal>> ExpenceBeneficiary4CategoryOverDateRange
-        {
-            get => expenceBeneficiary4CategoryOverDateRange;
-            set
-            {
-                if (expenceBeneficiary4CategoryOverDateRange != value)
-                {
-                    expenceBeneficiary4CategoryOverDateRange = value;
-                    OnViewPropertyChanged();
-                }
-            }
-        }
-
+        private List<KeyValuePair<string, decimal>> _expensesOverCategory = new List<KeyValuePair<string, decimal>>();
         public List<KeyValuePair<string, decimal>> ExpensesOverCategory
         {
-            get => expensesOverCategory;
-            set
-            {
-                if (expensesOverCategory != value)
-                {
-                    expensesOverCategory = value;
-                    updateDataRequired = true;
-                    OnPropertyChanged();
-                }
-            }
+            get => _expensesOverCategory;
+            set => SetProperty(ref _expensesOverCategory, value);
         }
 
-        public bool UpdateDataRequired { 
-            get => updateDataRequired;
-            set 
-            { 
-                if(updateDataRequired != value)
-                {
-                    updateDataRequired = value;
-                    OnPropertyChanged();
-                }               
-            }
+        private string _summary = string.Empty;
+        public string Summary
+        {
+            get => _summary;
+            set => SetProperty(ref _summary, value);
+        }
+
+        private List<string> _transactionsAccounts = new List<string>();
+        public List<string> TransactionsAccounts
+        {
+            get => _transactionsAccounts;
+            set => SetProperty(ref _transactionsAccounts, value);
+        }
+
+        #endregion
+
+        #region Filter Data Properties
+
+        private ObservableCollection<BoolTextCouple> _buchungstextOverDateRange;
+        public ObservableCollection<BoolTextCouple> BuchungstextOverDateRange
+        {
+            get => _buchungstextOverDateRange;
+            set => SetProperty(ref _buchungstextOverDateRange, value);
+        }
+
+        private ObservableCollection<BoolTextCouple> _transactionsAccountsObsCollBoolTextCouple;
+        public ObservableCollection<BoolTextCouple> TransactionsAccountsObsCollBoolTextCouple
+        {
+            get => _transactionsAccountsObsCollBoolTextCouple;
+            set => SetProperty(ref _transactionsAccountsObsCollBoolTextCouple, value);
+        }
+
+        #endregion
+
+        #region View Data Properties (for drill-down/detail views)
+
+        private List<KeyValuePair<string, decimal>> _expensesAtDate = new List<KeyValuePair<string, decimal>>();
+        public List<KeyValuePair<string, decimal>> ExpensesAtDate
+        {
+            get => _expensesAtDate;
+            set => SetProperty(ref _expensesAtDate, value);
+        }
+
+        private List<KeyValuePair<string, decimal>> _dates4RemiteeOverDateRange = new List<KeyValuePair<string, decimal>>();
+        public List<KeyValuePair<string, decimal>> Dates4RemiteeOverDateRange
+        {
+            get => _dates4RemiteeOverDateRange;
+            set => SetProperty(ref _dates4RemiteeOverDateRange, value);
+        }
+
+        private List<KeyValuePair<string, decimal>> _expenseBeneficiary4CategoryOverDateRange = new List<KeyValuePair<string, decimal>>();
+        public List<KeyValuePair<string, decimal>> ExpenseBeneficiary4CategoryOverDateRange
+        {
+            get => _expenseBeneficiary4CategoryOverDateRange;
+            set => SetProperty(ref _expenseBeneficiary4CategoryOverDateRange, value);
+        }
+
+        // Keep old name for backward compatibility
+        [Obsolete("Use ExpenseBeneficiary4CategoryOverDateRange instead")]
+        public List<KeyValuePair<string, decimal>> ExpenceBeneficiary4CategoryOverDateRange
+        {
+            get => _expenseBeneficiary4CategoryOverDateRange;
+            set => ExpenseBeneficiary4CategoryOverDateRange = value;
+        }
+
+        #endregion
+
+        #region State Properties
+
+        private bool _isDataReady;
+        /// <summary>
+        /// Indicates whether initial data loading has completed.
+        /// Set to true when BackgroundWorker finishes populating all chart data.
+        /// </summary>
+        public bool IsDataReady
+        {
+            get => _isDataReady;
+            set => SetProperty(ref _isDataReady, value);
+        }
+
+        private bool _updateDataRequired;
+        public bool UpdateDataRequired
+        {
+            get => _updateDataRequired;
+            set => SetProperty(ref _updateDataRequired, value);
+        }
+
+        #endregion
+
+        #region INotifyPropertyChanged
+
+        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+                return false;
+
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -274,10 +183,6 @@ namespace WpfApplication1.DTO
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected void OnViewPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            ViewPropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
+        #endregion
     }
 }

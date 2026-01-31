@@ -7,8 +7,6 @@ using System.Globalization;
 using System.Collections.ObjectModel;
 using WpfApplication1.DAL;
 using WpfApplication1.DTO;
-using System.Threading;
-using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Windows.Threading;
 using WpfApplication1.BusinessLogic;
@@ -19,19 +17,14 @@ namespace WpfApplication1
     {
         private readonly CsvToXmlSSKA dataGate;
         private readonly IDataSourceProvider _dataSourceProvider;
-        public Action<DataRequest> updateChart = delegate { }; // preinitialization with empty invokation list
         private readonly WindowProgrBar progrBar;
-        private static PreprocessedDataRequest preprocessedRequest;
-        BackgroundWorker worker;
+        private readonly BackgroundWorker worker;
         private readonly ResponseModel responseModel;
-        public ResponseModel ResponseModel
-        {
-            get => responseModel;
-        }
+        private static PreprocessedDataRequest preprocessedRequest;
 
-        /// <summary>
-        /// Constructor for DI container. Receives all dependencies via injection.
-        /// </summary>
+        public ResponseModel ResponseModel => responseModel;
+        public DataRequest Request { get; }
+
         public BusinessLogicSSKA(
             DataRequest dataRequest,
             ResponseModel responseModel,
@@ -44,182 +37,31 @@ namespace WpfApplication1
             _dataSourceProvider = dataSourceProvider ?? throw new ArgumentNullException(nameof(dataSourceProvider));
 
             progrBar = new WindowProgrBar();
-
-            InitializeHandledRequest();
+            InitializePreprocessedRequest();
             RegisterDataRequestHandlers();
 
-            RegisterMethodsForProgressBar();
-            worker = new BackgroundWorker();
-            worker.WorkerReportsProgress = true;
-            worker.DoWork += worker_DoWork;
-            worker.ProgressChanged += worker_ProgressChanged;
-            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
-            worker.RunWorkerAsync();
+            worker = new BackgroundWorker { WorkerReportsProgress = true };
+            worker.DoWork += Worker_DoWork;
+            worker.ProgressChanged += Worker_ProgressChanged;
+            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
 
-            // Initial charts
             UpdateDataModel();
         }
 
-        private void RegisterDataRequestHandlers( )
+        private void RegisterDataRequestHandlers()
         {
-            Request.DataRequested += delegate { UpdateDataModel(); };
-            Request.FilterValuesRequested += delegate { FilterData(); };
-            Request.DataBankUpdateRequested += delegate { UpdateData(); };
-            Request.ViewDataRequested += delegate { UpdateViewData(); };
+            Request.DataRequested += (s, e) => UpdateDataModel();
+            Request.FilterValuesRequested += (s, e) => FilterData();
+            Request.DataBankUpdateRequested += (s, e) => UpdateData();
+            Request.ViewDataRequested += (s, e) => UpdateViewData();
         }
 
-        private void RegisterMethodsForProgressBar()
-        {
-            updateChart += delegate { responseModel.ExpensesOverDateRange = GetExpensesOverDateRange(); };
-            updateChart += delegate { responseModel.TransactionsAccounts = GetTransactionsAccounts(); };
-            updateChart += delegate { responseModel.IncomesOverDatesRange = GetIncomesOverDatesRange(); };
-            updateChart += delegate { responseModel.BalanceOverDateRange = GetBalanceOverDateRange(); };
-            updateChart += delegate { responseModel.ExpensesInfoOverDateRange = GetExpensesInfoOverDateRange(); };
-            updateChart += delegate { responseModel.ExpensesOverRemiteeGroupsInDateRange = GetExpensesOverRemiteeGroupsInDateRange(); };
-            updateChart += delegate { responseModel.ExpensesOverRemiteeInDateRange = GetExpensesOverRemiteeInDateRange(); };
-            updateChart += delegate { responseModel.ExpensesOverCategory = GetExpensesOverCategory(); };
-            updateChart += delegate { responseModel.IncomesInfoOverDateRange = GetIncomesInfoOverDateRange(); };
-            updateChart += delegate { responseModel.Summary = GetSummary(); };
-        }
-
-        void worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            int qty2Invoke = updateChart.GetInvocationList().Length;
-            for (int ctr = 0; ctr < qty2Invoke; ctr++)
-            {
-                // (ctr + 1) would be adjusted to 9 calls of functions
-                int progr = (ctr + 1) * 10;
-
-                var updChart = updateChart.GetInvocationList()[ctr];
-                updChart.DynamicInvoke(Request);
-                Thread.Sleep(60);
-
-                (sender as BackgroundWorker).ReportProgress(progr);
-
-                Thread.Sleep(60);
-            }
-            e.Result = 0;
-            Thread.Sleep(10);
-        }
-
-        void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            // Checking if this thread has access to the object.
-        if (progrBar.pbStatus.Dispatcher.CheckAccess())
-            {
-                // This thread has access so it can update the UI thread.
-                progrBar.pbStatus.Value = e.ProgressPercentage;
-            }
-            else
-            {
-                // This thread does not have access to the UI thread.
-                // Place the update method on the Dispatcher of the UI thread.
-                progrBar.pbStatus.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    new UpdateUIDelegateProgrBar(delegate { progrBar.pbStatus.Value = e.ProgressPercentage; }), progrBar.pbStatus);
-            }
-
-            if (e.UserState != null)
-                MessageBox.Show("UserState is " + e.UserState.ToString());
-        }
-
-        void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (progrBar.IsVisible)
-            {
-                if (progrBar.pbStatus.Dispatcher.CheckAccess())
-                {
-                    // This thread has access so it can update the UI thread.
-                    progrBar.Hide();
-                }
-                else
-                {
-                    // This thread does not have access to the UI thread.
-                    // Place the update method on the Dispatcher of the UI thread.
-                    progrBar.pbStatus.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                        new UpdateUIDelegateProgrBar(delegate { progrBar.Hide(); }), progrBar.pbStatus);
-                }
-                try
-                {
-                    if (Thread.CurrentThread.IsBackground)
-                        Thread.CurrentThread.Abort();
-                }
-                catch (ThreadAbortException ex)
-                {
-                    Console.WriteLine("Background thread is intentionaly aborted, UI thread becomes owner");
-                }
-            }
-            responseModel.UpdateDataRequired = !responseModel.UpdateDataRequired;
-        }
-
-        private decimal ConvertStringToDecimal(string src)
-        {
-            decimal res = 0m;
-            try
-            {
-                res = decimal.Parse(src, NumberStyles.Any, CultureInfo.InvariantCulture);
-            }
-            catch (FormatException e)
-            {
-                MessageBox.Show(e.Message, "Unable to parse string in the currency. Try to change the currency separator symbol in Windows Regional settings and reload the data.",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            return res;
-        }
-        private static void PreProcessRequest(DataRequest request)
-        {
-            if (request == null)
-                return;
-
-            preprocessedRequest.AtDate = request.AtDate;
-            preprocessedRequest.SelectedRemittee = request.SelectedRemittee;
-
-            preprocessedRequest.BeginDate = request.TimeSpan.Item1;
-            preprocessedRequest.FinishDate = request.TimeSpan.Item2 < request.TimeSpan.Item1 ? request.TimeSpan.Item1 : request.TimeSpan.Item2;
-
-            if(request.Filters.UserAccounts.Count > 0)
-            {
-                if (!decimal.TryParse(request.Filters.ExpenciesLessThan, out decimal expLessThan))
-                {
-                    expLessThan = decimal.MaxValue;
-                }
-
-                decimal.TryParse(request.Filters.ExpenciesMoreThan, out decimal expMoreThan);
-                if (!decimal.TryParse(request.Filters.IncomesLessThan, out decimal incomsHighestValue))
-                {
-                    incomsHighestValue = decimal.MaxValue;
-                }
-
-                decimal.TryParse(request.Filters.IncomesMoreThan, out decimal incomsLowestValue);
-                if(preprocessedRequest.Buchungstexts.Count > 0)
-                {
-                    preprocessedRequest.Buchungstexts.Clear();
-                }
-                preprocessedRequest.Buchungstexts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.BuchungstextValues));
-                if (preprocessedRequest.Accounts.Count > 0)
-                {
-                    preprocessedRequest.Accounts.Clear();
-                }
-                preprocessedRequest.Accounts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.UserAccounts));
-                preprocessedRequest.ToFind = request.Filters.ToFind;
-
-                preprocessedRequest.ExpencesLowestValue = expMoreThan;
-                preprocessedRequest.ExpencesHighestValue = expLessThan;
-                preprocessedRequest.IncomsLowestValue = incomsLowestValue;
-                preprocessedRequest.IncomsHighestValue = incomsHighestValue;
-            }
-        }
-
-
-        #region IBusinessLogic Members
-        //public ResponseModel ResponseModel { get; }
-        public DataRequest Request { get; }
         public void UpdateData()
         {
             if (dataGate.UpdateDataBank())
-            {
                 UpdateDataModel();
-            }
         }
+
         public void UpdateDataModel()
         {
             PreProcessRequest(Request);
@@ -229,142 +71,339 @@ namespace WpfApplication1
                 progrBar.Show();
                 progrBar.pbStatus.Value = 0;
             }
-            // IProgress<int> progress = new Progress<int>(s => progrBar.pbStatus.Value = s);
-            //  progress.Report( int value )
+
             if (!worker.IsBusy)
             {
+                responseModel.IsDataReady = false;
                 worker.RunWorkerAsync();
-                Thread.Sleep(50);
             }
 
             responseModel.UpdateDataRequired = !responseModel.UpdateDataRequired;
         }
+
         public void FilterData()
         {
             UpdateDataModel();
             responseModel.BuchungstextOverDateRange = GetBuchungstextOverDateRange();
             responseModel.TransactionsAccountsObsCollBoolTextCouple = GetTransactionsAccountsObsCollBoolTextCouple();
         }
+
         public void UpdateViewData()
         {
             if (Request.AtDate != DateTime.MinValue)
                 responseModel.ExpensesAtDate = GetExpensesAtDate(Request);
-            if (Request.SelectedRemittee != null)
-                responseModel.Dates4RemiteeOverDateRange = Request.SelectedRemittee == string.Empty? responseModel.Dates4RemiteeOverDateRange : GetDates4RemiteeOverDateRange(Request);
-            if (Request.SelectedCategory != null)
-                responseModel.ExpenceBeneficiary4CategoryOverDateRange = Request.SelectedCategory == string.Empty ? responseModel.ExpenceBeneficiary4CategoryOverDateRange : GetExpenseBeneficiary4CategoryOverDateRange(Request);
+
+            if (!string.IsNullOrEmpty(Request.SelectedRemittee))
+                responseModel.Dates4RemiteeOverDateRange = GetDates4RemiteeOverDateRange(Request);
+
+            if (!string.IsNullOrEmpty(Request.SelectedCategory))
+                responseModel.ExpenseBeneficiary4CategoryOverDateRange = GetExpenseBeneficiary4CategoryOverDateRange(Request);
         }
+
+        public void FinalizeBL()
+        {
+            progrBar?.Close();
+        }
+
+        #region BackgroundWorker
+
+        private class WorkerResult
+        {
+            public List<KeyValuePair<string, decimal>> ExpensesOverDateRange { get; set; }
+            public ObservableCollection<KeyValuePair<string, decimal>> IncomesOverDatesRange { get; set; }
+            public List<KeyValuePair<DateTime, decimal>> BalanceOverDateRange { get; set; }
+            public List<KeyValuePair<string, decimal>> ExpensesOverRemiteeInDateRange { get; set; }
+            public List<KeyValuePair<string, decimal>> ExpensesOverRemiteeGroupsInDateRange { get; set; }
+            public List<KeyValuePair<string, string>> ExpensesInfoOverDateRange { get; set; }
+            public List<KeyValuePair<string, string>> IncomesInfoOverDateRange { get; set; }
+            public string Summary { get; set; }
+            public List<string> TransactionsAccounts { get; set; }
+            public List<KeyValuePair<string, decimal>> ExpensesOverCategory { get; set; }
+        }
+
+        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var bgWorker = (BackgroundWorker)sender;
+            var result = new WorkerResult();
+
+            try
+            {
+                result.ExpensesOverDateRange = GetExpensesOverDateRange();
+                bgWorker.ReportProgress(10);
+
+                result.TransactionsAccounts = GetTransactionsAccounts();
+                bgWorker.ReportProgress(20);
+
+                result.IncomesOverDatesRange = GetIncomesOverDatesRange();
+                bgWorker.ReportProgress(30);
+
+                result.BalanceOverDateRange = GetBalanceOverDateRange();
+                bgWorker.ReportProgress(40);
+
+                result.ExpensesInfoOverDateRange = GetExpensesInfoOverDateRange();
+                bgWorker.ReportProgress(50);
+
+                result.ExpensesOverRemiteeGroupsInDateRange = GetExpensesOverRemiteeGroupsInDateRange();
+                bgWorker.ReportProgress(60);
+
+                result.ExpensesOverRemiteeInDateRange = GetExpensesOverRemiteeInDateRange();
+                bgWorker.ReportProgress(70);
+
+                result.ExpensesOverCategory = GetExpensesOverCategory();
+                bgWorker.ReportProgress(80);
+
+                result.IncomesInfoOverDateRange = GetIncomesInfoOverDateRange();
+                bgWorker.ReportProgress(90);
+
+                result.Summary = GetSummary();
+                bgWorker.ReportProgress(100);
+            }
+            catch (Exception)
+            {
+                // Preserve original behavior: don't crash; results may be partially filled
+            }
+
+            e.Result = result;
+        }
+
+        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progrBar.pbStatus.Dispatcher.BeginInvoke(
+                DispatcherPriority.Normal,
+                new Action(() => progrBar.pbStatus.Value = e.ProgressPercentage));
+        }
+
+        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            var dispatcher = progrBar.Dispatcher ?? Application.Current?.Dispatcher;
+
+            if (dispatcher != null && !dispatcher.CheckAccess())
+                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => ApplyWorkerResult(e)));
+            else
+                ApplyWorkerResult(e);
+        }
+
+        private void ApplyWorkerResult(RunWorkerCompletedEventArgs e)
+        {
+            if (progrBar.IsVisible)
+                progrBar.Hide();
+
+            if (e.Result is WorkerResult result)
+            {
+                if (result.ExpensesOverDateRange != null)
+                    responseModel.ExpensesOverDateRange = result.ExpensesOverDateRange;
+                if (result.TransactionsAccounts != null)
+                    responseModel.TransactionsAccounts = result.TransactionsAccounts;
+                if (result.IncomesOverDatesRange != null)
+                    responseModel.IncomesOverDatesRange = result.IncomesOverDatesRange;
+                if (result.BalanceOverDateRange != null)
+                    responseModel.BalanceOverDateRange = result.BalanceOverDateRange;
+                if (result.ExpensesInfoOverDateRange != null)
+                    responseModel.ExpensesInfoOverDateRange = result.ExpensesInfoOverDateRange;
+                if (result.ExpensesOverRemiteeGroupsInDateRange != null)
+                    responseModel.ExpensesOverRemiteeGroupsInDateRange = result.ExpensesOverRemiteeGroupsInDateRange;
+                if (result.ExpensesOverRemiteeInDateRange != null)
+                    responseModel.ExpensesOverRemiteeInDateRange = result.ExpensesOverRemiteeInDateRange;
+                if (result.ExpensesOverCategory != null)
+                    responseModel.ExpensesOverCategory = result.ExpensesOverCategory;
+                if (result.IncomesInfoOverDateRange != null)
+                    responseModel.IncomesInfoOverDateRange = result.IncomesInfoOverDateRange;
+                if (result.Summary != null)
+                    responseModel.Summary = result.Summary;
+
+                responseModel.IsDataReady = true;
+            }
+
+            responseModel.UpdateDataRequired = !responseModel.UpdateDataRequired;
+        }
+
         #endregion
+
+        #region Request Processing
+
+        private void InitializePreprocessedRequest()
+        {
+            preprocessedRequest = new PreprocessedDataRequest
+            {
+                Accounts = new List<string>(),
+                Buchungstexts = new List<string>(),
+                IncomsLowestValue = decimal.Zero,
+                IncomsHighestValue = decimal.MaxValue,
+                ExpencesLowestValue = decimal.Zero,
+                ExpencesHighestValue = decimal.MaxValue,
+                BeginDate = DateTime.Now.Date.AddDays(-30),
+                FinishDate = DateTime.Now.Date
+            };
+        }
+
+        private static void PreProcessRequest(DataRequest request)
+        {
+            if (request == null)
+                return;
+
+            preprocessedRequest.AtDate = request.AtDate;
+            preprocessedRequest.SelectedRemittee = request.SelectedRemittee;
+            preprocessedRequest.BeginDate = request.TimeSpan.Item1;
+            preprocessedRequest.FinishDate = request.TimeSpan.Item2 < request.TimeSpan.Item1
+                ? request.TimeSpan.Item1
+                : request.TimeSpan.Item2;
+
+            if (request.Filters.UserAccounts.Count > 0)
+            {
+                if (!decimal.TryParse(request.Filters.ExpenciesLessThan, out decimal expLessThan))
+                    expLessThan = decimal.MaxValue;
+
+                decimal.TryParse(request.Filters.ExpenciesMoreThan, out decimal expMoreThan);
+
+                if (!decimal.TryParse(request.Filters.IncomesLessThan, out decimal incomsHighestValue))
+                    incomsHighestValue = decimal.MaxValue;
+
+                decimal.TryParse(request.Filters.IncomesMoreThan, out decimal incomsLowestValue);
+
+                preprocessedRequest.Buchungstexts.Clear();
+                preprocessedRequest.Buchungstexts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.BuchungstextValues));
+
+                preprocessedRequest.Accounts.Clear();
+                preprocessedRequest.Accounts.AddRange(ConvertObsCollBoolTextCoupleToList(request.Filters.UserAccounts));
+
+                preprocessedRequest.ToFind = request.Filters.ToFind;
+                preprocessedRequest.ExpencesLowestValue = expMoreThan;
+                preprocessedRequest.ExpencesHighestValue = expLessThan;
+                preprocessedRequest.IncomsLowestValue = incomsLowestValue;
+                preprocessedRequest.IncomsHighestValue = incomsHighestValue;
+            }
+        }
+
+        private static List<string> ConvertObsCollBoolTextCoupleToList(ObservableCollection<BoolTextCouple> values)
+        {
+            if (values == null)
+                return new List<string>();
+
+            return values.Where(elem => !elem.IsSelected).Select(elem => elem.Text).ToList();
+        }
+
+        private IEnumerable<KeyValuePair<string, decimal>> ApplyRangeFilter(IEnumerable<KeyValuePair<string, decimal>> res)
+        {
+            return res.Where(p => p.Value >= preprocessedRequest.ExpencesLowestValue
+                               && p.Value <= preprocessedRequest.ExpencesHighestValue);
+        }
+
+        #endregion
+
+        #region Data Queries
+
+        private decimal ConvertStringToDecimal(string src)
+        {
+            try
+            {
+                return decimal.Parse(src, NumberStyles.Any, CultureInfo.InvariantCulture);
+            }
+            catch (FormatException e)
+            {
+                MessageBox.Show(e.Message,
+                    "Unable to parse string in the currency. Try to change the currency separator symbol in Windows Regional settings and reload the data.",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return 0m;
+            }
+        }
+
+        private IEnumerable<XElement> GetFilteredTransactions()
+        {
+            return _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
+                .Where(r => DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                         && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                         && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                         && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value));
+        }
 
         protected List<KeyValuePair<string, decimal>> GetExpensesOverDateRange()
         {
             try
             {
                 var res =
-                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) < 0
-                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                    from r in GetFilteredTransactions()
+                    where ConvertStringToDecimal(r.Element(Config.BetragField).Value) < 0
                     group r.Element(Config.BetragField).Value by r.Element(Config.WertDatumField).Value into g
                     orderby DateTime.Parse(g.Key)
-                    select new KeyValuePair<string, decimal>(g.Key/*.Substring(5)*/, g.Sum(n => -ConvertStringToDecimal(n)));
+                    select new KeyValuePair<string, decimal>(g.Key, g.Sum(n => -ConvertStringToDecimal(n)));
 
-                res = ApplyRangeFilter(res);
-                return res.ToList<KeyValuePair<string, decimal>>();
+                return ApplyRangeFilter(res).ToList();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetExpensesOverDateRange**",
                     Config.AppName + ": Unable to get Data.", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
             }
-            return null;
         }
+
         protected List<KeyValuePair<string, decimal>> GetExpensesOverRemiteeInDateRange()
         {
             try
             {
                 var res =
-                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) < decimal.Zero
-                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                    from r in GetFilteredTransactions()
+                    where ConvertStringToDecimal(r.Element(Config.BetragField).Value) < 0
                     group r.Element(Config.BetragField).Value by r.Element(Config.BeguenstigterField).Value into g
                     orderby g.Key
-                    select new KeyValuePair<string, decimal>(g.Key, g.Sum<string>(n => -ConvertStringToDecimal(n))
-                    );
+                    select new KeyValuePair<string, decimal>(g.Key, g.Sum(n => -ConvertStringToDecimal(n)));
 
-                res = ApplyRangeFilter(res);
-                return res.ToList<KeyValuePair<string, decimal>>();
+                return ApplyRangeFilter(res).ToList();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetExpencesOverRemiteeInDateRange**",
                     Config.AppName + ": Unable to get Data", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
             }
-            return null;
         }
+
         protected List<KeyValuePair<string, string>> GetExpensesInfoOverDateRange()
         {
             try
             {
                 var res =
-                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= decimal.Zero
-                                        &&
-                                        (
-                                        r.Element(Config.BeguenstigterField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.BeguenstigterField).Value : preprocessedRequest.ToFind)
-                                        || r.Element(Config.VerwendZweckField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.VerwendZweckField).Value : preprocessedRequest.ToFind)
-                                        )
-                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                    from r in GetFilteredTransactions()
+                    where ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= 0
+                          && MatchesSearchFilter(r)
                     orderby DateTime.Parse(r.Element(Config.WertDatumField).Value)
-                    select new KeyValuePair<string, string>(r.Element(Config.WertDatumField).Value,
-                        " ** " + r.Element(Config.BeguenstigterField).Value +
-                        " ** " + r.Element(Config.VerwendZweckField).Value.Substring(0, r.Element(Config.VerwendZweckField).Value.Length < 120 ? r.Element(Config.VerwendZweckField).Value.Length : 120 ) +
-                        " ** " + ConvertStringToDecimal(r.Element(Config.BetragField).Value)
+                    select new KeyValuePair<string, string>(
+                        r.Element(Config.WertDatumField).Value,
+                        $" ** {r.Element(Config.BeguenstigterField).Value}" +
+                        $" ** {TruncateString(r.Element(Config.VerwendZweckField).Value, 120)}" +
+                        $" ** {ConvertStringToDecimal(r.Element(Config.BetragField).Value)}");
 
-                   );
-                return res.ToList<KeyValuePair<string, string>>();
+                return res.ToList();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetExpensesInfoOverDateRange**",
                     Config.AppName + ": Unable to get Data", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
             }
-            return null;
-
         }
+
         protected List<KeyValuePair<string, decimal>> GetExpensesOverRemiteeGroupsInDateRange()
         {
             try
             {
                 var res =
-                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField) // .Elements
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= decimal.Zero
-                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                    from r in GetFilteredTransactions()
+                    where ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= 0
                     group r.Element(Config.BetragField).Value by r.Element(Config.BuchungsTextField).Value into g
                     orderby g.Key
-                    select new KeyValuePair<string, decimal>(g.Key, g.Sum<string>( n => -ConvertStringToDecimal(n)));
+                    select new KeyValuePair<string, decimal>(g.Key, g.Sum(n => -ConvertStringToDecimal(n)));
 
-                res = ApplyRangeFilter(res);
-                return res.ToList<KeyValuePair<string, decimal>>();
+                return ApplyRangeFilter(res).ToList();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetExpencesOverRemiteeInDateRange**",
                     Config.AppName + ": Unable to get Data", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
             }
-            return null;
         }
+
         protected List<KeyValuePair<string, decimal>> GetExpensesAtDate(DataRequest request)
         {
             try
@@ -372,167 +411,136 @@ namespace WpfApplication1
                 var res =
                     from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) == request.AtDate
-                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) < decimal.Zero
-                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                          && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                          && ConvertStringToDecimal(r.Element(Config.BetragField).Value) < 0
+                          && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
                     group r.Element(Config.BetragField).Value by r.Element(Config.BeguenstigterField).Value into g
+                    select new KeyValuePair<string, decimal>(g.Key, g.Sum(n => -ConvertStringToDecimal(n)));
 
-                    select new KeyValuePair<string, decimal>(g.Key/*.Substring(5)*/, g.Sum<string>(n => -ConvertStringToDecimal(n) ));
-
-                res = ApplyRangeFilter(res);
-                return res.ToList<KeyValuePair<string, decimal>>();
+                return ApplyRangeFilter(res).ToList();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetExpensesAtDate**",
                     Config.AppName + ": Unable to get Data.", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
             }
-            return null;
         }
+
         protected List<KeyValuePair<string, string>> GetIncomesInfoOverDateRange()
         {
             try
             {
                 var res =
-                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) >= preprocessedRequest.IncomsLowestValue
-                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= preprocessedRequest.IncomsHighestValue
-                        &&
-                        (
-                        r.Element(Config.BeguenstigterField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.BeguenstigterField).Value : preprocessedRequest.ToFind)
-                        || r.Element(Config.VerwendZweckField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.VerwendZweckField).Value : preprocessedRequest.ToFind)
-                        )
-                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
-
+                    from r in GetFilteredTransactions()
+                    let amount = ConvertStringToDecimal(r.Element(Config.BetragField).Value)
+                    where amount >= preprocessedRequest.IncomsLowestValue
+                          && amount <= preprocessedRequest.IncomsHighestValue
+                          && MatchesSearchFilter(r)
                     orderby DateTime.Parse(r.Element(Config.WertDatumField).Value)
-                    select new KeyValuePair<string, string>(r.Element(Config.WertDatumField).Value,
-                        " ** " + r.Element(Config.BeguenstigterField).Value +
-                        " ** " + r.Element(Config.VerwendZweckField).Value.Substring(0, r.Element(Config.VerwendZweckField).Value.Length < 120 ? r.Element(Config.VerwendZweckField).Value.Length : 120) +
-                        " ** " + ConvertStringToDecimal(r.Element(Config.BetragField).Value)
-                   );
-                return res.ToList<KeyValuePair<string, string>>();
+                    select new KeyValuePair<string, string>(
+                        r.Element(Config.WertDatumField).Value,
+                        $" ** {r.Element(Config.BeguenstigterField).Value}" +
+                        $" ** {TruncateString(r.Element(Config.VerwendZweckField).Value, 120)}" +
+                        $" ** {amount}");
+
+                return res.ToList();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetIncomesInfoOverDateRange**",
                     Config.AppName + ": Unable to get Data", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
             }
-            return null;
-
         }
+
         protected ObservableCollection<KeyValuePair<string, decimal>> GetIncomesOverDatesRange()
         {
             try
             {
                 var res =
-                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) >= decimal.Zero
-                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                    from r in GetFilteredTransactions()
+                    where ConvertStringToDecimal(r.Element(Config.BetragField).Value) >= 0
                     group r.Element(Config.BetragField).Value by r.Element(Config.WertDatumField).Value into g
                     orderby DateTime.Parse(g.Key)
-                    select new KeyValuePair<string, decimal>(g.Key.Substring(5), g.Sum<string>(
-                           n => ConvertStringToDecimal(n)));
+                    select new KeyValuePair<string, decimal>(g.Key.Substring(5), g.Sum(n => ConvertStringToDecimal(n)));
 
-                res = res.Where(paar => (paar.Value >= preprocessedRequest.IncomsLowestValue) && (paar.Value <= preprocessedRequest.IncomsHighestValue));
-                return new ObservableCollection<KeyValuePair<string, decimal>>(res.ToList<KeyValuePair<string, decimal>>());
+                var filtered = res.Where(p => p.Value >= preprocessedRequest.IncomsLowestValue
+                                           && p.Value <= preprocessedRequest.IncomsHighestValue);
+
+                return new ObservableCollection<KeyValuePair<string, decimal>>(filtered.ToList());
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetExpensesOverDateRange**",
+                MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetIncomesOverDatesRange**",
                     Config.AppName + ": Unable to get Data", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
             }
-            return null;
         }
+
         protected List<KeyValuePair<DateTime, decimal>> GetBalanceOverDateRange()
         {
-            List<KeyValuePair<DateTime, decimal>> resultedList = new List<KeyValuePair<DateTime, decimal>>();
+            var resultedList = new List<KeyValuePair<DateTime, decimal>>();
             try
             {
                 var res =
-                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value) // ??
+                    from r in GetFilteredTransactions()
                     group r.Element(Config.BetragField).Value by r.Element(Config.WertDatumField).Value into g
                     orderby DateTime.Parse(g.Key)
-                    select new KeyValuePair<DateTime, decimal>(DateTime.Parse(g.Key).Date, g.Sum<string>(
-                           n => ConvertStringToDecimal(n)
-                           )
-                   );
-                List<KeyValuePair<DateTime, decimal>> inputList = res.ToList<KeyValuePair<DateTime, decimal>>();
+                    select new KeyValuePair<DateTime, decimal>(DateTime.Parse(g.Key).Date, g.Sum(n => ConvertStringToDecimal(n)));
 
-                IEnumerator<KeyValuePair<DateTime, decimal>> inputEnumerator = inputList.GetEnumerator();
-                decimal akku = 0m;
-
-                if (inputEnumerator.MoveNext())
-                    for (DateTime currDate = preprocessedRequest.BeginDate/*.Date.AddDays(1)*/; !preprocessedRequest.FinishDate.Date.Equals(currDate.Date.AddDays(-1)); currDate = currDate.Date.AddDays(1))
+                var inputList = res.ToList();
+                using (var inputEnumerator = inputList.GetEnumerator())
+                {
+                    decimal akku = 0m;
+                    if (inputEnumerator.MoveNext())
                     {
-                        if (inputEnumerator.Current.Key.Equals(currDate))
+                        for (var currDate = preprocessedRequest.BeginDate;
+                             !preprocessedRequest.FinishDate.Date.Equals(currDate.Date.AddDays(-1));
+                             currDate = currDate.Date.AddDays(1))
                         {
-                            akku += inputEnumerator.Current.Value;
-                            resultedList.Add(new KeyValuePair<DateTime, decimal>(inputEnumerator.Current.Key, akku));
-                            inputEnumerator.MoveNext();
+                            if (inputEnumerator.Current.Key.Equals(currDate))
+                            {
+                                akku += inputEnumerator.Current.Value;
+                                resultedList.Add(new KeyValuePair<DateTime, decimal>(inputEnumerator.Current.Key, akku));
+                                inputEnumerator.MoveNext();
+                            }
+                            else
+                            {
+                                resultedList.Add(new KeyValuePair<DateTime, decimal>(currDate, akku));
+                            }
                         }
-                        else resultedList.Add(new KeyValuePair<DateTime, decimal>(currDate, akku));
                     }
+                }
                 return resultedList;
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetBalanceOverDateRange**",
                     Config.AppName + ": Unable to get Data.", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
             }
-            return null;
         }
 
         protected string GetSummary()
         {
-            string result = String.Format("Total: {0:d} - {1:d} : ", preprocessedRequest.BeginDate, preprocessedRequest.FinishDate);
+            string result = $"Total: {preprocessedRequest.BeginDate:d} - {preprocessedRequest.FinishDate:d} : ";
 
             try
             {
-                var resIncomes =
-                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) > 0
-                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
-                    group r.Elements(Config.BetragField).Single() by r.Parent.Element(Config.TransactionField).Name.LocalName into g
-                    select new KeyValuePair<string, decimal>(g.Key, g.Sum<XElement>(
-                                                               n => ConvertStringToDecimal(n.Value)
-                                                               ));
-                var resExpences =
-                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) < 0
-                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
-                    group r.Elements(Config.BetragField).Single() by r.Parent.Element(Config.TransactionField).Name.LocalName into g
-                    select new KeyValuePair<string, decimal>(g.Key, g.Sum<XElement>(
-                                                               n => ConvertStringToDecimal(n.Value)
-                                                               ));
-                var resBalances =
-                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
-                    group r.Elements(Config.BetragField).Single() by r.Parent.Element(Config.TransactionField).Name.LocalName into g
-                    select new KeyValuePair<string, decimal>(g.Key, g.Sum<XElement>(
-                                                               n => ConvertStringToDecimal(n.Value)
-                                                               ));
-                result += resIncomes.FirstOrDefault<KeyValuePair<string, decimal>>().Value +
-                    " " + resExpences.FirstOrDefault<KeyValuePair<string, decimal>>().Value +
-                    " = " + resBalances.FirstOrDefault<KeyValuePair<string, decimal>>().Value;
+                var transactions = GetFilteredTransactions().ToList();
+
+                decimal incomes = transactions
+                    .Where(r => ConvertStringToDecimal(r.Element(Config.BetragField).Value) > 0)
+                    .Sum(r => ConvertStringToDecimal(r.Element(Config.BetragField).Value));
+
+                decimal expenses = transactions
+                    .Where(r => ConvertStringToDecimal(r.Element(Config.BetragField).Value) < 0)
+                    .Sum(r => ConvertStringToDecimal(r.Element(Config.BetragField).Value));
+
+                decimal balance = incomes + expenses;
+
+                result += $"{incomes} {expenses} = {balance}";
             }
             catch (Exception e)
             {
@@ -549,144 +557,86 @@ namespace WpfApplication1
                 var accs =
                     from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                          && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                          && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
                     select r.Attribute(Config.AuftragsKontoField).Value;
-                return accs.Distinct<string>().ToList<string>();
+
+                return accs.Distinct().ToList();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetTransactionsAccounts**",
                     Config.AppName + ": Unable to get Accounts", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
             }
-            return null;
         }
 
         protected ObservableCollection<BoolTextCouple> GetTransactionsAccountsObsCollBoolTextCouple()
         {
-            if (preprocessedRequest.Accounts.Count > 0)
+            try
             {
                 var accs =
-                        from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
-                        where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                                            && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                                            && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
-                        group r.Attribute(Config.AuftragsKontoField).Value by r.Attribute(Config.AuftragsKontoField).Value into g
-                        select new BoolTextCouple(!preprocessedRequest.Accounts.Contains(g.Key), g.Key);
-                return new ObservableCollection<BoolTextCouple>(accs.Distinct<BoolTextCouple>());
-            }
-            else
-            {
-                try
-                {
-                    var accs =
-                        from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
-                        where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                                            && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                                            && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
-                        group r.Attribute(Config.AuftragsKontoField).Value by r.Attribute(Config.AuftragsKontoField).Value into g
-                        select new BoolTextCouple(true, g.Key);
-                    return new ObservableCollection<BoolTextCouple>(accs.Distinct<BoolTextCouple>());
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetTransactionsAccounts**",
-                        Config.AppName + ": Unable to get Accounts", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
+                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
+                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
+                          && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                          && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                    group r by r.Attribute(Config.AuftragsKontoField).Value into g
+                    select new BoolTextCouple(!preprocessedRequest.Accounts.Contains(g.Key), g.Key);
 
-            return null;
+                return new ObservableCollection<BoolTextCouple>(accs.Distinct());
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetTransactionsAccounts**",
+                    Config.AppName + ": Unable to get Accounts", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
         }
+
         protected ObservableCollection<BoolTextCouple> GetBuchungstextOverDateRange()
-        {
-            if (preprocessedRequest.Buchungstexts.Count > 0)
-            {
-                try
-                {
-                    var res =
-                        from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
-                        where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                            && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                            && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                        group r.Element(Config.WertDatumField).Value by r.Element(Config.BuchungsTextField).Value into g
-
-                        select new BoolTextCouple(!preprocessedRequest.Buchungstexts.Contains(g.Key), g.Key);
-
-                    return new ObservableCollection<BoolTextCouple>(res);
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetBuchungstextOverDateRange**",
-                        Config.AppName + ": Unable to get Data", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            else
-            {
-                try
-                {
-                    var res =
-                        from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
-                        where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                            && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                            && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                        group r.Element(Config.WertDatumField).Value by r.Element(Config.BuchungsTextField).Value into g
-
-                        select new BoolTextCouple(true, g.Key);
-
-                    return new ObservableCollection<BoolTextCouple>(res);
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetBuchungstextOverDateRange**",
-                        Config.AppName + ": Unable to get Data", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-            return null;
-        }
-        protected static List<string> ConvertObsCollBoolTextCoupleToList(ObservableCollection<BoolTextCouple> values)
-        {
-            List<string> result = new List<string>();
-            if (values != null)
-            {
-                foreach (BoolTextCouple elem in values)
-                    if (!elem.IsSelected)
-                        result.Add(elem.Text);
-            }
-            return result;
-        }
-
-
-        protected List<KeyValuePair<string, decimal>> GetDates4RemiteeOverDateRange(DataRequest request)
         {
             try
             {
                 var res =
                     from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
                     where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                                        && request.SelectedRemittee.Equals(r.Element(Config.BeguenstigterField).Value)
-                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= decimal.Zero
-                                        &&
-                                        (
-                                        r.Element(Config.BeguenstigterField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.BeguenstigterField).Value : preprocessedRequest.ToFind)
-                                        || r.Element(Config.VerwendZweckField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.VerwendZweckField).Value : preprocessedRequest.ToFind)
-                                        )
-                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                          && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
+                          && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
+                    group r by r.Element(Config.BuchungsTextField).Value into g
+                    select new BoolTextCouple(!preprocessedRequest.Buchungstexts.Contains(g.Key), g.Key);
+
+                return new ObservableCollection<BoolTextCouple>(res);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetBuchungstextOverDateRange**",
+                    Config.AppName + ": Unable to get Data", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+        }
+
+        protected List<KeyValuePair<string, decimal>> GetDates4RemiteeOverDateRange(DataRequest request)
+        {
+            try
+            {
+                var res =
+                    from r in GetFilteredTransactions()
+                    where request.SelectedRemittee.Equals(r.Element(Config.BeguenstigterField).Value)
+                          && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= 0
+                          && MatchesSearchFilter(r)
                     orderby DateTime.Parse(r.Element(Config.WertDatumField).Value)
+                    select new KeyValuePair<string, decimal>(
+                        r.Element(Config.WertDatumField).Value,
+                        -ConvertStringToDecimal(r.Element(Config.BetragField).Value));
 
-                    select new KeyValuePair<string, decimal>(r.Element(Config.WertDatumField).Value,
-                          (-ConvertStringToDecimal(r.Element(Config.BetragField).Value)));
-
-                res = ApplyRangeFilter(res);
-                return res.ToList<KeyValuePair<string, decimal>>();
+                return ApplyRangeFilter(res).ToList();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetDates4RemiteeOverDateRange**",
                     Config.AppName + ": Unable to get Data", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
             }
-            return null;
         }
 
         protected List<KeyValuePair<string, decimal>> GetExpensesOverCategory()
@@ -694,94 +644,62 @@ namespace WpfApplication1
             try
             {
                 var res =
-                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) < 0
-                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                    from r in GetFilteredTransactions()
+                    where ConvertStringToDecimal(r.Element(Config.BetragField).Value) < 0
                     group r.Element(Config.BetragField).Value by r.Element(Config.CategoryField).Value into g
                     orderby g.Key
-                    select new KeyValuePair<string, decimal>(g.Key/*.Substring(5)*/, g.Sum(n => -ConvertStringToDecimal(n)));
+                    select new KeyValuePair<string, decimal>(g.Key, g.Sum(n => -ConvertStringToDecimal(n)));
 
-                res = ApplyRangeFilter(res);
-                return res.ToList<KeyValuePair<string, decimal>>();
+                return ApplyRangeFilter(res).ToList();
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetExpensesOverDateRange**",
+                MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetExpensesOverCategory**",
                     Config.AppName + ": Unable to get Data.", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
             }
-            return null;
         }
+
         protected List<KeyValuePair<string, decimal>> GetExpenseBeneficiary4CategoryOverDateRange(DataRequest request)
         {
             try
             {
                 var res =
-                    from r in _dataSourceProvider.DataSource.DescendantsAndSelf(Config.TransactionField)
-                    where DateTime.Parse(r.Element(Config.WertDatumField).Value) >= preprocessedRequest.BeginDate
-                                        && DateTime.Parse(r.Element(Config.WertDatumField).Value) <= preprocessedRequest.FinishDate
-                                        && request.SelectedCategory.Equals(r.Element(Config.CategoryField).Value)
-                                        && !preprocessedRequest.Accounts.Contains(r.Attribute(Config.AuftragsKontoField).Value)
-                                        && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= decimal.Zero
-                                        &&
-                                        (
-                                        r.Element(Config.BeguenstigterField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.BeguenstigterField).Value : preprocessedRequest.ToFind)
-                                        || r.Element(Config.VerwendZweckField).Value.Contains(String.IsNullOrEmpty(preprocessedRequest.ToFind) ? r.Element(Config.VerwendZweckField).Value : preprocessedRequest.ToFind)
-                                        )
-                                        && !preprocessedRequest.Buchungstexts.Contains(r.Element(Config.BuchungsTextField).Value)
+                    from r in GetFilteredTransactions()
+                    where request.SelectedCategory.Equals(r.Element(Config.CategoryField).Value)
+                          && ConvertStringToDecimal(r.Element(Config.BetragField).Value) <= 0
+                          && MatchesSearchFilter(r)
                     orderby DateTime.Parse(r.Element(Config.WertDatumField).Value)
+                    select new KeyValuePair<string, decimal>(
+                        $"{r.Element(Config.WertDatumField).Value} : {r.Element(Config.BeguenstigterField).Value}",
+                        -ConvertStringToDecimal(r.Element(Config.BetragField).Value));
 
-                    select new KeyValuePair<string, decimal>(r.Element(Config.WertDatumField).Value + " : " + r.Element(Config.BeguenstigterField).Value,
-                          (-ConvertStringToDecimal(r.Element(Config.BetragField).Value)));
-
-                res = ApplyRangeFilter(res);
-                return res.ToList<KeyValuePair<string, decimal>>();
+                return ApplyRangeFilter(res).ToList();
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetDates4RemiteeOverDateRange**",
+                MessageBox.Show(e.Message + "**BusinessLogicSSKA-GetExpenseBeneficiary4CategoryOverDateRange**",
                     Config.AppName + ": Unable to get Data", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
             }
-            return null;
         }
-            private int GetPercentage(int numerator, int denominator)
-        {
-            int res;
-            if (numerator++ >= denominator)
-            {
-                res = 0;
-            }
-            else
-            {
-                res = (int)(((float)numerator / (float)denominator) * 100);
-            }
 
-            return res;
-        }
-        public void FinalizeBL()
+        private bool MatchesSearchFilter(XElement r)
         {
-            if (progrBar != null)
-                progrBar.Close();
-        }
-        private void InitializeHandledRequest()
-        {
-            preprocessedRequest = new PreprocessedDataRequest();
+            if (string.IsNullOrEmpty(preprocessedRequest.ToFind))
+                return true;
 
-            preprocessedRequest.Accounts = new List<string>();
-            preprocessedRequest.Buchungstexts = new List<string>();
-            preprocessedRequest.IncomsLowestValue = Decimal.Zero;
-            preprocessedRequest.IncomsHighestValue = Decimal.MaxValue;
-            preprocessedRequest.ExpencesLowestValue = Decimal.Zero;
-            preprocessedRequest.ExpencesHighestValue = Decimal.MaxValue;
+            return r.Element(Config.BeguenstigterField).Value.Contains(preprocessedRequest.ToFind)
+                || r.Element(Config.VerwendZweckField).Value.Contains(preprocessedRequest.ToFind);
         }
-        private IEnumerable<KeyValuePair<string, decimal>> ApplyRangeFilter(IEnumerable<KeyValuePair<string, decimal>> res)
+
+        private static string TruncateString(string value, int maxLength)
         {
-            return res.Where(paar => (paar.Value >= preprocessedRequest.ExpencesLowestValue) && (paar.Value <= preprocessedRequest.ExpencesHighestValue));
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
+
+        #endregion
     }
 
-    delegate void UpdateUIDelegateProgrBar( System.Windows.Controls.ProgressBar progressBar);
     delegate void UpdateUIDelegateTextBox(System.Windows.Controls.TextBox textBox);
 }

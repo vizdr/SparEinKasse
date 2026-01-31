@@ -93,13 +93,13 @@ namespace WpfApplication1.Tests.DTO
         }
 
         [Fact]
-        public void ExpensesAtDate_WhenSet_ShouldFireViewPropertyChanged()
+        public void ExpensesAtDate_WhenSet_ShouldFirePropertyChanged()
         {
             // Arrange
             var filterVM = CreateFilterViewModel();
             var responseModel = new ResponseModel(filterVM);
             string changedProperty = null;
-            responseModel.ViewPropertyChanged += (s, e) => changedProperty = e.PropertyName;
+            responseModel.PropertyChanged += (s, e) => changedProperty = e.PropertyName;
 
             var testData = new List<KeyValuePair<string, decimal>>
             {
@@ -116,13 +116,13 @@ namespace WpfApplication1.Tests.DTO
         }
 
         [Fact]
-        public void Dates4RemiteeOverDateRange_WhenSet_ShouldFireViewPropertyChanged()
+        public void Dates4RemiteeOverDateRange_WhenSet_ShouldFirePropertyChanged()
         {
             // Arrange
             var filterVM = CreateFilterViewModel();
             var responseModel = new ResponseModel(filterVM);
             string changedProperty = null;
-            responseModel.ViewPropertyChanged += (s, e) => changedProperty = e.PropertyName;
+            responseModel.PropertyChanged += (s, e) => changedProperty = e.PropertyName;
 
             var testData = new List<KeyValuePair<string, decimal>>
             {

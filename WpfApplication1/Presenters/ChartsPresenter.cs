@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace WpfApplication1
 {
@@ -13,9 +14,6 @@ namespace WpfApplication1
         private readonly IBusinessLogic bl;
         private readonly FilterViewModel _filterViewModel;
 
-        /// <summary>
-        /// Constructor for DI container or direct instantiation.
-        /// </summary>
         public ChartsPresenter(IViewCharts viewChart, BusinessLogicSSKA businessLogic, FilterViewModel filterViewModel)
         {
             bl = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
@@ -24,106 +22,88 @@ namespace WpfApplication1
 
             _viewCharts.BeginDate = businessLogic.Request.TimeSpan.Item1.Date;
             _viewCharts.EndDate = businessLogic.Request.TimeSpan.Item2.Date;
-            businessLogic.ResponseModel.PropertyChanged += ReactOnPropertyChange;
-            businessLogic.ResponseModel.ViewPropertyChanged += ReactOnViewPropertyChange;
+
+            businessLogic.ResponseModel.PropertyChanged += OnResponseModelPropertyChanged;
         }
 
-        // Initiate update of data model by change of xxDate property for DataRequest 
-        public void Initialaze()
+        public void Initialize()
         {
-            bl.Request.TimeSpan = new Tuple<DateTime, DateTime>(_viewCharts.BeginDate, _viewCharts.EndDate);           
+            var newTimeSpan = new Tuple<DateTime, DateTime>(_viewCharts.BeginDate, _viewCharts.EndDate);
+            bl.Request.TimeSpan = newTimeSpan;
         }
+
+        [Obsolete("Use Initialize() instead")]
+        public void Initialaze() => Initialize();
 
         public void FinalizeChP()
         {
             bl.FinalizeBL();
         }
 
-        public void ReactOnPropertyChange(object sender, PropertyChangedEventArgs e)
+        private void OnResponseModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            string s = e.PropertyName;
-            switch (s)
+            switch (e.PropertyName)
             {
-                case "ExpensesOverDateRange":
-                case "IncomesOverDatesRange":
-                case "BalanceOverDateRange":               
-                case "ExpensesOverRemiteeInDateRange":
-                case "IncomesInfoOverDateRange":
-                case "ExpensesInfoOverDateRange":
-                case "TransactionsAccounts":
-                case "ExpensesOverRemiteeGroupsInDateRange":
-                case "Balance":
-                case "ExpensesOverCategory":
+                case nameof(bl.ResponseModel.IsDataReady):
+                    FeedUpdatedData();
                     break;
-                case "BuchungstextOverDateRange":
-                    _viewFilters.BuchungstextValues = bl.ResponseModel.BuchungstextOverDateRange; 
-                    break;
-                case "TransactionsAccountsObsCollBoolTextCouple":
-                    _viewFilters.UserAccounts = bl.ResponseModel.TransactionsAccountsObsCollBoolTextCouple;
-                    break;
-                case "Summary":
+
+                case nameof(bl.ResponseModel.Summary):
                     _viewCharts.Summary = bl.ResponseModel.Summary;
                     break;
-           
-                case "UpdateDataRequired":
-                    feedUpdatedData();
+
+                case nameof(bl.ResponseModel.BuchungstextOverDateRange):
+                    if (_viewFilters != null)
+                        _viewFilters.BuchungstextValues = bl.ResponseModel.BuchungstextOverDateRange;
                     break;
-                default:
-                    { };
+
+                case nameof(bl.ResponseModel.TransactionsAccountsObsCollBoolTextCouple):
+                    if (_viewFilters != null)
+                        _viewFilters.UserAccounts = bl.ResponseModel.TransactionsAccountsObsCollBoolTextCouple;
                     break;
             }
         }
 
-        private void feedUpdatedData()
-        { 
+        private void FeedUpdatedData()
+        {
+            var dispatcher = (_viewCharts as Window)?.Dispatcher ?? Application.Current?.Dispatcher;
+
+            if (dispatcher != null && !dispatcher.CheckAccess())
+            {
+                dispatcher.Invoke(FeedUpdatedDataCore);
+                return;
+            }
+            FeedUpdatedDataCore();
+        }
+
+        private void FeedUpdatedDataCore()
+        {
             _viewCharts.Expenses = ConvertToDatesList(bl.ResponseModel.ExpensesOverDateRange);
             _viewCharts.Incomes = bl.ResponseModel.IncomesOverDatesRange;
-            InitializeExpencsesOverRemitee(bl.ResponseModel.ExpensesOverRemiteeInDateRange);
+            _viewCharts.Remitties = bl.ResponseModel.ExpensesOverRemiteeInDateRange;
+            _viewCharts.AxeRemittiesExpencesMaxValue = CalculateMaxValue(bl.ResponseModel.ExpensesOverRemiteeInDateRange);
             _viewCharts.IncomsOverview = bl.ResponseModel.IncomesInfoOverDateRange;
             _viewCharts.ExpensesOverview = bl.ResponseModel.ExpensesInfoOverDateRange;
-            _viewCharts.IncomsOverview = bl.ResponseModel.IncomesInfoOverDateRange;
             _viewCharts.Accounts = bl.ResponseModel.TransactionsAccounts;
             _viewCharts.RemittieeGroups = bl.ResponseModel.ExpensesOverRemiteeGroupsInDateRange;
             _viewCharts.Balance = bl.ResponseModel.BalanceOverDateRange;
-            InitializeExpencsesOverCategory(bl.ResponseModel.ExpensesOverCategory);
-        }
-
-        // Draft, currently set for viewProperty xx occurs via mouse up event handlers 
-        public void ReactOnViewPropertyChange(object sender, PropertyChangedEventArgs e)
-        {
-            String s = e.PropertyName;
-            switch (s)
-            {
-                case "ExpensesAtDate":
-                    //chartModel.ExpensesAtDate = ;
-                    break;
-                case "Dates4RemiteeOverDateRange":
-                    //chartModel.ExpensesAtDate = ;
-                    break;
-                default:
-                    { };
-                    break;
-            }
-        }
-
-        private void InitializeExpencsesOverRemitee(List<KeyValuePair<string, decimal>> dataSourceExpensesOverRemitee)
-        {
-            _viewCharts.Remitties = dataSourceExpensesOverRemitee;
-            _viewCharts.AxeRemittiesExpencesMaxValue = CalculateMaxValue(dataSourceExpensesOverRemitee);
-        }
-
-        private void InitializeExpencsesOverCategory(List<KeyValuePair<string, decimal>> dataSourceExpensesOverCategory)
-        {            
-            _viewCharts.AxeExpencesCategoryMaxValue = CalculateMaxValue(dataSourceExpensesOverCategory);            
-            _viewCharts.ExpensesCategory = dataSourceExpensesOverCategory;           
+            _viewCharts.AxeExpencesCategoryMaxValue = CalculateMaxValue(bl.ResponseModel.ExpensesOverCategory);
+            _viewCharts.ExpensesCategory = bl.ResponseModel.ExpensesOverCategory;
         }
 
         public void ReloadXml()
         {
-            bl.Request.DataBankUpdating = true; // to emit event
+            bl.Request.DataBankUpdating = true;
         }
 
         #region Filters
+
+        public IViewFilters ViewFilters
+        {
+            get => _viewFilters;
+            set => _viewFilters = value;
+        }
+
         public void InitializeFilters(IViewFilters viewFilters)
         {
             if (!bl.Request.Filters.IsFilterPrepared())
@@ -134,90 +114,81 @@ namespace WpfApplication1
 
         public void ResetFilters()
         {
-            _viewFilters.ExpenciesLessThan = _viewFilters.ExpenciesMoreThan = _viewFilters.IncomesLessThan =
-                _viewFilters.IncomesMoreThan = _viewFilters.ToFind = String.Empty;
+            _viewFilters.ExpenciesLessThan = string.Empty;
+            _viewFilters.ExpenciesMoreThan = string.Empty;
+            _viewFilters.IncomesLessThan = string.Empty;
+            _viewFilters.IncomesMoreThan = string.Empty;
+            _viewFilters.ToFind = string.Empty;
 
-            foreach (BoolTextCouple val in _viewFilters.BuchungstextValues)
-            {
+            foreach (var val in _viewFilters.BuchungstextValues)
                 val.IsSelected = true;
-            }
-            foreach (BoolTextCouple val in _viewFilters.UserAccounts)
-            {
+
+            foreach (var val in _viewFilters.UserAccounts)
                 val.IsSelected = true;
-            }
 
             _filterViewModel.SetViewFilters(ViewFilters);
             bl.Request.Filters = _filterViewModel;
         }
 
-        // apply if selection of params is completed
         public void ApplyFilters()
         {
             _filterViewModel.SetViewFilters(ViewFilters);
             bl.Request.Filters = _filterViewModel;
         }
 
-        public IViewFilters ViewFilters
-        {
-            get => _viewFilters;
-            set
-            {
-                _viewFilters = value;
-            }
-        }
         #endregion
 
-        private List<KeyValuePair<DateTime, decimal>> ConvertToDatesList(List<KeyValuePair<string, decimal>> src)
+        #region Detail Data Getters
+
+        public string GetExpensesAtDate(DateTime date)
         {
-            List<KeyValuePair<DateTime, decimal>> res;
-            res = src.ConvertAll<KeyValuePair<DateTime, decimal>>(
-                 inp => new KeyValuePair<DateTime, decimal>(DateTime.Parse(inp.Key).Date, inp.Value));
-            return res;
+            bl.Request.AtDate = date;
+            return FormatKeyValueList(bl.ResponseModel.ExpensesAtDate);
         }
 
-        public decimal CalculateMaxValue(List<KeyValuePair<string, decimal>> source)
-        {
-            IEnumerable<decimal> maxVal =
-                    from el in source
-                    select el.Value;
-            return maxVal.Count() > 0 ? maxVal.Max() + 2 : 0m;
-        }
-
-        // For the defined in xaml mouse up event handlers, presentationFramework - external dll
-        public string GetExpencesAtDate(DateTime inDate)
-        {
-            string resString = "";
-            bl.Request.AtDate = inDate;
-            List<KeyValuePair<string, decimal>> resList = bl.ResponseModel.ExpensesAtDate;
-            foreach (KeyValuePair<string, decimal> el in resList)
-            {
-                resString += el.Key + ": " + el.Value.ToString() + "\n";
-            }
-            return resString.Trim();
-        }
+        [Obsolete("Use GetExpensesAtDate instead")]
+        public string GetExpencesAtDate(DateTime inDate) => GetExpensesAtDate(inDate);
 
         public string GetDates4Remitee(string remittee)
         {
-            string resString = "";
             bl.Request.SelectedRemittee = remittee;
-            List<KeyValuePair<string, decimal>> resList = bl.ResponseModel.Dates4RemiteeOverDateRange;
-            foreach (KeyValuePair<string, decimal> el in resList)
-            {
-                resString += el.Key + ": " + el.Value.ToString() + "\n";
-            }
-            return resString.Trim();
+            return FormatKeyValueList(bl.ResponseModel.Dates4RemiteeOverDateRange);
         }
 
         public string GetDateBeneficiary(string category)
         {
-            string resString = "";
             bl.Request.SelectedCategory = category;
-            List<KeyValuePair<string, decimal>> resList = bl.ResponseModel.ExpenceBeneficiary4CategoryOverDateRange;
-            foreach (KeyValuePair<string, decimal> el in resList)
-            {
-                resString += el.Key + ": " + el.Value.ToString() + "\n";
-            }
-            return resString.Trim();
+            return FormatKeyValueList(bl.ResponseModel.ExpenseBeneficiary4CategoryOverDateRange);
         }
+
+        #endregion
+
+        #region Helper Methods
+
+        private static List<KeyValuePair<DateTime, decimal>> ConvertToDatesList(List<KeyValuePair<string, decimal>> src)
+        {
+            if (src == null)
+                return new List<KeyValuePair<DateTime, decimal>>();
+
+            return src.ConvertAll(kvp => new KeyValuePair<DateTime, decimal>(DateTime.Parse(kvp.Key).Date, kvp.Value));
+        }
+
+        private static decimal CalculateMaxValue(List<KeyValuePair<string, decimal>> source)
+        {
+            if (source == null || source.Count == 0)
+                return 0m;
+
+            return source.Max(kvp => kvp.Value) + 2;
+        }
+
+        private static string FormatKeyValueList(List<KeyValuePair<string, decimal>> list)
+        {
+            if (list == null || list.Count == 0)
+                return string.Empty;
+
+            return string.Join("\n", list.Select(kvp => $"{kvp.Key}: {kvp.Value}"));
+        }
+
+        #endregion
     }
 }
