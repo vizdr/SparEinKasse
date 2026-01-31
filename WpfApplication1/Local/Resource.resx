@@ -153,6 +153,9 @@
   <data name="ExpencesOverRemitteeGroups" xml:space="preserve">
     <value>Expences - Beneficiary Group</value>
   </data>
+  <data name="ExpencesOverCategory" xml:space="preserve">
+    <value>Expences - Category</value>
+  </data>
   <data name="Filter" xml:space="preserve">
     <value>Filter</value>
   </data>

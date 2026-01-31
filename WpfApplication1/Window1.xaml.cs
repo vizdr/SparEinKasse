@@ -112,7 +112,7 @@ namespace WpfApplication1
             chartRemeteeExpence.Title = Local.Resource.ExpencesOverRemittee;
             chartDateExpence.Title = Local.Resource.ExpencesOverDate;
             chartDateBalance.Title = Local.Resource.Balance;           
-            // expRemitties.Header = Local.Resource.Exp;
+            expRemitties.Header = Local.Resource.Exp;
             expInc.Header = Local.Resource.Inc;
             groupBoxDateInterval.Header = Local.Resource.TimeSpan;
             labelFrom.Content = Local.Resource.DatumFrom;
@@ -124,7 +124,8 @@ namespace WpfApplication1
             labelAccounts.Content = Local.Resource.Accounts;
             buttonShowFilters.Content = Local.Resource.Filter;
             expRemGroups.Header = Local.Resource.Exp2;
-            // chartRemGroupExpence.Title = Local.Resource.ExpencesOverRemitteeGroups;
+            chartRemGroupExpence.Title = Local.Resource.ExpencesOverRemitteeGroups;
+            chartCategoryExpence.Title = Local.Resource.ExpencesOverCategory;
         }
 
         private void InitialaizeFiltersWindow()

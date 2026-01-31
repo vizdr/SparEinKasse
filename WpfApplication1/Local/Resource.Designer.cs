@@ -167,7 +167,16 @@ namespace Local {
                 return ResourceManager.GetString("ExpencesOverRemitteeGroups", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Expences - Category ähnelt.
+        /// </summary>
+        public static string ExpencesOverCategory {
+            get {
+                return ResourceManager.GetString("ExpencesOverCategory", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Filter ähnelt.
         /// </summary>
