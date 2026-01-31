@@ -153,6 +153,9 @@
   <data name="ExpencesOverRemitteeGroups" xml:space="preserve">
     <value>Расходы по группам получателей</value>
   </data>
+  <data name="ExpencesOverCategory" xml:space="preserve">
+    <value>Расходы по категориям</value>
+  </data>
   <data name="Filter" xml:space="preserve">
     <value>Фильтры</value>
   </data>
