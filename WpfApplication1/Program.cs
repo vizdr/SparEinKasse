@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +19,11 @@ namespace WpfApplication1
         [STAThread]
         public static void Main()
         {
+            // Set culture BEFORE creating any services that parse dates
+            // This ensures DateTime.Parse() in BusinessLogicSSKA uses correct format
+            CultureInfo CI = (CultureInfo)Thread.CurrentThread.CurrentCulture.Clone();
+            CI.DateTimeFormat.ShortDatePattern = "dd.MM.yyyy";
+            Thread.CurrentThread.CurrentCulture = CI;
             // Create application host
             var host = Host.CreateDefaultBuilder()
                 // Register services with DI container
