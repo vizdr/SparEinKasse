@@ -3,6 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,9 +14,7 @@
   
 
   <ItemGroup>
-    <Reference Include="CategoryFormatter">
-      <HintPath>..\..\CategoryFormatter\bin\Debug\CategoryFormatter.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\CategoryFormatter\CategoryFormatter.csproj" />
   </ItemGroup>
 
 </Project>

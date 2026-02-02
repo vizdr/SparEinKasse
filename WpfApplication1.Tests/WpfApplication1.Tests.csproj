@@ -7,6 +7,8 @@
     <IsPackable>false</IsPackable>
     <RootNamespace>WpfApplication1.Tests</RootNamespace>
     <AssemblyName>WpfApplication1.Tests</AssemblyName>
+    <PlatformTarget>x64</PlatformTarget>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
