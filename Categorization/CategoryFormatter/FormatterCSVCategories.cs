@@ -53,7 +53,11 @@ namespace CategoryFormatter
             this.indexBookingTextField = indexBookingTextField;
             try
             {
+#if NETFRAMEWORK
+                // Windows-1252 is available by default in .NET Framework
+#else
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
                 csvSSKAEncoding = Encoding.GetEncoding(1252);
                 lines = File.ReadAllLines(pathToInputCSV, csvSSKAEncoding).ToList();
             }
