@@ -81,12 +81,27 @@ namespace WpfApplication1
                 DiagnosticLog.Log("SettingsPresenter", "AppCultures is NULL!");
             }
 
-            // Recreate the main window with the new culture
+            // Apply culture at runtime without recreating the main window
             var cultureName = Settings.Default.AppCultures[0];
-            DiagnosticLog.Log("SettingsPresenter", $"Creating culture from: {cultureName}");
-            var culture = CultureInfo.CreateSpecificCulture(cultureName);
-            DiagnosticLog.Log("SettingsPresenter", $"Calling App.ChangeCulture with: {culture.Name}");
-            App.ChangeCulture(culture);
+            DiagnosticLog.Log("SettingsPresenter", $"Applying runtime culture from: {cultureName}");
+            try
+            {
+                RuntimeLocalization.Instance.ChangeCulture(cultureName);
+            }
+            catch (Exception ex)
+            {
+                DiagnosticLog.Log("SettingsPresenter", $"Runtime culture change failed: {ex.Message}");
+                // Fallback: attempt full recreation path
+                try
+                {
+                    var culture = CultureInfo.CreateSpecificCulture(cultureName);
+                    App.ChangeCulture(culture);
+                }
+                catch (Exception rex)
+                {
+                    DiagnosticLog.Log("SettingsPresenter", $"Fallback App.ChangeCulture also failed: {rex.Message}");
+                }
+            }
             DiagnosticLog.Log("SettingsPresenter", "InitialazeCulture completed");
         }
 
