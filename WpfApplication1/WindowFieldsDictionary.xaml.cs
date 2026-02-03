@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using WpfApplication1.Properties;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
 using System.Threading;
@@ -76,6 +77,38 @@ namespace WpfApplication1
                 DiagnosticLog.Log("WindowFieldsDictionary", $"comboBox_Local.SelectedItem: {comboBox_Local.SelectedItem}");
 
                 sPresenter.UpdateSettings();
+                // If user explicitly saved settings during first-run, mark first run complete
+                try
+                {
+                    Settings.Default.IsFirstRun = false;
+                    Settings.Default.Save();
+                    DiagnosticLog.Log("WindowFieldsDictionary", "Marked IsFirstRun = false and saved settings");
+
+                    // Also clear installer reset flag and update saved AppVersion to avoid
+                    // Program.Main treating the next run as a first-run/reset scenario.
+                    try
+                    {
+                        using (var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\VZdravkov\SSKAanalyzer"))
+                        {
+                            if (key != null)
+                            {
+                                key.SetValue("ResetSettings", 0, Microsoft.Win32.RegistryValueKind.DWord);
+                                var asm = System.Reflection.Assembly.GetExecutingAssembly();
+                                var ver = asm.GetName().Version?.ToString() ?? "1.0.0.0";
+                                key.SetValue("AppVersion", ver, Microsoft.Win32.RegistryValueKind.String);
+                                DiagnosticLog.Log("WindowFieldsDictionary", $"Cleared ResetSettings and set AppVersion={ver} in registry");
+                            }
+                        }
+                    }
+                    catch (Exception rex)
+                    {
+                        DiagnosticLog.Log("WindowFieldsDictionary", $"Failed to update installer registry flags: {rex.Message}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DiagnosticLog.Log("WindowFieldsDictionary", $"Failed to clear IsFirstRun flag: {ex.Message}");
+                }
                 DiagnosticLog.Log("WindowFieldsDictionary", "UpdateSettings completed, closing dialog");
 
                 // Just close the dialog - Window1 will handle culture change after ShowDialog() returns

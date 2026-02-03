@@ -106,7 +106,28 @@ namespace WpfApplication1
                 DiagnosticLog.Log("Window1", $"Opening Settings dialog, current culture: {cultureBefore}");
 
                 // Show settings dialog (modal - blocks until closed)
-                new WindowFieldsDictionary().ShowDialog();
+                // Show settings dialog (modal - blocks until closed)
+                var settingsDlg = new WindowFieldsDictionary();
+                settingsDlg.Owner = this;
+                settingsDlg.ShowDialog();
+
+                // Ensure main window remains the application's MainWindow and is visible/activated
+                try
+                {
+                    if (Application.Current != null)
+                    {
+                        Application.Current.MainWindow = this;
+                    }
+                    if (!this.IsVisible)
+                    {
+                        this.Show();
+                    }
+                    try { this.Activate(); } catch { }
+                }
+                catch (Exception ex)
+                {
+                    DiagnosticLog.Log("Window1", $"Failed to restore main window after settings dialog: {ex.Message}");
+                }
 
                 // After dialog closes, check if culture changed
                 var appCultures = WpfApplication1.Properties.Settings.Default.AppCultures;

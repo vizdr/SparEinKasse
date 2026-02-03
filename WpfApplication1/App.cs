@@ -35,6 +35,10 @@ public class App : Application
 
         // Culture is already set in Program.Main, just show the window
         // Ensure Application.Current.MainWindow references the created main window
+        // Ensure shutdown occurs only when the main window is closed explicitly.
+        // This prevents transient dialogs from causing the app to exit if they close
+        // while the main window is still expected to remain open.
+        Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
         Application.Current.MainWindow = mainWindow;
         DiagnosticLog.Log(LOG_SOURCE, $"MainWindow set, showing window...");
         mainWindow.Show();
