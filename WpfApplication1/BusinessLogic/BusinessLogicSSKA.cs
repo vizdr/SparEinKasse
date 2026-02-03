@@ -15,9 +15,12 @@ namespace WpfApplication1
 {
     public class BusinessLogicSSKA : IBusinessLogic
     {
+        // When true, UpdateDataModel will not create/show the progress window.
+        public bool SuppressProgressWindow { get; set; }
+
         private readonly CsvToXmlSSKA dataGate;
         private readonly IDataSourceProvider _dataSourceProvider;
-        private readonly WindowProgrBar progrBar;
+        private WindowProgrBar progrBar;
         private readonly BackgroundWorker worker;
         private readonly ResponseModel responseModel;
         private static PreprocessedDataRequest preprocessedRequest;
@@ -64,21 +67,60 @@ namespace WpfApplication1
 
         public void UpdateDataModel()
         {
+            DiagnosticLog.Log("BusinessLogicSSKA", "UpdateDataModel called");
+            DiagnosticLog.Log("BusinessLogicSSKA", $"SuppressProgressWindow: {SuppressProgressWindow}");
+
             PreProcessRequest(Request);
 
-            if (!progrBar.IsVisible)
+            // Only show progress window if not suppressed
+            if (!SuppressProgressWindow)
             {
-                progrBar.Show();
-                progrBar.pbStatus.Value = 0;
+                // If the progress window was closed by the user or finalized earlier, recreate it.
+                if (progrBar == null || !progrBar.IsLoaded)
+                {
+                    DiagnosticLog.Log("BusinessLogicSSKA", "Creating new progress bar window");
+                    progrBar = new WindowProgrBar();
+                }
+
+                // Show the progress window if it's not currently visible. Wrap Show in try/catch
+                // because calling Show on a window that has been closed can throw.
+                try
+                {
+                    if (!progrBar.IsVisible)
+                    {
+                        DiagnosticLog.Log("BusinessLogicSSKA", "Showing progress bar window");
+                        progrBar.Show();
+                        if (progrBar.pbStatus != null)
+                            progrBar.pbStatus.Value = 0;
+                    }
+                }
+                catch (InvalidOperationException ex)
+                {
+                    DiagnosticLog.Log("BusinessLogicSSKA", $"InvalidOperationException showing progress bar: {ex.Message}");
+                    // If the window cannot be shown because it was previously closed, recreate and show.
+                    progrBar = new WindowProgrBar();
+                    try { progrBar.Show(); }
+                    catch (Exception ex2) { DiagnosticLog.Log("BusinessLogicSSKA", $"Failed to show recreated progress bar: {ex2.Message}"); }
+                }
+            }
+            else
+            {
+                DiagnosticLog.Log("BusinessLogicSSKA", "Progress window suppressed");
             }
 
             if (!worker.IsBusy)
             {
+                DiagnosticLog.Log("BusinessLogicSSKA", "Starting background worker");
                 responseModel.IsDataReady = false;
                 worker.RunWorkerAsync();
             }
+            else
+            {
+                DiagnosticLog.Log("BusinessLogicSSKA", "Worker is busy, not starting new work");
+            }
 
             responseModel.UpdateDataRequired = !responseModel.UpdateDataRequired;
+            DiagnosticLog.Log("BusinessLogicSSKA", "UpdateDataModel completed");
         }
 
         public void FilterData()
@@ -102,7 +144,18 @@ namespace WpfApplication1
 
         public void FinalizeBL()
         {
-            progrBar?.Close();
+            if (progrBar != null)
+            {
+                try
+                {
+                    progrBar.Close();
+                }
+                finally
+                {
+                    // Mark for recreation if later required
+                    progrBar = null;
+                }
+            }
         }
 
         #region BackgroundWorker
@@ -168,25 +221,70 @@ namespace WpfApplication1
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            progrBar.pbStatus.Dispatcher.BeginInvoke(
-                DispatcherPriority.Normal,
-                new Action(() => progrBar.pbStatus.Value = e.ProgressPercentage));
+            // If progress window is available update it on its dispatcher. Otherwise skip.
+            if (progrBar != null && progrBar.pbStatus != null)
+            {
+                try
+                {
+                    progrBar.pbStatus.Dispatcher.BeginInvoke(
+                        DispatcherPriority.Normal,
+                        new Action(() => progrBar.pbStatus.Value = e.ProgressPercentage));
+                }
+                catch (InvalidOperationException)
+                {
+                    // Window may have been closed concurrently � ignore progress update.
+                }
+            }
         }
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            var dispatcher = progrBar.Dispatcher ?? Application.Current?.Dispatcher;
+            DiagnosticLog.Log("BusinessLogicSSKA", "Worker_RunWorkerCompleted called");
+
+            if (e.Error != null)
+            {
+                DiagnosticLog.Log("BusinessLogicSSKA", $"Worker completed with ERROR: {e.Error.Message}");
+                DiagnosticLog.Log("BusinessLogicSSKA", $"Stack trace: {e.Error.StackTrace}");
+            }
+
+            // Use Application.Current.Dispatcher as fallback if progrBar was closed during work
+            var dispatcher = progrBar?.Dispatcher ?? Application.Current?.Dispatcher;
+            DiagnosticLog.Log("BusinessLogicSSKA", $"Dispatcher available: {dispatcher != null}, progrBar: {progrBar != null}");
 
             if (dispatcher != null && !dispatcher.CheckAccess())
+            {
+                DiagnosticLog.Log("BusinessLogicSSKA", "Invoking ApplyWorkerResult via dispatcher");
                 dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => ApplyWorkerResult(e)));
+            }
             else
+            {
+                DiagnosticLog.Log("BusinessLogicSSKA", "Calling ApplyWorkerResult directly");
                 ApplyWorkerResult(e);
+            }
         }
 
         private void ApplyWorkerResult(RunWorkerCompletedEventArgs e)
         {
-            if (progrBar.IsVisible)
-                progrBar.Hide();
+            DiagnosticLog.Log("BusinessLogicSSKA", "ApplyWorkerResult called");
+
+            // progrBar may have been closed if the window was finalized during data loading,
+            // or may never have been created if SuppressProgressWindow was true
+            try
+            {
+                if (progrBar != null && progrBar.IsVisible)
+                {
+                    DiagnosticLog.Log("BusinessLogicSSKA", "Hiding progress bar");
+                    progrBar.Hide();
+                }
+                else
+                {
+                    DiagnosticLog.Log("BusinessLogicSSKA", $"Progress bar not hidden: progrBar={progrBar != null}, IsVisible={progrBar?.IsVisible}");
+                }
+            }
+            catch (Exception ex)
+            {
+                DiagnosticLog.Log("BusinessLogicSSKA", $"Error hiding progress bar: {ex.Message}");
+            }
 
             if (e.Result is WorkerResult result)
             {
@@ -212,9 +310,15 @@ namespace WpfApplication1
                     responseModel.Summary = result.Summary;
 
                 responseModel.IsDataReady = true;
+                DiagnosticLog.Log("BusinessLogicSSKA", "Worker result applied successfully, data is ready");
+            }
+            else
+            {
+                DiagnosticLog.Log("BusinessLogicSSKA", $"Worker result type: {e.Result?.GetType().Name ?? "null"}");
             }
 
             responseModel.UpdateDataRequired = !responseModel.UpdateDataRequired;
+            DiagnosticLog.Log("BusinessLogicSSKA", "ApplyWorkerResult completed");
         }
 
         #endregion

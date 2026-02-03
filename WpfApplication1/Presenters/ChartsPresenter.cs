@@ -14,9 +14,12 @@ namespace WpfApplication1
         private readonly IBusinessLogic bl;
         private readonly FilterViewModel _filterViewModel;
 
+        private readonly BusinessLogicSSKA _businessLogic;
+
         public ChartsPresenter(IViewCharts viewChart, BusinessLogicSSKA businessLogic, FilterViewModel filterViewModel)
         {
-            bl = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
+            _businessLogic = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
+            bl = businessLogic;
             _viewCharts = viewChart ?? throw new ArgumentNullException(nameof(viewChart));
             _filterViewModel = filterViewModel ?? throw new ArgumentNullException(nameof(filterViewModel));
 
@@ -37,6 +40,8 @@ namespace WpfApplication1
 
         public void FinalizeChP()
         {
+            // Unsubscribe from events to prevent updates to closed window
+            _businessLogic.ResponseModel.PropertyChanged -= OnResponseModelPropertyChanged;
             bl.FinalizeBL();
         }
 

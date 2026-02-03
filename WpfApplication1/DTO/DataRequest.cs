@@ -105,6 +105,15 @@ namespace WpfApplication1.DTO
             DataRequested?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Forces a data refresh by triggering DataRequested event unconditionally.
+        /// Used when recreating the main window (e.g., after language change).
+        /// </summary>
+        public void ForceRefresh()
+        {
+            OnDataRequested();
+        }
+
         protected void OnFilterValuesRequested()
         {
             FilterValuesRequested?.Invoke(this, EventArgs.Empty);

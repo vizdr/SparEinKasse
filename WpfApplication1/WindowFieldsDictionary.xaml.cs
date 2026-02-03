@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
 using System.Threading;
+using System.Windows.Threading;
 
 namespace WpfApplication1
 {
@@ -28,15 +30,21 @@ namespace WpfApplication1
 
         public WindowFieldsDictionary()
         {
+            DiagnosticLog.Log("WindowFieldsDictionary", "Constructor called");
             InitializeComponent();
             currentCulture = Thread.CurrentThread.CurrentUICulture.Name;
+            DiagnosticLog.Log("WindowFieldsDictionary", $"Current thread UI culture: {currentCulture}");
+            DiagnosticLog.LogCultureState("WindowFieldsDictionary.ctor");
+
             sPresenter = new SettingsPresenter(this);
-           
-            if (appCultures.Contains(currentCulture))
+            DiagnosticLog.Log("WindowFieldsDictionary", "SettingsPresenter created");
+
+            // Set dropdown to show the saved culture preference (first item in the list)
+            // Don't automatically move current thread culture to front - let user change via dropdown
+            DiagnosticLog.Log("WindowFieldsDictionary", $"Setting comboBox_Local.SelectedIndex = 0 (ItemsCount: {comboBox_Local.Items.Count})");
+            if (comboBox_Local.Items.Count > 0)
             {
-                int oldIndex = appCultures.IndexOf(currentCulture);
-                appCultures.Move(oldIndex, 0);
-                sPresenter.UpdateSettings();
+                DiagnosticLog.Log("WindowFieldsDictionary", $"comboBox_Local items[0] will be: {comboBox_Local.Items[0]}");
             }
             comboBox_Local.SelectedIndex = 0;
             comboBox_CSVDelimiter.SelectedIndex = 0;
@@ -61,9 +69,27 @@ namespace WpfApplication1
                 }
             }
 
-            btn_SaveAndClose.Click += delegate { sPresenter.UpdateSettings(); sPresenter.InitialazeCulture(); };
-            btn_CancelAndClose.Click += delegate { sPresenter.ReloadSettings(); };
+            btn_SaveAndClose.Click += delegate
+            {
+                DiagnosticLog.Log("WindowFieldsDictionary", "btn_SaveAndClose clicked");
+                DiagnosticLog.Log("WindowFieldsDictionary", $"comboBox_Local.SelectedIndex: {comboBox_Local.SelectedIndex}");
+                DiagnosticLog.Log("WindowFieldsDictionary", $"comboBox_Local.SelectedItem: {comboBox_Local.SelectedItem}");
+
+                sPresenter.UpdateSettings();
+                DiagnosticLog.Log("WindowFieldsDictionary", "UpdateSettings completed, closing dialog");
+
+                // Just close the dialog - Window1 will handle culture change after ShowDialog() returns
+                this.Close();
+                DiagnosticLog.Log("WindowFieldsDictionary", "Dialog closed");
+            };
+            btn_CancelAndClose.Click += delegate
+            {
+                DiagnosticLog.Log("WindowFieldsDictionary", "btn_CancelAndClose clicked");
+                sPresenter.ReloadSettings();
+                this.Close();
+            };
             comboBox_Local.SelectionChanged += comboBoxLocal_Selected;
+            DiagnosticLog.Log("WindowFieldsDictionary", "Constructor completed");
         }
 
         private void ListBoxItem_DoubleClick(object sender, RoutedEventArgs e)
@@ -172,7 +198,13 @@ namespace WpfApplication1
         private  void comboBoxLocal_Selected(object sender, RoutedEventArgs e)
         {
             int oldIndex = (e.OriginalSource as ComboBox).SelectedIndex;
+            DiagnosticLog.Log("WindowFieldsDictionary", $"comboBoxLocal_Selected - SelectedIndex: {oldIndex}");
+            if (oldIndex >= 0 && oldIndex < appCultures.Count)
+            {
+                DiagnosticLog.Log("WindowFieldsDictionary", $"Moving culture '{appCultures[oldIndex]}' from index {oldIndex} to index 0");
+            }
             appCultures.Move(oldIndex, 0);
+            DiagnosticLog.Log("WindowFieldsDictionary", $"After move - appCultures[0]: {appCultures[0]}");
         }
 
 

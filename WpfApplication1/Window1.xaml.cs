@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -45,17 +46,28 @@ namespace WpfApplication1
         /// <summary>
         /// Constructor for DI container. Receives dependencies via injection.
         /// </summary>
-        public Window1(BusinessLogicSSKA businessLogic, FilterViewModel filterViewModel)
+        /// <summary>
+        /// Constructor for DI container. Receives dependencies via injection.
+        /// </summary>
+        /// <param name="businessLogic">Business logic instance (injected)</param>
+        /// <param name="filterViewModel">Filter view model (injected)</param>
+        /// <param name="suppressActivationDialog">When true, do not show the activation dialog even if the app is not registered. Used when recreating the main window (e.g., on culture change).</param>
+        public Window1(BusinessLogicSSKA businessLogic, FilterViewModel filterViewModel, bool suppressActivationDialog = false)
         {
+            DiagnosticLog.Log("Window1", $"Constructor called (suppressActivationDialog={suppressActivationDialog})");
+            DiagnosticLog.LogCultureState("Window1.ctor (start)");
+
             this.businessLogic = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
             this.filterViewModel = filterViewModel ?? throw new ArgumentNullException(nameof(filterViewModel));
-
             try
             {
+                DiagnosticLog.Log("Window1", "Calling InitializeComponent...");
                 InitializeComponent();
+                DiagnosticLog.Log("Window1", "InitializeComponent completed");
             }
             catch (XmlException exc)
             {
+                DiagnosticLog.Log("Window1", $"EXCEPTION in InitializeComponent: {exc.Message}");
                 MessageBox.Show(exc.InnerException.ToString(), "SSKA analyzer: Unable to initialize XAML components", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
@@ -66,7 +78,10 @@ namespace WpfApplication1
 #if DEBUG
             isNotRegistred = true;
 #endif
-            if (isNotRegistred)
+            // Show activation dialog only on initial startup. When the main window is recreated
+            // (for example during a language change), the caller can suppress the activation
+            // dialog by passing suppressActivationDialog = true.
+            if (isNotRegistred && !suppressActivationDialog)
             {
                 WindowAc aw = new WindowAc();
                 aw.Activate();
@@ -84,7 +99,61 @@ namespace WpfApplication1
                     InitializeComponent();
                 }
             };
-            buttonSettings.Click += delegate { new WindowFieldsDictionary().ShowDialog(); };
+            buttonSettings.Click += delegate
+            {
+                // Remember current culture before opening settings
+                string cultureBefore = Thread.CurrentThread.CurrentUICulture.Name;
+                DiagnosticLog.Log("Window1", $"Opening Settings dialog, current culture: {cultureBefore}");
+
+                // Show settings dialog (modal - blocks until closed)
+                new WindowFieldsDictionary().ShowDialog();
+
+                // After dialog closes, check if culture changed
+                var appCultures = WpfApplication1.Properties.Settings.Default.AppCultures;
+                string cultureAfter = appCultures != null && appCultures.Count > 0 ? appCultures[0] : cultureBefore;
+                DiagnosticLog.Log("Window1", $"Settings dialog closed, saved culture: {cultureAfter}");
+
+                if (!string.Equals(cultureBefore, cultureAfter, StringComparison.OrdinalIgnoreCase))
+                {
+                    DiagnosticLog.Log("Window1", $"Culture changed from {cultureBefore} to {cultureAfter}, prompting restart...");
+
+                    // Get localized strings based on the NEW culture (the one user selected)
+                    string title, message;
+                    if (cultureAfter.StartsWith("de", StringComparison.OrdinalIgnoreCase))
+                    {
+                        title = "Neustart erforderlich";
+                        message = "Bitte starten Sie die Anwendung neu, damit die Sprachänderung wirksam wird.\n\nJetzt neu starten?";
+                    }
+                    else if (cultureAfter.StartsWith("ru", StringComparison.OrdinalIgnoreCase))
+                    {
+                        title = "Требуется перезапуск";
+                        message = "Пожалуйста, перезапустите приложение для применения изменения языка.\n\nПерезапустить сейчас?";
+                    }
+                    else
+                    {
+                        title = "Restart Required";
+                        message = "Please restart the application for the language change to take effect.\n\nRestart now?";
+                    }
+
+                    var result = MessageBox.Show(message, title, MessageBoxButton.YesNo, MessageBoxImage.Information);
+
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        DiagnosticLog.Log("Window1", "User chose to restart, restarting application...");
+                        // Restart the application
+                        System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                        Application.Current.Shutdown();
+                    }
+                    else
+                    {
+                        DiagnosticLog.Log("Window1", "User chose not to restart");
+                    }
+                }
+                else
+                {
+                    DiagnosticLog.Log("Window1", "Culture unchanged, no action needed");
+                }
+            };
 
             lineSeriesDateExp.MouseUp += BarDataPoint_MouseUpDatExp;  // event handler popup for chart date-expence
             popupChDateExpText = new TextBlock
@@ -103,29 +172,66 @@ namespace WpfApplication1
                 Padding = new Thickness(2.0d)
             };
 
+            DiagnosticLog.Log("Window1", "Calling InitializeResources from constructor...");
             InitializeResources();
+
+            // Subscribe to runtime localization changes so we can refresh UI texts in-place
+            RuntimeLocalization.Instance.PropertyChanged += (s, ev) =>
+            {
+                DiagnosticLog.Log("Window1", "RuntimeLocalization.PropertyChanged fired - updating resources");
+                // Ensure we update on UI thread
+                Dispatcher.BeginInvoke(new Action(() => InitializeResources()));
+            };
+
+            // Additionally listen to CultureChanged to trigger a safe data refresh
+            RuntimeLocalization.Instance.CultureChanged += (s, culture) =>
+            {
+                DiagnosticLog.Log("Window1", $"RuntimeLocalization.CultureChanged fired - culture: {culture?.Name}");
+                // Make sure progress window can be shown
+                if (businessLogic != null)
+                    businessLogic.SuppressProgressWindow = false;
+
+                // Trigger refresh on dispatcher to avoid blocking UI thread
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    try { businessLogic?.Request.ForceRefresh(); } catch { }
+                }), DispatcherPriority.Background);
+            };
+
+            DiagnosticLog.Log("Window1", "Constructor completed successfully");
         }
 
         public void InitializeResources()
         {
-            chartIncomes.Title = Local.Resource.Incomes;
-            chartRemeteeExpence.Title = Local.Resource.ExpencesOverRemittee;
-            chartDateExpence.Title = Local.Resource.ExpencesOverDate;
-            chartDateBalance.Title = Local.Resource.Balance;           
-            expRemitties.Header = Local.Resource.Exp;
-            expInc.Header = Local.Resource.Inc;
-            groupBoxDateInterval.Header = Local.Resource.TimeSpan;
-            labelFrom.Content = Local.Resource.DatumFrom;
-            labelTo.Content = Local.Resource.DatumTo;
-            buttonUpdateSpan.Content = Local.Resource.UpdateDateSpan;
-            buttonUpdateDataBankXML.Content = Local.Resource.UpdateDataStorage;
-            txtBoxInc.Text = Local.Resource.Incomes;
-            buttonSettings.Content = Local.Resource.Settings;
-            labelAccounts.Content = Local.Resource.Accounts;
-            buttonShowFilters.Content = Local.Resource.Filter;
-            expRemGroups.Header = Local.Resource.Exp2;
-            chartRemGroupExpence.Title = Local.Resource.ExpencesOverRemitteeGroups;
-            chartCategoryExpence.Title = Local.Resource.ExpencesOverCategory;
+            DiagnosticLog.Log("Window1", "InitializeResources called");
+            DiagnosticLog.LogCultureState("Window1.InitializeResources");
+
+            // Log some sample values to verify localization is working
+            string incomesValue = RuntimeLocalization.Instance["Incomes"];
+            string settingsValue = RuntimeLocalization.Instance["Settings"];
+            DiagnosticLog.Log("Window1", $"RuntimeLocalization['Incomes'] = '{incomesValue}'");
+            DiagnosticLog.Log("Window1", $"RuntimeLocalization['Settings'] = '{settingsValue}'");
+
+            chartIncomes.Title = incomesValue;
+            chartRemeteeExpence.Title = RuntimeLocalization.Instance["ExpencesOverRemittee"];
+            chartDateExpence.Title = RuntimeLocalization.Instance["ExpencesOverDate"];
+            chartDateBalance.Title = RuntimeLocalization.Instance["Balance"];
+            expRemitties.Header = RuntimeLocalization.Instance["Exp"];
+            expInc.Header = RuntimeLocalization.Instance["Inc"];
+            groupBoxDateInterval.Header = RuntimeLocalization.Instance["TimeSpan"];
+            labelFrom.Content = RuntimeLocalization.Instance["DatumFrom"];
+            labelTo.Content = RuntimeLocalization.Instance["DatumTo"];
+            buttonUpdateSpan.Content = RuntimeLocalization.Instance["UpdateDateSpan"];
+            buttonUpdateDataBankXML.Content = RuntimeLocalization.Instance["UpdateDataStorage"];
+            txtBoxInc.Text = RuntimeLocalization.Instance["Incomes"];
+            buttonSettings.Content = settingsValue;
+            labelAccounts.Content = RuntimeLocalization.Instance["Accounts"];
+            buttonShowFilters.Content = RuntimeLocalization.Instance["Filter"];
+            expRemGroups.Header = RuntimeLocalization.Instance["Exp2"];
+            chartRemGroupExpence.Title = RuntimeLocalization.Instance["ExpencesOverRemitteeGroups"];
+            chartCategoryExpence.Title = RuntimeLocalization.Instance["ExpencesOverCategory"];
+
+            DiagnosticLog.Log("Window1", "InitializeResources completed");
         }
 
         private void InitialaizeFiltersWindow()

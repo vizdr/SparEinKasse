@@ -150,9 +150,11 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="App.cs" />
+    <Compile Include="DiagnosticLog.cs" />
     <Compile Include="BusinessLogic\AccountsLogic.cs" />
     <Compile Include="DTO\ChartsModel.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="RuntimeLocalization.cs" />
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
       <SubType>Code</SubType>
