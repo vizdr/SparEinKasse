@@ -47,7 +47,11 @@
 
     <!-- Installation directory structure -->
     <StandardDirectory Id="ProgramFiles64Folder">
-      <Directory Id="INSTALLFOLDER" Name="SSKAanalyzer" />
+      <Directory Id="INSTALLFOLDER" Name="SSKAanalyzer">
+        <!-- Satellite assembly folders for localization -->
+        <Directory Id="DeCultureFolder" Name="de" />
+        <Directory Id="RuCultureFolder" Name="ru" />
+      </Directory>
     </StandardDirectory>
 
     <!-- Program Menu shortcut (All Users) -->
@@ -73,156 +77,170 @@
     <ComponentGroup Id="MainApplication" Directory="INSTALLFOLDER">
       <!-- Main executable and config -->
       <Component Id="MainExecutable">
-        <File Id="SSKAanalyzer.exe" Source="..\WpfApplication1\bin\Release\SSKAanalyzer.exe" KeyPath="yes" />
+        <File Id="SSKAanalyzer.exe" Source="..\WpfApplication1\bin\x64\Release\SSKAanalyzer.exe" KeyPath="yes" />
       </Component>
       <Component Id="AppConfig">
-        <File Source="..\WpfApplication1\bin\Release\SSKAanalyzer.exe.config" />
+        <File Source="..\WpfApplication1\bin\x64\Release\SSKAanalyzer.exe.config" />
       </Component>
 
       <!-- Project DLLs -->
       <Component Id="SimpleSecurity">
-        <File Source="..\WpfApplication1\bin\Release\SimpleSecurity.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\SimpleSecurity.dll" />
       </Component>
       <Component Id="CategoryFormatter">
-        <File Source="..\WpfApplication1\bin\Release\CategoryFormatter.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\CategoryFormatter.dll" />
       </Component>
       <Component Id="DataVisualization">
-        <File Source="..\WpfApplication1\bin\Release\DotNetProjects.DataVisualization.Toolkit.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\DotNetProjects.DataVisualization.Toolkit.dll" />
       </Component>
 
       <!-- Microsoft.Bcl -->
       <Component Id="MsBclAsyncInterfaces">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Bcl.AsyncInterfaces.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Bcl.AsyncInterfaces.dll" />
       </Component>
 
       <!-- Microsoft.Extensions.Configuration -->
       <Component Id="MsExtConfig">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Configuration.dll" />
       </Component>
       <Component Id="MsExtConfigAbs">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.Abstractions.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Configuration.Abstractions.dll" />
       </Component>
       <Component Id="MsExtConfigBinder">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.Binder.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Configuration.Binder.dll" />
       </Component>
       <Component Id="MsExtConfigCommandLine">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.CommandLine.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Configuration.CommandLine.dll" />
       </Component>
       <Component Id="MsExtConfigEnvVars">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.EnvironmentVariables.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Configuration.EnvironmentVariables.dll" />
       </Component>
       <Component Id="MsExtConfigFileExt">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.FileExtensions.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Configuration.FileExtensions.dll" />
       </Component>
       <Component Id="MsExtConfigJson">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.Json.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Configuration.Json.dll" />
       </Component>
       <Component Id="MsExtConfigUserSecrets">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Configuration.UserSecrets.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Configuration.UserSecrets.dll" />
       </Component>
 
       <!-- Microsoft.Extensions.DependencyInjection -->
       <Component Id="MsExtDI">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.DependencyInjection.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.DependencyInjection.dll" />
       </Component>
       <Component Id="MsExtDIAbs">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
       </Component>
 
       <!-- Microsoft.Extensions.Diagnostics -->
       <Component Id="MsExtDiagnostics">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Diagnostics.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Diagnostics.dll" />
       </Component>
       <Component Id="MsExtDiagnosticsAbs">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Diagnostics.Abstractions.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Diagnostics.Abstractions.dll" />
       </Component>
 
       <!-- Microsoft.Extensions.FileProviders -->
       <Component Id="MsExtFileProvidersAbs">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.FileProviders.Abstractions.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.FileProviders.Abstractions.dll" />
       </Component>
       <Component Id="MsExtFileProvidersPhysical">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.FileProviders.Physical.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.FileProviders.Physical.dll" />
       </Component>
       <Component Id="MsExtFileSystemGlobbing">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.FileSystemGlobbing.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.FileSystemGlobbing.dll" />
       </Component>
 
       <!-- Microsoft.Extensions.Hosting -->
       <Component Id="MsExtHosting">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Hosting.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Hosting.dll" />
       </Component>
       <Component Id="MsExtHostingAbs">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Hosting.Abstractions.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Hosting.Abstractions.dll" />
       </Component>
 
       <!-- Microsoft.Extensions.Logging -->
       <Component Id="MsExtLogging">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Logging.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Logging.dll" />
       </Component>
       <Component Id="MsExtLoggingAbs">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Logging.Abstractions.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Logging.Abstractions.dll" />
       </Component>
       <Component Id="MsExtLoggingConfig">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Logging.Configuration.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Logging.Configuration.dll" />
       </Component>
       <Component Id="MsExtLoggingConsole">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Logging.Console.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Logging.Console.dll" />
       </Component>
       <Component Id="MsExtLoggingDebug">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Logging.Debug.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Logging.Debug.dll" />
       </Component>
       <Component Id="MsExtLoggingEventLog">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Logging.EventLog.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Logging.EventLog.dll" />
       </Component>
       <Component Id="MsExtLoggingEventSource">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Logging.EventSource.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Logging.EventSource.dll" />
       </Component>
 
       <!-- Microsoft.Extensions.Options -->
       <Component Id="MsExtOptions">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Options.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Options.dll" />
       </Component>
       <Component Id="MsExtOptionsConfigExt">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Options.ConfigurationExtensions.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Options.ConfigurationExtensions.dll" />
       </Component>
       <Component Id="MsExtPrimitives">
-        <File Source="..\WpfApplication1\bin\Release\Microsoft.Extensions.Primitives.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\Microsoft.Extensions.Primitives.dll" />
       </Component>
 
       <!-- System DLLs -->
       <Component Id="SysBuffers">
-        <File Source="..\WpfApplication1\bin\Release\System.Buffers.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\System.Buffers.dll" />
       </Component>
       <Component Id="SysDiagnosticsDiagnosticSource">
-        <File Source="..\WpfApplication1\bin\Release\System.Diagnostics.DiagnosticSource.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\System.Diagnostics.DiagnosticSource.dll" />
       </Component>
       <Component Id="SysIOPipelines">
-        <File Source="..\WpfApplication1\bin\Release\System.IO.Pipelines.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\System.IO.Pipelines.dll" />
       </Component>
       <Component Id="SysMemory">
-        <File Source="..\WpfApplication1\bin\Release\System.Memory.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\System.Memory.dll" />
       </Component>
       <Component Id="SysNumericsVectors">
-        <File Source="..\WpfApplication1\bin\Release\System.Numerics.Vectors.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\System.Numerics.Vectors.dll" />
       </Component>
       <Component Id="SysRuntimeUnsafe">
-        <File Source="..\WpfApplication1\bin\Release\System.Runtime.CompilerServices.Unsafe.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\System.Runtime.CompilerServices.Unsafe.dll" />
       </Component>
       <Component Id="SysTextEncodingCodePages">
-        <File Source="..\WpfApplication1\bin\Release\System.Text.Encoding.CodePages.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\System.Text.Encoding.CodePages.dll" />
       </Component>
       <Component Id="SysTextEncodingsWeb">
-        <File Source="..\WpfApplication1\bin\Release\System.Text.Encodings.Web.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\System.Text.Encodings.Web.dll" />
       </Component>
       <Component Id="SysTextJson">
-        <File Source="..\WpfApplication1\bin\Release\System.Text.Json.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\System.Text.Json.dll" />
       </Component>
       <Component Id="SysThreadingTasksExt">
-        <File Source="..\WpfApplication1\bin\Release\System.Threading.Tasks.Extensions.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\System.Threading.Tasks.Extensions.dll" />
       </Component>
       <Component Id="SysValueTuple">
-        <File Source="..\WpfApplication1\bin\Release\System.ValueTuple.dll" />
+        <File Source="..\WpfApplication1\bin\x64\Release\System.ValueTuple.dll" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- German localization satellite assembly -->
+    <ComponentGroup Id="GermanLocalization" Directory="DeCultureFolder">
+      <Component Id="GermanResources" Guid="A1B2C3D4-DE01-4E5F-A1B2-0000000000D1">
+        <File Id="SSKAanalyzer.resources.dll.de" Source="..\WpfApplication1\bin\x64\Release\de\SSKAanalyzer.resources.dll" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <!-- Russian localization satellite assembly -->
+    <ComponentGroup Id="RussianLocalization" Directory="RuCultureFolder">
+      <Component Id="RussianResources" Guid="A1B2C3D4-5001-4E5F-A1B2-000000000501">
+        <File Id="SSKAanalyzer.resources.dll.ru" Source="..\WpfApplication1\bin\x64\Release\ru\SSKAanalyzer.resources.dll" KeyPath="yes" />
       </Component>
     </ComponentGroup>
 
@@ -318,6 +336,17 @@
       </Component>
     </ComponentGroup>
 
+    <!-- Fresh Install/Repair Flag - signals app to reset user settings on next launch -->
+    <ComponentGroup Id="InstallFlags" Directory="INSTALLFOLDER">
+      <Component Id="ResetSettingsFlag" Guid="A1B2C3D4-AAAA-4E5F-A1B2-000000000010">
+        <!-- Set ResetSettings flag and remove AppVersion to trigger culture detection on next launch -->
+        <RegistryValue Root="HKCU" Key="Software\VZdravkov\SSKAanalyzer"
+                       Name="ResetSettings" Type="integer" Value="1" KeyPath="yes" />
+        <!-- Remove the AppVersion key so version check triggers first-run behavior -->
+        <RemoveRegistryValue Root="HKCU" Key="Software\VZdravkov\SSKAanalyzer" Name="AppVersion" />
+      </Component>
+    </ComponentGroup>
+
     <!-- Desktop Shortcuts -->
     <ComponentGroup Id="DesktopShortcuts" Directory="DesktopFolder">
       <Component Id="DesktopAppShortcut">
@@ -362,7 +391,10 @@
     <!-- Feature definitions -->
     <Feature Id="MainFeature" Title="SSKA Analyzer" Description="Main application files (required)" Level="1" AllowAbsent="no">
       <ComponentGroupRef Id="MainApplication" />
+      <ComponentGroupRef Id="GermanLocalization" />
+      <ComponentGroupRef Id="RussianLocalization" />
       <ComponentGroupRef Id="Shortcuts" />
+      <ComponentGroupRef Id="InstallFlags" />
     </Feature>
 
     <Feature Id="DataFoldersFeature" Title="Data Folders" Description="Creates MySSKA folder in Documents with Arxiv (data) and Categorization (tools) subfolders" Level="1" AllowAbsent="no">

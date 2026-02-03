@@ -180,4 +180,12 @@
   <data name="UpdateDateSpan" xml:space="preserve">
     <value>Update Span</value>
   </data>
+  <data name="RestartRequiredTitle" xml:space="preserve">
+    <value>Restart Required</value>
+  </data>
+  <data name="RestartRequiredMessage" xml:space="preserve">
+    <value>Please restart the application for the language change to take effect.
+
+Restart now?</value>
+  </data>
 </root>

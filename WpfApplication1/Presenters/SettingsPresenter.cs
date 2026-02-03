@@ -1,9 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using WpfApplication1.Properties;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
-using System;
 
 namespace WpfApplication1
 {
@@ -46,21 +46,55 @@ namespace WpfApplication1
 
         private void OnCSVDelimiterChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.NewStartingIndex != e.OldStartingIndex)
+            try
             {
-                Settings.Default.DelimiterCSVInput.RemoveAt(e.OldStartingIndex);
-                Settings.Default.DelimiterCSVInput.Insert(0, (sender as ObservableCollection<string>)[e.NewStartingIndex]);
+                var coll = sender as ObservableCollection<string>;
+                if (coll == null || coll.Count == 0)
+                    return;
+                // Keep settings collection in sync with view collection order
+                Settings.Default.DelimiterCSVInput.Clear();
+                foreach (var v in coll)
+                    Settings.Default.DelimiterCSVInput.Add(v);
+            }
+            catch
+            {
+                // Do not propagate UI changes as exceptions
             }
         }
 
         public void InitialazeCulture()
         {
-            App.ChangeCulture(CultureInfo.CreateSpecificCulture(Settings.Default.AppCultures[0]));
+            DiagnosticLog.Log("SettingsPresenter", "InitialazeCulture called");
+
+            // Log current AppCultures state
+            var appCultures = Settings.Default.AppCultures;
+            if (appCultures != null)
+            {
+                DiagnosticLog.Log("SettingsPresenter", $"AppCultures count: {appCultures.Count}");
+                for (int i = 0; i < appCultures.Count; i++)
+                {
+                    DiagnosticLog.Log("SettingsPresenter", $"  AppCultures[{i}]: {appCultures[i]}");
+                }
+            }
+            else
+            {
+                DiagnosticLog.Log("SettingsPresenter", "AppCultures is NULL!");
+            }
+
+            // Recreate the main window with the new culture
+            var cultureName = Settings.Default.AppCultures[0];
+            DiagnosticLog.Log("SettingsPresenter", $"Creating culture from: {cultureName}");
+            var culture = CultureInfo.CreateSpecificCulture(cultureName);
+            DiagnosticLog.Log("SettingsPresenter", $"Calling App.ChangeCulture with: {culture.Name}");
+            App.ChangeCulture(culture);
+            DiagnosticLog.Log("SettingsPresenter", "InitialazeCulture completed");
         }
 
         public void UpdateSettings()
         {
+            DiagnosticLog.Log("SettingsPresenter", "UpdateSettings called - saving settings");
             Settings.Default.Save();
+            DiagnosticLog.Log("SettingsPresenter", "Settings saved");
             //InitialazeCulture();
         }
 
@@ -227,10 +261,34 @@ namespace WpfApplication1
 
         private void OnAppCultureSelected(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.NewStartingIndex != e.OldStartingIndex)
+            DiagnosticLog.Log("SettingsPresenter", $"OnAppCultureSelected - Action: {e.Action}");
+            try
             {
-                Settings.Default.AppCultures.RemoveAt(e.OldStartingIndex);
-                Settings.Default.AppCultures.Insert(0, (sender as ObservableCollection<string>)[e.NewStartingIndex]);
+                var coll = sender as ObservableCollection<string>;
+                if (coll == null || coll.Count == 0)
+                {
+                    DiagnosticLog.Log("SettingsPresenter", "Collection is null or empty, returning");
+                    return;
+                }
+
+                DiagnosticLog.Log("SettingsPresenter", $"View collection count: {coll.Count}");
+                for (int i = 0; i < coll.Count; i++)
+                {
+                    DiagnosticLog.Log("SettingsPresenter", $"  View[{i}]: {coll[i]}");
+                }
+
+                // Mirror the view collection into settings to avoid index errors
+                DiagnosticLog.Log("SettingsPresenter", "Mirroring to Settings.Default.AppCultures...");
+                Settings.Default.AppCultures.Clear();
+                foreach (var v in coll)
+                    Settings.Default.AppCultures.Add(v);
+
+                DiagnosticLog.Log("SettingsPresenter", $"Settings.Default.AppCultures updated, first item: {Settings.Default.AppCultures[0]}");
+            }
+            catch (Exception ex)
+            {
+                DiagnosticLog.Log("SettingsPresenter", $"EXCEPTION in OnAppCultureSelected: {ex.Message}");
+                // swallow - UI ordering should not crash the app
             }
         }
     }
