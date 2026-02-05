@@ -92,8 +92,8 @@ namespace WpfApplication1
             _viewCharts.Accounts = bl.ResponseModel.TransactionsAccounts;
             _viewCharts.RemittieeGroups = bl.ResponseModel.ExpensesOverRemiteeGroupsInDateRange;
             _viewCharts.Balance = bl.ResponseModel.BalanceOverDateRange;
-            _viewCharts.AxeExpencesCategoryMaxValue = CalculateMaxValue(bl.ResponseModel.ExpensesOverCategory);
             _viewCharts.ExpensesCategory = bl.ResponseModel.ExpensesOverCategory;
+            _viewCharts.AxeExpencesCategoryMaxValue = CalculateMaxValue(bl.ResponseModel.ExpensesOverCategory);
         }
 
         public void ReloadXml()

@@ -90,6 +90,8 @@ namespace WpfApplication1
                     {
                         DiagnosticLog.Log("BusinessLogicSSKA", "Showing progress bar window");
                         progrBar.Show();
+                        progrBar.Activate();
+                        progrBar.Topmost = true;
                         if (progrBar.pbStatus != null)
                             progrBar.pbStatus.Value = 0;
                     }
@@ -99,7 +101,11 @@ namespace WpfApplication1
                     DiagnosticLog.Log("BusinessLogicSSKA", $"InvalidOperationException showing progress bar: {ex.Message}");
                     // If the window cannot be shown because it was previously closed, recreate and show.
                     progrBar = new WindowProgrBar();
-                    try { progrBar.Show(); }
+                    try
+                    {
+                        progrBar.Show();
+                        progrBar.Activate();
+                    }
                     catch (Exception ex2) { DiagnosticLog.Log("BusinessLogicSSKA", $"Failed to show recreated progress bar: {ex2.Message}"); }
                 }
             }
