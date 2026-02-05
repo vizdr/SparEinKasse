@@ -23,7 +23,7 @@ namespace WpfApplication1
         public WindowProgrBar()
         {
             InitializeComponent();
-            this.ShowActivated = this.Activate();
+            this.ShowActivated = true;
             this.Topmost = true;
         }        
     }

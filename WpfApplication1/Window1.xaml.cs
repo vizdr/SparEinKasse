@@ -406,7 +406,7 @@ namespace WpfApplication1
                 (chartCategoryExpence.Series[0] as DataPointSeries).DataContext = value;               
             }
         }
-        public decimal AxeExpencesCategoryMaxValue 
+        public decimal AxeExpencesCategoryMaxValue
         {
             set
             {
@@ -416,7 +416,6 @@ namespace WpfApplication1
                 adjustedAxis.ExtendRangeToOrigin = true;
                 adjustedAxis.Maximum = (double)value;
                 (chartCategoryExpence.Series[0] as BarSeries).DependentRangeAxis = adjustedAxis;
-                (chartCategoryExpence.Series[0] as BarSeries).Refresh();
             }
         }
 

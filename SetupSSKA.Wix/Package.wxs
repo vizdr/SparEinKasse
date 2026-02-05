@@ -39,8 +39,46 @@
     <Icon Id="DataIcon.ico" SourceFile="..\WpfApplication1\IconSSKAdata.ico" />
     <Property Id="ARPPRODUCTICON" Value="AppIcon.ico" />
 
+    <!-- Detect if user's Categorization.csv already exists -->
+    <Property Id="CATEGORIZATIONFILEEXISTS">
+      <DirectorySearch Id="SearchUserCategDir" Path="[PersonalFolder]MySSKA\Categorization">
+        <FileSearch Id="SearchCategFile" Name="Categorization.csv" />
+      </DirectorySearch>
+    </Property>
+
+    <!-- Property to control preservation (1=preserve/default, 0=replace) -->
+    <Property Id="PRESERVEUSERFILE" Value="1" Secure="yes" />
+
     <!-- UI Extension - FeatureTree allows users to select optional features -->
     <ui:WixUI Id="WixUI_FeatureTree" />
+
+    <!-- Custom dialog to ask about preserving Categorization.csv -->
+    <UI>
+      <Dialog Id="CategorizationFileDlg" Width="370" Height="200" Title="[ProductName] Setup">
+        <Control Id="Title" Type="Text" X="20" Y="15" Width="330" Height="20" Transparent="yes" NoPrefix="yes"
+                 Text="{\WixUI_Font_Title}Categorization File Found" />
+        <Control Id="Description" Type="Text" X="20" Y="40" Width="330" Height="50" Transparent="yes" NoPrefix="yes"
+                 Text="An existing Categorization.csv file was found in your Documents folder. This file contains your custom category settings. What would you like to do?" />
+        <Control Id="PreserveRadio" Type="RadioButtonGroup" X="20" Y="95" Width="330" Height="50" Property="PRESERVEUSERFILE">
+          <RadioButtonGroup Property="PRESERVEUSERFILE">
+            <RadioButton Value="1" X="0" Y="0" Width="330" Height="18" Text="Keep my existing Categorization.csv (recommended)" />
+            <RadioButton Value="0" X="0" Y="22" Width="330" Height="18" Text="Replace with default Categorization.csv" />
+          </RadioButtonGroup>
+        </Control>
+        <Control Id="BottomLine" Type="Line" X="0" Y="161" Width="370" Height="0" />
+        <Control Id="Next" Type="PushButton" X="236" Y="170" Width="56" Height="17" Default="yes" Text="Next">
+          <Publish Event="EndDialog" Value="Return" />
+        </Control>
+        <Control Id="Cancel" Type="PushButton" X="304" Y="170" Width="56" Height="17" Cancel="yes" Text="Cancel">
+          <Publish Event="SpawnDialog" Value="CancelDlg" />
+        </Control>
+      </Dialog>
+
+      <!-- Insert our dialog into the UI sequence after CostFinalize -->
+      <InstallUISequence>
+        <Show Dialog="CategorizationFileDlg" After="CostFinalize" Condition="CATEGORIZATIONFILEEXISTS" />
+      </InstallUISequence>
+    </UI>
 
     <!-- License/info text explaining what will be installed -->
     <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
@@ -228,6 +266,10 @@
       <Component Id="SysValueTuple">
         <File Source="..\WpfApplication1\bin\x64\Release\System.ValueTuple.dll" />
       </Component>
+      <!-- Template Categorization.csv in install folder - users can copy to restore defaults -->
+      <Component Id="CategorizationTemplate">
+        <File Id="Categorization.csv.template" Name="Categorization.csv.template" Source="..\Categorization\Categorization.csv" />
+      </Component>
     </ComponentGroup>
 
     <!-- German localization satellite assembly -->
@@ -251,11 +293,31 @@
         <RegistryValue Root="HKCU" Key="Software\VZdravkov\SSKAanalyzer\Files"
                        Name="Categorizer" Type="string" Value="[CategorizationUserFolder]Categorizer.exe" KeyPath="yes" />
       </Component>
-      <!-- NeverOverwrite preserves user's customized categories on upgrade -->
-      <Component Id="CategorizationCSV" Guid="A1B2C3D4-2222-4E5F-A1B2-000000000002" NeverOverwrite="yes">
+      <!-- Categorization.csv: User data file with dialog-controlled preservation
+           Dialog asks user whether to preserve or replace existing file on reinstall
+           PRESERVEUSERFILE: 1=preserve (default), 0=replace -->
+
+      <!-- Component to remove old file if user chooses to replace -->
+      <Component Id="RemoveCategorizationCSV" Guid="A1B2C3D4-2224-4E5F-A1B2-000000000013"
+                 Condition="CATEGORIZATIONFILEEXISTS AND PRESERVEUSERFILE=&quot;0&quot;">
+        <RemoveFile Id="RemoveOldCategCSV" Name="Categorization.csv" On="install" />
+        <RegistryValue Root="HKCU" Key="Software\VZdravkov\SSKAanalyzer\Files"
+                       Name="CategorizationReplaced" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+
+      <!-- Main file component - Permanent so it survives uninstall, installs if no file or replace chosen -->
+      <Component Id="CategorizationCSV" Guid="A1B2C3D4-2222-4E5F-A1B2-000000000002" Permanent="yes"
+                 Condition="NOT CATEGORIZATIONFILEEXISTS OR PRESERVEUSERFILE=&quot;0&quot;">
         <File Id="Categorization.csv" Source="..\Categorization\Categorization.csv" />
         <RegistryValue Root="HKCU" Key="Software\VZdravkov\SSKAanalyzer\Files"
                        Name="CategorizationCSV" Type="string" Value="[CategorizationUserFolder]Categorization.csv" KeyPath="yes" />
+      </Component>
+
+      <!-- Registry marker when file is preserved -->
+      <Component Id="CategorizationCSVPreserved" Guid="A1B2C3D4-2223-4E5F-A1B2-000000000012"
+                 Condition="CATEGORIZATIONFILEEXISTS AND PRESERVEUSERFILE=&quot;1&quot;">
+        <RegistryValue Root="HKCU" Key="Software\VZdravkov\SSKAanalyzer\Files"
+                       Name="CategorizationPreserved" Type="integer" Value="1" KeyPath="yes" />
       </Component>
       <!-- Qt Core DLLs -->
       <Component Id="Qt5Core" Guid="A1B2C3D4-3333-4E5F-A1B2-000000000003">
