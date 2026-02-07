@@ -35,8 +35,6 @@ namespace WpfApplication1
             bl.Request.TimeSpan = newTimeSpan;
         }
 
-        [Obsolete("Use Initialize() instead")]
-        public void Initialaze() => Initialize();
 
         public void FinalizeChP()
         {
@@ -86,14 +84,14 @@ namespace WpfApplication1
             _viewCharts.Expenses = ConvertToDatesList(bl.ResponseModel.ExpensesOverDateRange);
             _viewCharts.Incomes = bl.ResponseModel.IncomesOverDatesRange;
             _viewCharts.Remitties = bl.ResponseModel.ExpensesOverRemiteeInDateRange;
-            _viewCharts.AxeRemittiesExpencesMaxValue = CalculateMaxValue(bl.ResponseModel.ExpensesOverRemiteeInDateRange);
-            _viewCharts.IncomsOverview = bl.ResponseModel.IncomesInfoOverDateRange;
+            _viewCharts.AxeRemittiesExpensesMaxValue = CalculateMaxValue(bl.ResponseModel.ExpensesOverRemiteeInDateRange);
+            _viewCharts.IncomesOverview = bl.ResponseModel.IncomesInfoOverDateRange;
             _viewCharts.ExpensesOverview = bl.ResponseModel.ExpensesInfoOverDateRange;
             _viewCharts.Accounts = bl.ResponseModel.TransactionsAccounts;
             _viewCharts.RemittieeGroups = bl.ResponseModel.ExpensesOverRemiteeGroupsInDateRange;
             _viewCharts.Balance = bl.ResponseModel.BalanceOverDateRange;
             _viewCharts.ExpensesCategory = bl.ResponseModel.ExpensesOverCategory;
-            _viewCharts.AxeExpencesCategoryMaxValue = CalculateMaxValue(bl.ResponseModel.ExpensesOverCategory);
+            _viewCharts.AxeExpensesCategoryMaxValue = CalculateMaxValue(bl.ResponseModel.ExpensesOverCategory);
         }
 
         public void ReloadXml()
@@ -119,8 +117,8 @@ namespace WpfApplication1
 
         public void ResetFilters()
         {
-            _viewFilters.ExpenciesLessThan = string.Empty;
-            _viewFilters.ExpenciesMoreThan = string.Empty;
+            _viewFilters.ExpensesLessThan = string.Empty;
+            _viewFilters.ExpensesMoreThan = string.Empty;
             _viewFilters.IncomesLessThan = string.Empty;
             _viewFilters.IncomesMoreThan = string.Empty;
             _viewFilters.ToFind = string.Empty;

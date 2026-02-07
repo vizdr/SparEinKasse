@@ -26,8 +26,8 @@ namespace WpfApplication1.Tests.DTO
             var filterVM = new FilterViewModel();
 
             // Assert
-            filterVM.ExpenciesLessThan.Should().BeEmpty();
-            filterVM.ExpenciesMoreThan.Should().BeEmpty();
+            filterVM.ExpensesLessThan.Should().BeEmpty();
+            filterVM.ExpensesMoreThan.Should().BeEmpty();
             filterVM.IncomesLessThan.Should().BeEmpty();
             filterVM.IncomesMoreThan.Should().BeEmpty();
             filterVM.ToFind.Should().BeEmpty();
@@ -40,10 +40,10 @@ namespace WpfApplication1.Tests.DTO
             var filterVM = new FilterViewModel();
 
             // Act
-            filterVM.ExpenciesLessThan = "1000";
+            filterVM.ExpensesLessThan = "1000";
 
             // Assert
-            filterVM.ExpenciesLessThan.Should().Be("1000");
+            filterVM.ExpensesLessThan.Should().Be("1000");
         }
 
         [Fact]
@@ -53,10 +53,10 @@ namespace WpfApplication1.Tests.DTO
             var filterVM = new FilterViewModel();
 
             // Act
-            filterVM.ExpenciesMoreThan = "50";
+            filterVM.ExpensesMoreThan = "50";
 
             // Assert
-            filterVM.ExpenciesMoreThan.Should().Be("50");
+            filterVM.ExpensesMoreThan.Should().Be("50");
         }
 
         [Fact]
@@ -167,8 +167,8 @@ namespace WpfApplication1.Tests.DTO
         {
             // Arrange
             var filterVM = new FilterViewModel();
-            filterVM.ExpenciesLessThan = "1000";
-            filterVM.ExpenciesMoreThan = "50";
+            filterVM.ExpensesLessThan = "1000";
+            filterVM.ExpensesMoreThan = "50";
             filterVM.ToFind = "Test";
             filterVM.UserAccounts.Add(new BoolTextCouple(true, "DE123"));
 
@@ -176,8 +176,8 @@ namespace WpfApplication1.Tests.DTO
             filterVM.ResetFilterViewModel();
 
             // Assert
-            filterVM.ExpenciesLessThan.Should().BeEmpty();
-            filterVM.ExpenciesMoreThan.Should().BeEmpty();
+            filterVM.ExpensesLessThan.Should().BeEmpty();
+            filterVM.ExpensesMoreThan.Should().BeEmpty();
             filterVM.ToFind.Should().BeEmpty();
             filterVM.UserAccounts.Should().BeEmpty();
             filterVM.BuchungstextValues.Should().BeEmpty();
@@ -201,7 +201,7 @@ namespace WpfApplication1.Tests.DTO
             var initialState = filterVM.IsFilterDirty();
 
             // Act
-            filterVM.FlopDirty();
+            filterVM.ToggleDirty();
 
             // Assert
             filterVM.IsFilterDirty().Should().Be(!initialState);

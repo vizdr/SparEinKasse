@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace WpfApplication1.DTO
 {
     public class DataRequest
     {
-        // beginDate endDate;
         private Tuple<DateTime, DateTime> timeSpan;
 
         private DateTime atDate;
@@ -48,7 +45,7 @@ namespace WpfApplication1.DTO
                 if (!filters.IsFilterPrepared() || filters.IsFilterDirty())
                 {
                     OnFilterValuesRequested();
-                    filters.FlopDirty();
+                    filters.ToggleDirty();
                 }
             }
         }

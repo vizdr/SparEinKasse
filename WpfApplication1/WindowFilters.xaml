@@ -37,8 +37,8 @@
                 <ComboBoxItem>20</ComboBoxItem>
                 <ComboBoxItem>Not Assigned</ComboBoxItem>
             </ComboBox>
-            <Label Height="27.5" Name="labelIncomsMore" Width="120">Incoms &gt;=</Label>
-            <ComboBox Height="23.0" Name="comboBoxIncomsMore" Width="120">
+            <Label Height="27.5" Name="labelIncomesMore" Width="120">Incomes &gt;=</Label>
+            <ComboBox Height="23.0" Name="comboBoxIncomesMore" Width="120">
                 <ComboBoxItem>5000</ComboBoxItem>
                 <ComboBoxItem>1000</ComboBoxItem>
                 <ComboBoxItem>500</ComboBoxItem>
@@ -48,8 +48,8 @@
                 <ComboBoxItem>20</ComboBoxItem>
                 <ComboBoxItem>Not Assigned</ComboBoxItem>
             </ComboBox>
-            <Label Height="27.5" Name="labelIncomsLess" Width="120">Incoms &lt;=</Label>
-            <ComboBox Height="23.0" Name="comboBoxIncomsLess" Width="120">
+            <Label Height="27.5" Name="labelIncomesLess" Width="120">Incomes &lt;=</Label>
+            <ComboBox Height="23.0" Name="comboBoxIncomesLess" Width="120">
                 <ComboBoxItem>5000</ComboBoxItem>
                 <ComboBoxItem>1000</ComboBoxItem>
                 <ComboBoxItem>500</ComboBoxItem>

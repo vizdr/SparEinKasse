@@ -127,6 +127,9 @@ namespace WpfApplication1
                     services.AddSingleton<AccountsLogic>(sp =>
                         new AccountsLogic(sp.GetRequiredService<IDataSourceProvider>()));
 
+                    // Registration
+                    services.AddSingleton<RegistrationManager>();
+
                     // Business Logic
                     services.AddSingleton<IBusinessLogic, BusinessLogicSSKA>();
                     services.AddSingleton<BusinessLogicSSKA>();

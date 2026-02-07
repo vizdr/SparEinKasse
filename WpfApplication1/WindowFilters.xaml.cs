@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 
 namespace WpfApplication1
 {
@@ -49,7 +48,7 @@ namespace WpfApplication1
             }
         }
 
-        public string ExpenciesLessThan
+        public string ExpensesLessThan
         {
             get 
             {
@@ -62,7 +61,7 @@ namespace WpfApplication1
             }
         }
 
-        public string ExpenciesMoreThan
+        public string ExpensesMoreThan
         {
             get 
             { 
@@ -79,19 +78,19 @@ namespace WpfApplication1
         {
             get 
             {
-                return comboBoxIncomsLess.Text;
+                return comboBoxIncomesLess.Text;
             }
 
             set
             {
-                comboBoxIncomsLess.Text = value ?? String.Empty;
+                comboBoxIncomesLess.Text = value ?? String.Empty;
             }
         }
 
         public string IncomesMoreThan
         {
-            get { return comboBoxIncomsMore.Text; }
-            set { comboBoxIncomsMore.Text = value ?? String.Empty; }
+            get { return comboBoxIncomesMore.Text; }
+            set { comboBoxIncomesMore.Text = value ?? String.Empty; }
         }
 
         public string ToFind
@@ -101,10 +100,5 @@ namespace WpfApplication1
         }
 
         #endregion
-        private void OnBuchungstextValuesChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            var receivedFrom = sender;
-        }
-
     }
 }

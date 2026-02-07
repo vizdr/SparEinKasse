@@ -160,7 +160,7 @@
                 </Grid>
             </Expander>
 
-            <ListBox Name="listboxExpencesOverview" Grid.Column="0" Margin="1,45,2,2" Panel.ZIndex="1" ItemsSource="{Binding}" Padding="1.5,1.5,1,1" >
+            <ListBox Name="listboxExpensesOverview" Grid.Column="0" Margin="1,45,2,2" Panel.ZIndex="1" ItemsSource="{Binding}" Padding="1.5,1.5,1,1" >
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel/>
@@ -266,7 +266,7 @@
                     </chartingToolkit:Chart>
                 </Expander>
                 <TextBox Name="txtBoxInc" Margin="10,30,10,0" VerticalAlignment="Top" HorizontalAlignment="Center" FontWeight="Bold" >INCOMES:</TextBox>
-                <ListBox Name="listboxIncomssOverview" ItemsSource="{Binding}"  Margin="1,50,1,20"  Padding="1">
+                <ListBox Name="listboxIncomesOverview" ItemsSource="{Binding}"  Margin="1,50,1,20"  Padding="1">
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel/>

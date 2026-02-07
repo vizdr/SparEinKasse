@@ -5,14 +5,12 @@ namespace WpfApplication1.DTO
 {
     public class PreprocessedDataRequest
     {
-        List<string> buchungsTexts = new List<string>();
-        List<string> accounts = new List<string>();
         public List<string> Accounts { get; set; }
         public List<string> Buchungstexts { get; set; }
-        public Decimal IncomsLowestValue { get; set; }
-        public Decimal IncomsHighestValue { get; set; }
-        public Decimal ExpencesLowestValue { get; set; }
-        public Decimal ExpencesHighestValue { get; set; }
+        public Decimal IncomesLowestValue { get; set; }
+        public Decimal IncomesHighestValue { get; set; }
+        public Decimal ExpensesLowestValue { get; set; }
+        public Decimal ExpensesHighestValue { get; set; }
         public DateTime BeginDate { get; set; }
         public DateTime AtDate { get; set; }
         public string SelectedRemittee { get; set; }
