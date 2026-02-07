@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WpfApplication1.Properties;
-using Microsoft.Win32;
 using SimpleSecurity;
 using WpfApplication1.DTO;
 using WpfApplication1.Services;
@@ -22,9 +21,11 @@ namespace WpfApplication1
         private static string aRC = Settings.Default.ActivationRequestCode;
         private static string aC;
         private static string userEmail = Settings.Default.UserEmail;
+        private readonly RegistrationManager _registration;
 
-        public WindowAc()
+        public WindowAc(RegistrationManager registration)
         {
+            _registration = registration ?? throw new ArgumentNullException(nameof(registration));
             InitializeComponent();
             SetUserData(currentUser);
             this.Focus();
@@ -67,18 +68,8 @@ namespace WpfApplication1
         {
             if (!String.IsNullOrEmpty(aC) && aC.Equals(textBox_ACode.Text))
             {
-                Window1.isNotRegistred = false;
-                using (RegistryKey currentUserKey = Registry.CurrentUser.OpenSubKey("SOFTWARE", true))
-                {
-                    RegistryKey sskaKey = currentUserKey.OpenSubKey("sskvz", true);
-                    if (sskaKey != null)
-                    {
-                        sskaKey.SetValue("isT", false);
-                        sskaKey.SetValue("ed", DateTime.MaxValue.Date.ToString("d"));
-                        sskaKey.Close();
-                    }
-                    this.txtBlock_Status.Text = "Thank you for the succeded activation.\nActivation dialog may be closed forever.";
-                }
+                _registration.MarkAsRegistered();
+                this.txtBlock_Status.Text = "Thank you for the succeded activation.\nActivation dialog may be closed forever.";
             }
             else
             {

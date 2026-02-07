@@ -12,36 +12,51 @@ namespace WpfApplication1
         private IViewSettings _viewSettings;
         public SettingsPresenter(IViewSettings viewSettings)
         {
-            //Settings.Default.Upgrade();
-            //Settings.Default.Reload();
             Settings.Default.Save();
             _viewSettings = viewSettings;
-            _viewSettings.AuftragsKontoFields = new ObservableCollection<string>(Settings.Default.ContributorAccField.Cast<string>());
-            _viewSettings.AuftragsKontoFields.CollectionChanged += OnAuftragsKontoFieldChanged;
-            _viewSettings.BuchungstagFields = new ObservableCollection<string>(Settings.Default.PaymentDateField.Cast<string>());
-            _viewSettings.BuchungstagFields.CollectionChanged += OnBuchungstagFieldChanged;
-            _viewSettings.WertDatumFields = new ObservableCollection<string>(Settings.Default.BankOperDateField.Cast<string>());
-            _viewSettings.WertDatumFields.CollectionChanged += OnWertDatumFieldChanged;
-            _viewSettings.BuchungsTextFields = new ObservableCollection<string>(Settings.Default.BankOperTypeField.Cast<string>());
-            _viewSettings.BuchungsTextFields.CollectionChanged += OnBuchungsTextFielChanged;
-            _viewSettings.VerwendZweckFields = new ObservableCollection<string>(Settings.Default.PaymentPurposeField.Cast<string>());
-            _viewSettings.VerwendZweckFields.CollectionChanged += OnVerwendZweckFieldChanged;
-            _viewSettings.BeguenstigerFields = new ObservableCollection<string>(Settings.Default.BeneficiaryField.Cast<string>());
-            _viewSettings.BeguenstigerFields.CollectionChanged += OnBeguenstigerFieldChanged;
-            _viewSettings.KontonummerFields = new ObservableCollection<string>(Settings.Default.BeneficiaryAccField.Cast<string>());
-            _viewSettings.KontonummerFields.CollectionChanged += OnKontonummerFieldChanged;
-            _viewSettings.BLZFields = new ObservableCollection<string>(Settings.Default.IntBankCodeField.Cast<string>());
-            _viewSettings.BLZFields.CollectionChanged += OnBLZFieldChanged;
-            _viewSettings.BetragFields = new ObservableCollection<string>(Settings.Default.BankOperValueField.Cast<string>());
-            _viewSettings.BetragFields.CollectionChanged += OnBetragFieldChanged;
-            _viewSettings.WaehrungFields = new ObservableCollection<string>(Settings.Default.CurrencyField.Cast<string>());
-            _viewSettings.WaehrungFields.CollectionChanged += OnWaehrungFieldChanged;
+
+            // Bind each view collection to its Settings StringCollection.
+            // Standard fields use a generic sync handler (Add/Remove).
+            _viewSettings.AuftragsKontoFields  = BindField(Settings.Default.ContributorAccField);
+            _viewSettings.BuchungstagFields    = BindField(Settings.Default.PaymentDateField);
+            _viewSettings.WertDatumFields      = BindField(Settings.Default.BankOperDateField);
+            _viewSettings.BuchungsTextFields   = BindField(Settings.Default.BankOperTypeField);
+            _viewSettings.VerwendZweckFields   = BindField(Settings.Default.PaymentPurposeField);
+            _viewSettings.BeguenstigerFields   = BindField(Settings.Default.BeneficiaryField);
+            _viewSettings.KontonummerFields    = BindField(Settings.Default.BeneficiaryAccField);
+            _viewSettings.BLZFields            = BindField(Settings.Default.IntBankCodeField);
+            _viewSettings.BetragFields         = BindField(Settings.Default.BankOperValueField);
+            _viewSettings.WaehrungFields       = BindField(Settings.Default.CurrencyField);
+
+            // Special handlers: these collections use full-mirror or swap logic
             _viewSettings.EncodePages = new ObservableCollection<string>(Settings.Default.CodePage.Cast<string>());
-            _viewSettings.EncodePages.CollectionChanged += OnMyEncodingPageChanged;
+            _viewSettings.EncodePages.CollectionChanged += OnEncodingPageChanged;
             _viewSettings.AppCultures = new ObservableCollection<string>(Settings.Default.AppCultures.Cast<string>());
             _viewSettings.AppCultures.CollectionChanged += OnAppCultureSelected;
             _viewSettings.DelimitersCSV = new ObservableCollection<string>(Settings.Default.DelimiterCSVInput.Cast<string>());
             _viewSettings.DelimitersCSV.CollectionChanged += OnCSVDelimiterChanged;
+        }
+
+        /// <summary>
+        /// Creates an ObservableCollection from a Settings StringCollection and wires up
+        /// a handler that mirrors Add/Remove actions back to the Settings collection.
+        /// </summary>
+        private static ObservableCollection<string> BindField(StringCollection settingsCollection)
+        {
+            var viewCollection = new ObservableCollection<string>(settingsCollection.Cast<string>());
+            viewCollection.CollectionChanged += (sender, e) =>
+            {
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        settingsCollection.Add(e.NewItems[0] as string);
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        settingsCollection.Remove(e.OldItems[0] as string);
+                        break;
+                }
+            };
+            return viewCollection;
         }
 
         private void OnCSVDelimiterChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -62,9 +77,9 @@ namespace WpfApplication1
             }
         }
 
-        public void InitialazeCulture()
+        public void InitializeCulture()
         {
-            DiagnosticLog.Log("SettingsPresenter", "InitialazeCulture called");
+            DiagnosticLog.Log("SettingsPresenter", "InitializeCulture called");
 
             // Log current AppCultures state
             var appCultures = Settings.Default.AppCultures;
@@ -102,7 +117,7 @@ namespace WpfApplication1
                     DiagnosticLog.Log("SettingsPresenter", $"Fallback App.ChangeCulture also failed: {rex.Message}");
                 }
             }
-            DiagnosticLog.Log("SettingsPresenter", "InitialazeCulture completed");
+            DiagnosticLog.Log("SettingsPresenter", "InitializeCulture completed");
         }
 
         public void UpdateSettings()
@@ -110,7 +125,6 @@ namespace WpfApplication1
             DiagnosticLog.Log("SettingsPresenter", "UpdateSettings called - saving settings");
             Settings.Default.Save();
             DiagnosticLog.Log("SettingsPresenter", "Settings saved");
-            //InitialazeCulture();
         }
 
         public void ReloadSettings()
@@ -118,157 +132,7 @@ namespace WpfApplication1
             Settings.Default.Reset();
         }
 
-        private static void OnAuftragsKontoFieldChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    Settings.Default.ContributorAccField.Add(e.NewItems[0] as string);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    Settings.Default.ContributorAccField.Remove(e.OldItems[0] as string);
-                    break;
-            default:
-                    break;
-            }
-        }
-
-        private static void OnBuchungstagFieldChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    Settings.Default.PaymentDateField.Add(e.NewItems[0] as string);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    Settings.Default.PaymentDateField.Remove(e.OldItems[0] as string);
-                    break;
-            default:
-                    break;
-            }
-        }
-
-        private static void OnWertDatumFieldChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    Settings.Default.BankOperDateField.Add(e.NewItems[0] as string);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    Settings.Default.BankOperDateField.Remove(e.OldItems[0] as string);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private static void OnBuchungsTextFielChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    Settings.Default.BankOperTypeField.Add(e.NewItems[0] as string);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    Settings.Default.BankOperTypeField.Remove(e.OldItems[0] as string);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private static void OnVerwendZweckFieldChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    Settings.Default.PaymentPurposeField.Add(e.NewItems[0] as string);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    Settings.Default.PaymentPurposeField.Remove(e.OldItems[0] as string);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        private static void OnBeguenstigerFieldChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    Settings.Default.BeneficiaryField.Add(e.NewItems[0] as string);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    Settings.Default.BeneficiaryField.Remove(e.OldItems[0] as string);
-                    break;
-            default:
-                    break;
-            }
-        }
-
-        private static void OnKontonummerFieldChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    Settings.Default.BeneficiaryAccField.Add(e.NewItems[0] as string);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    Settings.Default.BeneficiaryAccField.Remove(e.OldItems[0] as string);
-                    break;
-            default:
-                    break;
-            }
-        }
-
-        private static void OnBLZFieldChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    Settings.Default.IntBankCodeField.Add(e.NewItems[0] as string);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    Settings.Default.IntBankCodeField.Remove(e.OldItems[0] as string);
-                    break;
-            default:
-                    break;
-            }
-        }
-
-        private static void OnBetragFieldChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    Settings.Default.BankOperValueField.Add(e.NewItems[0] as string);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    Settings.Default.BankOperValueField.Remove(e.OldItems[0] as string);
-                    break;
-            default:
-                    break;
-            }
-        }
-
-        private static void OnWaehrungFieldChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    Settings.Default.CurrencyField.Add(e.NewItems[0] as string);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    Settings.Default.CurrencyField.Remove(e.OldItems[0] as string);
-                    break;
-            default:
-                    break;
-            }
-        }
-
-        private static void OnMyEncodingPageChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private static void OnEncodingPageChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             Settings.Default.CodePage.RemoveAt(e.NewStartingIndex);
             Settings.Default.CodePage.Insert(e.OldStartingIndex, (sender as ObservableCollection<string>)[e.OldStartingIndex]);

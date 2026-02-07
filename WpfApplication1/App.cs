@@ -15,16 +15,18 @@ public class App : Application
     private readonly Window1 mainWindow;
     private readonly BusinessLogicSSKA businessLogic;
     private readonly FilterViewModel filterViewModel;
+    private readonly RegistrationManager registrationManager;
     private static App _instance;
 
     /// <summary>
     /// Constructor for DI container. Receives dependencies via injection.
     /// </summary>
-    public App(Window1 mainWindow, BusinessLogicSSKA businessLogic, FilterViewModel filterViewModel)
+    public App(Window1 mainWindow, BusinessLogicSSKA businessLogic, FilterViewModel filterViewModel, RegistrationManager registrationManager)
     {
         this.mainWindow = mainWindow;
         this.businessLogic = businessLogic;
         this.filterViewModel = filterViewModel;
+        this.registrationManager = registrationManager;
         _instance = this;
     }
 
@@ -93,7 +95,7 @@ public class App : Application
             // Create new Window1 FIRST with the new culture (while old window still exists)
             // This ensures app never has zero windows, avoiding shutdown mode issues
             DiagnosticLog.Log(LOG_SOURCE, "Creating new Window1...");
-            newWindow = new Window1(_instance.businessLogic, _instance.filterViewModel, suppressActivationDialog: true);
+            newWindow = new Window1(_instance.businessLogic, _instance.filterViewModel, _instance.registrationManager, suppressActivationDialog: true);
             DiagnosticLog.Log(LOG_SOURCE, "New Window1 created successfully");
 
             // Set and show the new window BEFORE closing the old one

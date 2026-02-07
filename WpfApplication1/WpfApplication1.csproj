@@ -151,6 +151,7 @@
     </Page>
     <Compile Include="App.cs" />
     <Compile Include="DiagnosticLog.cs" />
+    <Compile Include="RegistrationManager.cs" />
     <Compile Include="BusinessLogic\AccountsLogic.cs" />
     <Compile Include="DTO\ChartsModel.cs" />
     <Compile Include="Program.cs" />
@@ -175,6 +176,7 @@
     </Compile>
     <Compile Include="Presenters\AccountsPresenter.cs" />
     <Compile Include="BusinessLogic\BusinessLogicSSKA.cs" />
+    <Compile Include="BusinessLogic\TransactionQueryService.cs" />
     <Compile Include="Presenters\ChartsPresenter.cs" />
     <Compile Include="DAL\CsvHeaderResolver.cs" />
     <Compile Include="DAL\Config.cs" />

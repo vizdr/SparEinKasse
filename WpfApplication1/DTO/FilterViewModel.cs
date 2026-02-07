@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Windows;
 
 namespace WpfApplication1
@@ -9,14 +8,16 @@ namespace WpfApplication1
     {
         private bool isDirty = false;
 
+#pragma warning disable CS0067 // Required by IViewFilters but never raised in this data-holder class
         public event RoutedEventHandler OnApplyFilter;
         public event RoutedEventHandler OnResetFilters;
+#pragma warning restore CS0067
 
         // Observable collection to sync visual representation of ListView with data sources
         public ObservableCollection<BoolTextCouple> BuchungstextValues { set; get; }
         public ObservableCollection<BoolTextCouple> UserAccounts { set; get; }
-        public string ExpenciesLessThan { get; set; } = string.Empty;
-        public string ExpenciesMoreThan { get; set; } = string.Empty;
+        public string ExpensesLessThan { get; set; } = string.Empty;
+        public string ExpensesMoreThan { get; set; } = string.Empty;
         public string IncomesLessThan { get;  set; } = string.Empty;
         public string IncomesMoreThan { get;  set; } = string.Empty;
         public string ToFind { get; set; } = string.Empty;
@@ -28,12 +29,11 @@ namespace WpfApplication1
         {
             BuchungstextValues = new ObservableCollection<BoolTextCouple>();
             UserAccounts = new ObservableCollection<BoolTextCouple>();
-            BuchungstextValues.CollectionChanged += OnBuchungstextValuesChanged;
         }
         public void ResetFilterViewModel()           
         { 
-            ExpenciesLessThan =  String.Empty;
-            ExpenciesMoreThan = String.Empty;
+            ExpensesLessThan =  String.Empty;
+            ExpensesMoreThan = String.Empty;
             IncomesLessThan =  String.Empty;
             IncomesMoreThan =  String.Empty;
             ToFind =  String.Empty;
@@ -50,14 +50,14 @@ namespace WpfApplication1
         {
             BuchungstextValues = view.BuchungstextValues;
             UserAccounts = view.UserAccounts;
-            ExpenciesLessThan = view.ExpenciesLessThan;
-            ExpenciesMoreThan = view.ExpenciesMoreThan;
+            ExpensesLessThan = view.ExpensesLessThan;
+            ExpensesMoreThan = view.ExpensesMoreThan;
             IncomesLessThan = view.IncomesLessThan;
             IncomesMoreThan = view.IncomesMoreThan;
             isDirty = true;
         }
 
-        public void FlopDirty()
+        public void ToggleDirty()
         {
             isDirty = !isDirty;
         }
@@ -65,10 +65,6 @@ namespace WpfApplication1
         public bool IsFilterDirty()
         {
             return isDirty;
-        }
-        private void OnBuchungstextValuesChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            var receivedFrom = sender;
         }
     }
 }
