@@ -133,50 +133,50 @@ namespace Local {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Expences ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Expenses ähnelt.
         /// </summary>
-        public static string Expences {
+        public static string Expenses {
             get {
-                return ResourceManager.GetString("Expences", resourceCulture);
+                return ResourceManager.GetString("Expenses", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Expences - Date ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Expenses - Category ähnelt.
         /// </summary>
-        public static string ExpencesOverDate {
+        public static string ExpensesOverCategory {
             get {
-                return ResourceManager.GetString("ExpencesOverDate", resourceCulture);
+                return ResourceManager.GetString("ExpensesOverCategory", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Expences - Beneficiary ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Expenses - Date ähnelt.
         /// </summary>
-        public static string ExpencesOverRemittee {
+        public static string ExpensesOverDate {
             get {
-                return ResourceManager.GetString("ExpencesOverRemittee", resourceCulture);
+                return ResourceManager.GetString("ExpensesOverDate", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Expences - Beneficiary Group ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Expenses - Beneficiary ähnelt.
         /// </summary>
-        public static string ExpencesOverRemitteeGroups {
+        public static string ExpensesOverRemittee {
             get {
-                return ResourceManager.GetString("ExpencesOverRemitteeGroups", resourceCulture);
+                return ResourceManager.GetString("ExpensesOverRemittee", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Expences - Category ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Expenses - Beneficiary Group ähnelt.
         /// </summary>
-        public static string ExpencesOverCategory {
+        public static string ExpensesOverRemitteeGroups {
             get {
-                return ResourceManager.GetString("ExpencesOverCategory", resourceCulture);
+                return ResourceManager.GetString("ExpensesOverRemitteeGroups", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Filter ähnelt.
         /// </summary>
@@ -210,6 +210,26 @@ namespace Local {
         public static string IncomesOverDate {
             get {
                 return ResourceManager.GetString("IncomesOverDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Please restart the application for the language change to take effect.
+        ///
+        ///Restart now? ähnelt.
+        /// </summary>
+        public static string RestartRequiredMessage {
+            get {
+                return ResourceManager.GetString("RestartRequiredMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Restart Required ähnelt.
+        /// </summary>
+        public static string RestartRequiredTitle {
+            get {
+                return ResourceManager.GetString("RestartRequiredTitle", resourceCulture);
             }
         }
         
