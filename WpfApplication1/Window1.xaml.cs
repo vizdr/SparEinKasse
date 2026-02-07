@@ -166,8 +166,8 @@ namespace WpfApplication1
             DiagnosticLog.Log("Window1", $"RuntimeLocalization['Settings'] = '{settingsValue}'");
 
             chartIncomes.Title = incomesValue;
-            chartRemeteeExpence.Title = RuntimeLocalization.Instance["ExpencesOverRemittee"];
-            chartDateExpence.Title = RuntimeLocalization.Instance["ExpencesOverDate"];
+            chartRemeteeExpence.Title = RuntimeLocalization.Instance["ExpensesOverRemittee"];
+            chartDateExpence.Title = RuntimeLocalization.Instance["ExpensesOverDate"];
             chartDateBalance.Title = RuntimeLocalization.Instance["Balance"];
             expRemitties.Header = RuntimeLocalization.Instance["Exp"];
             expInc.Header = RuntimeLocalization.Instance["Inc"];
@@ -181,8 +181,8 @@ namespace WpfApplication1
             labelAccounts.Content = RuntimeLocalization.Instance["Accounts"];
             buttonShowFilters.Content = RuntimeLocalization.Instance["Filter"];
             expRemGroups.Header = RuntimeLocalization.Instance["Exp2"];
-            chartRemGroupExpence.Title = RuntimeLocalization.Instance["ExpencesOverRemitteeGroups"];
-            chartCategoryExpence.Title = RuntimeLocalization.Instance["ExpencesOverCategory"];
+            chartRemGroupExpence.Title = RuntimeLocalization.Instance["ExpensesOverRemitteeGroups"];
+            chartCategoryExpence.Title = RuntimeLocalization.Instance["ExpensesOverCategory"];
 
             DiagnosticLog.Log("Window1", "InitializeResources completed");
         }

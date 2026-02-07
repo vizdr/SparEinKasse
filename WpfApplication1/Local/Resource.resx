@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Accounts" xml:space="preserve">
     <value>Account(s)</value>
@@ -141,20 +141,20 @@
   <data name="Exp2" xml:space="preserve">
     <value>Exp. - Group</value>
   </data>
-  <data name="Expences" xml:space="preserve">
-    <value>Expences</value>
+  <data name="Expenses" xml:space="preserve">
+    <value>Expenses</value>
   </data>
-  <data name="ExpencesOverDate" xml:space="preserve">
-    <value>Expences - Date</value>
+  <data name="ExpensesOverDate" xml:space="preserve">
+    <value>Expenses - Date</value>
   </data>
-  <data name="ExpencesOverRemittee" xml:space="preserve">
-    <value>Expences - Beneficiary</value>
+  <data name="ExpensesOverRemittee" xml:space="preserve">
+    <value>Expenses - Beneficiary</value>
   </data>
-  <data name="ExpencesOverRemitteeGroups" xml:space="preserve">
-    <value>Expences - Beneficiary Group</value>
+  <data name="ExpensesOverRemitteeGroups" xml:space="preserve">
+    <value>Expenses - Beneficiary Group</value>
   </data>
-  <data name="ExpencesOverCategory" xml:space="preserve">
-    <value>Expences - Category</value>
+  <data name="ExpensesOverCategory" xml:space="preserve">
+    <value>Expenses - Category</value>
   </data>
   <data name="Filter" xml:space="preserve">
     <value>Filter</value>

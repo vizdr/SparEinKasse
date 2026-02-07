@@ -77,49 +77,6 @@ namespace WpfApplication1
             }
         }
 
-        public void InitializeCulture()
-        {
-            DiagnosticLog.Log("SettingsPresenter", "InitializeCulture called");
-
-            // Log current AppCultures state
-            var appCultures = Settings.Default.AppCultures;
-            if (appCultures != null)
-            {
-                DiagnosticLog.Log("SettingsPresenter", $"AppCultures count: {appCultures.Count}");
-                for (int i = 0; i < appCultures.Count; i++)
-                {
-                    DiagnosticLog.Log("SettingsPresenter", $"  AppCultures[{i}]: {appCultures[i]}");
-                }
-            }
-            else
-            {
-                DiagnosticLog.Log("SettingsPresenter", "AppCultures is NULL!");
-            }
-
-            // Apply culture at runtime without recreating the main window
-            var cultureName = Settings.Default.AppCultures[0];
-            DiagnosticLog.Log("SettingsPresenter", $"Applying runtime culture from: {cultureName}");
-            try
-            {
-                RuntimeLocalization.Instance.ChangeCulture(cultureName);
-            }
-            catch (Exception ex)
-            {
-                DiagnosticLog.Log("SettingsPresenter", $"Runtime culture change failed: {ex.Message}");
-                // Fallback: attempt full recreation path
-                try
-                {
-                    var culture = CultureInfo.CreateSpecificCulture(cultureName);
-                    App.ChangeCulture(culture);
-                }
-                catch (Exception rex)
-                {
-                    DiagnosticLog.Log("SettingsPresenter", $"Fallback App.ChangeCulture also failed: {rex.Message}");
-                }
-            }
-            DiagnosticLog.Log("SettingsPresenter", "InitializeCulture completed");
-        }
-
         public void UpdateSettings()
         {
             DiagnosticLog.Log("SettingsPresenter", "UpdateSettings called - saving settings");
