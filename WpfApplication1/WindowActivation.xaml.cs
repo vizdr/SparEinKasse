@@ -27,8 +27,26 @@ namespace WpfApplication1
         {
             _registration = registration ?? throw new ArgumentNullException(nameof(registration));
             InitializeComponent();
+            ApplyLocalization();
             SetUserData(currentUser);
             this.Focus();
+        }
+
+        private void ApplyLocalization()
+        {
+            var loc = RuntimeLocalization.Instance;
+            Title = loc["ActTitle"];
+            label2.Content = loc["ActEnterFirstName"];
+            labelName.Content = loc["ActEnterName"];
+            lbl_UName.Content = loc["ActEnterEmail"];
+            label1.Content = loc["ActRequestCode"];
+            btn_GetARC.Content = loc["ActGenerate"];
+            button_SendAcReq.Content = loc["ActSubmitRequest"];
+            button_ResetRequest.Content = loc["ActResetRequest"];
+            btn_Ac.Content = loc["ActActivate"];
+            button_GetActCode.Content = loc["ActGetCode"];
+            textBox_ACode.Text = loc["ActEnterCodeHint"];
+            buttonClose.Content = loc["ActClose"];
         }
        
         private void SetUserData(User user)
@@ -66,23 +84,23 @@ namespace WpfApplication1
         }
         private void btn_Activate_Click(object sender, RoutedEventArgs e)
         {
+            var loc = RuntimeLocalization.Instance;
             if (!String.IsNullOrEmpty(aC) && aC.Equals(textBox_ACode.Text))
             {
                 _registration.MarkAsRegistered();
-                this.txtBlock_Status.Text = "Thank you for the succeded activation.\nActivation dialog may be closed forever.";
+                this.txtBlock_Status.Text = loc["ActSucceeded"];
             }
             else
             {
-                this.txtBlock_Status.Text =
-                    String.Format("Activation failed. Trial perriod: 60 days.\r\nPlease send your Activation Request Code\r\nfrom E-Mail: {0}  to {1}.\r\nSoon after payment You receive the activation code.",
-                    txtBox_UEmail.Text);
+                this.txtBlock_Status.Text = String.Format(loc["ActFailed"],
+                    txtBox_UEmail.Text, Settings.Default.OwnerEmail);
             }
         }
 
         private void button_GetActCode_Click(object sender, RoutedEventArgs e)
         {
-            string recievedACode = GetActivationCode();     
-            textBox_ACode.Text = String.IsNullOrEmpty(recievedACode) ? "Activation failed. Please, try again later." :  recievedACode;
+            string recievedACode = GetActivationCode();
+            textBox_ACode.Text = String.IsNullOrEmpty(recievedACode) ? RuntimeLocalization.Instance["ActGetCodeFailed"] : recievedACode;
         }
 
         private void button_SendAcReq_Click(object sender, RoutedEventArgs e)
@@ -101,9 +119,10 @@ namespace WpfApplication1
 
                 var result = authService.TryToRegisterAuthRequest(request);
 
+                var loc = RuntimeLocalization.Instance;
                 if (result.Success && result.AccountId > 0)
                 {
-                    this.txtBlock_Status.Text = $"Activation request succeded ({result.ServiceUsed}). \r\nActivation Code will be sent after the payment.";
+                    this.txtBlock_Status.Text = String.Format(loc["ActRequestSucceeded"], result.ServiceUsed);
                     button_ResetRequest.IsEnabled = true;
                     button_SendAcReq.IsEnabled = false;
                     btn_GetARC.IsEnabled = false;
@@ -117,8 +136,7 @@ namespace WpfApplication1
                 }
                 else
                 {
-                    this.txtBlock_Status.Text = String.Format(
-                        "Activation request failed ({0}): {1}\r\nPlease send on E-mail {2} data from this form.\r\nActivation Code will be sent on your E-Mail after the payment.",
+                    this.txtBlock_Status.Text = String.Format(loc["ActRequestFailed"],
                         result.ServiceUsed ?? "Unknown",
                         result.Message,
                         Settings.Default.OwnerEmail);
@@ -165,7 +183,7 @@ namespace WpfApplication1
             Settings.Default.UserFirstName = textBox_FirstName.Text;
             Settings.Default.UserName = textBox_Name.Text;
             Settings.Default.Save();
-            txtBlock_Status.Text = "Activation Request Code is generated. \r\nPlease, submit Activation Request.";
+            txtBlock_Status.Text = RuntimeLocalization.Instance["ActCodeGenerated"];
             if (!txtBlock_ARC.IsFocused)
                 txtBlock_ARC.Focus();
             currentUser.ActivationRequestCode = aRC;
@@ -181,17 +199,18 @@ namespace WpfApplication1
             {
                 var result = authService.GetAuthCode(Settings.Default.AccId, Settings.Default.ActivationRequestCode);
 
+                var loc = RuntimeLocalization.Instance;
                 if (result.Success && !string.IsNullOrEmpty(result.AuthCode))
                 {
                     recievedACode = result.AuthCode;
-                    txtBlock_Status.Text = $"Activation Code received ({result.ServiceUsed}).\n Activation is unlocked.";
+                    txtBlock_Status.Text = String.Format(loc["ActCodeReceived"], result.ServiceUsed);
                 }
                 else
                 {
 #if DEBUG
-                    txtBlock_Status.Text = $"Remote service Error ({result.ServiceUsed}): \r\n{result.Message}";
+                    txtBlock_Status.Text = String.Format(loc["ActRemoteServiceError"], result.ServiceUsed, result.Message);
 #else
-                    txtBlock_Status.Text = String.Format("Remote service failed. \r\nYou can communicate with the owner via \r\n{0}.", Settings.Default.OwnerEmail);
+                    txtBlock_Status.Text = String.Format(loc["ActRemoteServiceFailed"], Settings.Default.OwnerEmail);
 #endif
                 }
             }

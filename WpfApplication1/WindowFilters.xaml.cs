@@ -14,7 +14,34 @@ namespace WpfApplication1
         public WindowFilters()
         {
             InitializeComponent();
+            ApplyLocalization();
             this.buttonCancel.Click += delegate { Hide(); };
+        }
+
+        private void ApplyLocalization()
+        {
+            var loc = RuntimeLocalization.Instance;
+            Title = loc["Filter"];
+            labelExpLess.Content = loc["FilterExpensesLessOrEqual"];
+            labelExpMore.Content = loc["FilterExpensesGreaterOrEqual"];
+            labelIncomesMore.Content = loc["FilterIncomesGreaterOrEqual"];
+            labelIncomesLess.Content = loc["FilterIncomesLessOrEqual"];
+            labelFind.Content = loc["FilterFind"];
+            labelCurrRecep.Content = loc["FilterBuchungstext"];
+            buttonApply.Content = loc["FilterApply"];
+            buttonCancel.Content = loc["FilterClose"];
+            buttonReset.Content = loc["FilterReset"];
+
+            colAccountUse.Header = loc["FilterUse"];
+            colAccountName.Header = loc["FilterAccount"];
+            colBuchungToShow.Header = loc["FilterToShow"];
+            colBuchungValues.Header = loc["FilterValues"];
+
+            var notAssigned = loc["FilterNotAssigned"];
+            notAssignedExpLess.Content = notAssigned;
+            notAssignedExpMore.Content = notAssigned;
+            notAssignedIncomesMore.Content = notAssigned;
+            notAssignedIncomesLess.Content = notAssigned;
         }
 
         public void RegisterEventHandlers()

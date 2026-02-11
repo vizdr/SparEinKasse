@@ -15,7 +15,7 @@
             <ColumnDefinition Width="0*"/>
         </Grid.ColumnDefinitions>
         <StackPanel Margin="0,1,2,1" Name="stackPanel1" HorizontalAlignment="Right" Width="182" Grid.ColumnSpan="3" Grid.Column="1">
-            <Label Height="27.5" Name="labelExpLess" Width="120">Expences &lt;=</Label>
+            <Label Height="27.5" Name="labelExpLess">Expences &lt;=</Label>
             <ComboBox Height="23.0" Name="comboBoxExpLess"  Width="120">
                 <ComboBoxItem>5000</ComboBoxItem>
                 <ComboBoxItem>1000</ComboBoxItem>
@@ -24,9 +24,9 @@
                 <ComboBoxItem>100</ComboBoxItem>
                 <ComboBoxItem>50</ComboBoxItem>
                 <ComboBoxItem>20</ComboBoxItem>
-                <ComboBoxItem>Not Assigned</ComboBoxItem>
+                <ComboBoxItem x:Name="notAssignedExpLess">Not Assigned</ComboBoxItem>
             </ComboBox>
-            <Label Height="27.5" Name="labelExpMore" Width="120">Expences &gt;=</Label>
+            <Label Height="27.5" Name="labelExpMore">Expences &gt;=</Label>
             <ComboBox Height="23.00" Name="comboBoxExpMore" Width="120">
                 <ComboBoxItem>5000</ComboBoxItem>
                 <ComboBoxItem>1000</ComboBoxItem>
@@ -35,9 +35,9 @@
                 <ComboBoxItem>100</ComboBoxItem>
                 <ComboBoxItem>50</ComboBoxItem>
                 <ComboBoxItem>20</ComboBoxItem>
-                <ComboBoxItem>Not Assigned</ComboBoxItem>
+                <ComboBoxItem x:Name="notAssignedExpMore">Not Assigned</ComboBoxItem>
             </ComboBox>
-            <Label Height="27.5" Name="labelIncomesMore" Width="120">Incomes &gt;=</Label>
+            <Label Height="27.5" Name="labelIncomesMore">Incomes &gt;=</Label>
             <ComboBox Height="23.0" Name="comboBoxIncomesMore" Width="120">
                 <ComboBoxItem>5000</ComboBoxItem>
                 <ComboBoxItem>1000</ComboBoxItem>
@@ -46,9 +46,9 @@
                 <ComboBoxItem>100</ComboBoxItem>
                 <ComboBoxItem>50</ComboBoxItem>
                 <ComboBoxItem>20</ComboBoxItem>
-                <ComboBoxItem>Not Assigned</ComboBoxItem>
+                <ComboBoxItem x:Name="notAssignedIncomesMore">Not Assigned</ComboBoxItem>
             </ComboBox>
-            <Label Height="27.5" Name="labelIncomesLess" Width="120">Incomes &lt;=</Label>
+            <Label Height="27.5" Name="labelIncomesLess">Incomes &lt;=</Label>
             <ComboBox Height="23.0" Name="comboBoxIncomesLess" Width="120">
                 <ComboBoxItem>5000</ComboBoxItem>
                 <ComboBoxItem>1000</ComboBoxItem>
@@ -57,33 +57,33 @@
                 <ComboBoxItem>100</ComboBoxItem>
                 <ComboBoxItem>50</ComboBoxItem>
                 <ComboBoxItem>20</ComboBoxItem>
-                <ComboBoxItem>Not Assigned</ComboBoxItem>
+                <ComboBoxItem x:Name="notAssignedIncomesLess">Not Assigned</ComboBoxItem>
             </ComboBox>
-            <Label Height="27.5" Name="labelFind" Width="120">Find:</Label>
+            <Label Height="27.5" Name="labelFind">Find:</Label>
             <TextBox Height="23.00" Name="textBoxFind" Width="120" />
             <ListView  MinWidth="140" DataContext="{Binding UserAccounts}" x:Name="listViewAccounts"  FontSize="11" Margin="0,1,3,1">
                 <ListView.View>
                     <GridView  >
-                        <GridViewColumn Width="25" Header="Use">
+                        <GridViewColumn x:Name="colAccountUse" Width="28" Header="Use">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn   DisplayMemberBinding="{Binding Text}" Header="Account"/>
+                        <GridViewColumn x:Name="colAccountName" DisplayMemberBinding="{Binding Text}" Header="Account"/>
                     </GridView>
                 </ListView.View>
             </ListView>
         </StackPanel>
-        <Label Height="28.453" HorizontalAlignment="Left" Margin="12,0.769,0,0" Name="labelCurrRecep" VerticalAlignment="Top" Width="120">Buchungstext</Label>
-        <Button Height="25.706" Margin="0,0,145.542,12" Name="buttonApply" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="63.058">Apply</Button>
-        <Button Height="25.706" HorizontalAlignment="Right" Margin="0,0,6.873,12" Name="buttonCancel" VerticalAlignment="Bottom" Width="68.441" >Close</Button>
-        <Button Height="25.706" HorizontalAlignment="Left" Margin="103.046,0,0,12" Name="buttonReset" VerticalAlignment="Bottom" Width="66.903">Reset</Button>
+        <Label Height="28.453" HorizontalAlignment="Left" Margin="12,0.769,0,0" Name="labelCurrRecep" VerticalAlignment="Top">Buchungstext</Label>
+        <Button Height="25.706" Margin="0,0,0,12" Name="buttonApply" VerticalAlignment="Bottom" HorizontalAlignment="Center" MinWidth="63" Padding="8,2">Apply</Button>
+        <Button Height="25.706" HorizontalAlignment="Right" Margin="0,0,0,12" Name="buttonCancel" VerticalAlignment="Bottom" MinWidth="68" Padding="8,2">Close</Button>
+        <Button Height="25.706" HorizontalAlignment="Left" Margin="5,0,0,12" Name="buttonReset" VerticalAlignment="Bottom" MinWidth="67" Padding="8,2">Reset</Button>
         <ListView Margin="5,28,1,44" DataContext="{Binding BuchungstextValues}" Name="listViewBuchungsText">
             <ListView.View>
                 <GridView  >
-                    <GridViewColumn>
+                    <GridViewColumn x:Name="colBuchungToShow">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" ></CheckBox>
@@ -91,7 +91,7 @@
                         </GridViewColumn.CellTemplate>
                         To Show
                     </GridViewColumn>
-                    <GridViewColumn DisplayMemberBinding="{Binding Text}">Values</GridViewColumn>
+                    <GridViewColumn x:Name="colBuchungValues" DisplayMemberBinding="{Binding Text}">Values</GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
