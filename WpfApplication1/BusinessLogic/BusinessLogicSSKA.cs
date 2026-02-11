@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using WpfApplication1.BusinessLogic;
@@ -18,8 +19,9 @@ namespace WpfApplication1
 
         private readonly CsvToXmlSSKA dataGate;
         private readonly IDataSourceProvider _dataSourceProvider;
+        private readonly Dispatcher _uiDispatcher;
         private WindowProgrBar progrBar;
-        private readonly BackgroundWorker worker;
+        private bool _isRunning;
         private readonly ResponseModel responseModel;
         private static PreprocessedDataRequest preprocessedRequest;
         private readonly TransactionQueryService _queryService;
@@ -39,14 +41,10 @@ namespace WpfApplication1
             _dataSourceProvider = dataSourceProvider ?? throw new ArgumentNullException(nameof(dataSourceProvider));
 
             progrBar = new WindowProgrBar();
+            _uiDispatcher = Dispatcher.CurrentDispatcher;
             InitializePreprocessedRequest();
             _queryService = new TransactionQueryService(_dataSourceProvider, preprocessedRequest);
             RegisterDataRequestHandlers();
-
-            worker = new BackgroundWorker { WorkerReportsProgress = true };
-            worker.DoWork += Worker_DoWork;
-            worker.ProgressChanged += Worker_ProgressChanged;
-            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
 
             UpdateDataModel();
         }
@@ -114,15 +112,17 @@ namespace WpfApplication1
                 DiagnosticLog.Log("BusinessLogicSSKA", "Progress window suppressed");
             }
 
-            if (!worker.IsBusy)
+            if (!_isRunning)
             {
-                DiagnosticLog.Log("BusinessLogicSSKA", "Starting background worker");
+                DiagnosticLog.Log("BusinessLogicSSKA", "Starting parallel queries");
                 responseModel.IsDataReady = false;
-                worker.RunWorkerAsync();
+#pragma warning disable CS4014 // Fire-and-forget by design: result is applied via dispatcher callback
+                RunQueriesAsync();
+#pragma warning restore CS4014
             }
             else
             {
-                DiagnosticLog.Log("BusinessLogicSSKA", "Worker is busy, not starting new work");
+                DiagnosticLog.Log("BusinessLogicSSKA", "Queries already running, not starting new work");
             }
 
             responseModel.UpdateDataRequired = !responseModel.UpdateDataRequired;
@@ -164,7 +164,7 @@ namespace WpfApplication1
             }
         }
 
-        #region BackgroundWorker
+        #region Parallel Queries
 
         private class WorkerResult
         {
@@ -180,151 +180,113 @@ namespace WpfApplication1
             public List<KeyValuePair<string, decimal>> ExpensesOverCategory { get; set; }
         }
 
-        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+        private async Task RunQueriesAsync()
         {
-            var bgWorker = (BackgroundWorker)sender;
+            _isRunning = true;
+            const int totalQueries = 10;
+            int completedCount = 0;
             var result = new WorkerResult();
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
             try
             {
-                result.ExpensesOverDateRange = _queryService.GetExpensesOverDateRange();
-                bgWorker.ReportProgress(10);
+                var tasks = new[]
+                {
+                    Task.Run(() => { result.ExpensesOverDateRange = _queryService.GetExpensesOverDateRange();
+                        ReportMonotonicProgress(Interlocked.Increment(ref completedCount), totalQueries); }),
+                    Task.Run(() => { result.TransactionsAccounts = _queryService.GetTransactionsAccounts();
+                        ReportMonotonicProgress(Interlocked.Increment(ref completedCount), totalQueries); }),
+                    Task.Run(() => { result.IncomesOverDatesRange = _queryService.GetIncomesOverDatesRange();
+                        ReportMonotonicProgress(Interlocked.Increment(ref completedCount), totalQueries); }),
+                    Task.Run(() => { result.BalanceOverDateRange = _queryService.GetBalanceOverDateRange();
+                        ReportMonotonicProgress(Interlocked.Increment(ref completedCount), totalQueries); }),
+                    Task.Run(() => { result.ExpensesInfoOverDateRange = _queryService.GetExpensesInfoOverDateRange();
+                        ReportMonotonicProgress(Interlocked.Increment(ref completedCount), totalQueries); }),
+                    Task.Run(() => { result.ExpensesOverRemiteeGroupsInDateRange = _queryService.GetExpensesOverRemiteeGroupsInDateRange();
+                        ReportMonotonicProgress(Interlocked.Increment(ref completedCount), totalQueries); }),
+                    Task.Run(() => { result.ExpensesOverRemiteeInDateRange = _queryService.GetExpensesOverRemiteeInDateRange();
+                        ReportMonotonicProgress(Interlocked.Increment(ref completedCount), totalQueries); }),
+                    Task.Run(() => { result.ExpensesOverCategory = _queryService.GetExpensesOverCategory();
+                        ReportMonotonicProgress(Interlocked.Increment(ref completedCount), totalQueries); }),
+                    Task.Run(() => { result.IncomesInfoOverDateRange = _queryService.GetIncomesInfoOverDateRange();
+                        ReportMonotonicProgress(Interlocked.Increment(ref completedCount), totalQueries); }),
+                    Task.Run(() => { result.Summary = _queryService.GetSummary();
+                        ReportMonotonicProgress(Interlocked.Increment(ref completedCount), totalQueries); }),
+                };
 
-                result.TransactionsAccounts = _queryService.GetTransactionsAccounts();
-                bgWorker.ReportProgress(20);
-
-                result.IncomesOverDatesRange = _queryService.GetIncomesOverDatesRange();
-                bgWorker.ReportProgress(30);
-
-                result.BalanceOverDateRange = _queryService.GetBalanceOverDateRange();
-                bgWorker.ReportProgress(40);
-
-                result.ExpensesInfoOverDateRange = _queryService.GetExpensesInfoOverDateRange();
-                bgWorker.ReportProgress(50);
-
-                result.ExpensesOverRemiteeGroupsInDateRange = _queryService.GetExpensesOverRemiteeGroupsInDateRange();
-                bgWorker.ReportProgress(60);
-
-                result.ExpensesOverRemiteeInDateRange = _queryService.GetExpensesOverRemiteeInDateRange();
-                bgWorker.ReportProgress(70);
-
-                result.ExpensesOverCategory = _queryService.GetExpensesOverCategory();
-                bgWorker.ReportProgress(80);
-
-                result.IncomesInfoOverDateRange = _queryService.GetIncomesInfoOverDateRange();
-                bgWorker.ReportProgress(90);
-
-                result.Summary = _queryService.GetSummary();
-                bgWorker.ReportProgress(100);
+                await Task.WhenAll(tasks);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Preserve original behavior: don't crash; results may be partially filled
+                DiagnosticLog.Log("BusinessLogicSSKA", $"Parallel queries error: {ex.Message}");
             }
 
-            e.Result = result;
+            // Ensure the progress bar is visible for at least 500 ms so the user can see it.
+            const int minDisplayMs = 500;
+            int elapsed = (int)stopwatch.ElapsedMilliseconds;
+            if (elapsed < minDisplayMs)
+                await Task.Delay(minDisplayMs - elapsed);
+
+            await _uiDispatcher.InvokeAsync(() => ApplyResult(result), DispatcherPriority.Normal);
         }
 
-        private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void ReportMonotonicProgress(int completed, int total)
         {
-            // If progress window is available update it on its dispatcher. Otherwise skip.
+            int percent = completed * 100 / total;
             if (progrBar != null && progrBar.pbStatus != null)
             {
                 try
                 {
                     progrBar.pbStatus.Dispatcher.BeginInvoke(
                         DispatcherPriority.Normal,
-                        new Action(() => progrBar.pbStatus.Value = e.ProgressPercentage));
+                        new Action(() => progrBar.pbStatus.Value = percent));
                 }
                 catch (InvalidOperationException)
                 {
-                    // Window may have been closed concurrently � ignore progress update.
+                    // Window may have been closed concurrently — ignore.
                 }
             }
         }
 
-        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void ApplyResult(WorkerResult result)
         {
-            DiagnosticLog.Log("BusinessLogicSSKA", "Worker_RunWorkerCompleted called");
+            DiagnosticLog.Log("BusinessLogicSSKA", "ApplyResult called");
 
-            if (e.Error != null)
-            {
-                DiagnosticLog.Log("BusinessLogicSSKA", $"Worker completed with ERROR: {e.Error.Message}");
-                DiagnosticLog.Log("BusinessLogicSSKA", $"Stack trace: {e.Error.StackTrace}");
-            }
-
-            // Use Application.Current.Dispatcher as fallback if progrBar was closed during work
-            var dispatcher = progrBar?.Dispatcher ?? Application.Current?.Dispatcher;
-            DiagnosticLog.Log("BusinessLogicSSKA", $"Dispatcher available: {dispatcher != null}, progrBar: {progrBar != null}");
-
-            if (dispatcher != null && !dispatcher.CheckAccess())
-            {
-                DiagnosticLog.Log("BusinessLogicSSKA", "Invoking ApplyWorkerResult via dispatcher");
-                dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => ApplyWorkerResult(e)));
-            }
-            else
-            {
-                DiagnosticLog.Log("BusinessLogicSSKA", "Calling ApplyWorkerResult directly");
-                ApplyWorkerResult(e);
-            }
-        }
-
-        private void ApplyWorkerResult(RunWorkerCompletedEventArgs e)
-        {
-            DiagnosticLog.Log("BusinessLogicSSKA", "ApplyWorkerResult called");
-
-            // progrBar may have been closed if the window was finalized during data loading,
-            // or may never have been created if SuppressProgressWindow was true
             try
             {
                 if (progrBar != null && progrBar.IsVisible)
-                {
-                    DiagnosticLog.Log("BusinessLogicSSKA", "Hiding progress bar");
                     progrBar.Hide();
-                }
-                else
-                {
-                    DiagnosticLog.Log("BusinessLogicSSKA", $"Progress bar not hidden: progrBar={progrBar != null}, IsVisible={progrBar?.IsVisible}");
-                }
             }
             catch (Exception ex)
             {
                 DiagnosticLog.Log("BusinessLogicSSKA", $"Error hiding progress bar: {ex.Message}");
             }
 
-            if (e.Result is WorkerResult result)
-            {
-                if (result.ExpensesOverDateRange != null)
-                    responseModel.ExpensesOverDateRange = result.ExpensesOverDateRange;
-                if (result.TransactionsAccounts != null)
-                    responseModel.TransactionsAccounts = result.TransactionsAccounts;
-                if (result.IncomesOverDatesRange != null)
-                    responseModel.IncomesOverDatesRange = result.IncomesOverDatesRange;
-                if (result.BalanceOverDateRange != null)
-                    responseModel.BalanceOverDateRange = result.BalanceOverDateRange;
-                if (result.ExpensesInfoOverDateRange != null)
-                    responseModel.ExpensesInfoOverDateRange = result.ExpensesInfoOverDateRange;
-                if (result.ExpensesOverRemiteeGroupsInDateRange != null)
-                    responseModel.ExpensesOverRemiteeGroupsInDateRange = result.ExpensesOverRemiteeGroupsInDateRange;
-                if (result.ExpensesOverRemiteeInDateRange != null)
-                    responseModel.ExpensesOverRemiteeInDateRange = result.ExpensesOverRemiteeInDateRange;
-                if (result.ExpensesOverCategory != null)
-                    responseModel.ExpensesOverCategory = result.ExpensesOverCategory;
-                if (result.IncomesInfoOverDateRange != null)
-                    responseModel.IncomesInfoOverDateRange = result.IncomesInfoOverDateRange;
-                if (result.Summary != null)
-                    responseModel.Summary = result.Summary;
+            if (result.ExpensesOverDateRange != null)
+                responseModel.ExpensesOverDateRange = result.ExpensesOverDateRange;
+            if (result.TransactionsAccounts != null)
+                responseModel.TransactionsAccounts = result.TransactionsAccounts;
+            if (result.IncomesOverDatesRange != null)
+                responseModel.IncomesOverDatesRange = result.IncomesOverDatesRange;
+            if (result.BalanceOverDateRange != null)
+                responseModel.BalanceOverDateRange = result.BalanceOverDateRange;
+            if (result.ExpensesInfoOverDateRange != null)
+                responseModel.ExpensesInfoOverDateRange = result.ExpensesInfoOverDateRange;
+            if (result.ExpensesOverRemiteeGroupsInDateRange != null)
+                responseModel.ExpensesOverRemiteeGroupsInDateRange = result.ExpensesOverRemiteeGroupsInDateRange;
+            if (result.ExpensesOverRemiteeInDateRange != null)
+                responseModel.ExpensesOverRemiteeInDateRange = result.ExpensesOverRemiteeInDateRange;
+            if (result.ExpensesOverCategory != null)
+                responseModel.ExpensesOverCategory = result.ExpensesOverCategory;
+            if (result.IncomesInfoOverDateRange != null)
+                responseModel.IncomesInfoOverDateRange = result.IncomesInfoOverDateRange;
+            if (result.Summary != null)
+                responseModel.Summary = result.Summary;
 
-                responseModel.IsDataReady = true;
-                DiagnosticLog.Log("BusinessLogicSSKA", "Worker result applied successfully, data is ready");
-            }
-            else
-            {
-                DiagnosticLog.Log("BusinessLogicSSKA", $"Worker result type: {e.Result?.GetType().Name ?? "null"}");
-            }
-
+            responseModel.IsDataReady = true;
             responseModel.UpdateDataRequired = !responseModel.UpdateDataRequired;
-            DiagnosticLog.Log("BusinessLogicSSKA", "ApplyWorkerResult completed");
+            _isRunning = false;
+            DiagnosticLog.Log("BusinessLogicSSKA", "Parallel queries completed, data is ready");
         }
 
         #endregion

@@ -188,4 +188,121 @@
 
 Перезапустить сейчас?</value>
   </data>
+  <data name="FilterExpensesLessOrEqual" xml:space="preserve">
+    <value>Расходы &lt;=</value>
+  </data>
+  <data name="FilterExpensesGreaterOrEqual" xml:space="preserve">
+    <value>Расходы &gt;=</value>
+  </data>
+  <data name="FilterIncomesGreaterOrEqual" xml:space="preserve">
+    <value>Доходы &gt;=</value>
+  </data>
+  <data name="FilterIncomesLessOrEqual" xml:space="preserve">
+    <value>Доходы &lt;=</value>
+  </data>
+  <data name="FilterFind" xml:space="preserve">
+    <value>Найти:</value>
+  </data>
+  <data name="FilterBuchungstext" xml:space="preserve">
+    <value>Тип операции</value>
+  </data>
+  <data name="FilterApply" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="FilterClose" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="FilterReset" xml:space="preserve">
+    <value>Сбросить</value>
+  </data>
+  <data name="FilterUse" xml:space="preserve">
+    <value>Вкл</value>
+  </data>
+  <data name="FilterAccount" xml:space="preserve">
+    <value>Счёт</value>
+  </data>
+  <data name="FilterToShow" xml:space="preserve">
+    <value>Показать</value>
+  </data>
+  <data name="FilterValues" xml:space="preserve">
+    <value>Значения</value>
+  </data>
+  <data name="FilterNotAssigned" xml:space="preserve">
+    <value>Не задано</value>
+  </data>
+  <data name="ActTitle" xml:space="preserve">
+    <value>Активация</value>
+  </data>
+  <data name="ActEnterFirstName" xml:space="preserve">
+    <value>Введите имя:</value>
+  </data>
+  <data name="ActEnterName" xml:space="preserve">
+    <value>Введите фамилию:</value>
+  </data>
+  <data name="ActEnterEmail" xml:space="preserve">
+    <value>Введите E-Mail:</value>
+  </data>
+  <data name="ActRequestCode" xml:space="preserve">
+    <value>Код запроса активации:</value>
+  </data>
+  <data name="ActGenerate" xml:space="preserve">
+    <value>Сгенерировать код запроса</value>
+  </data>
+  <data name="ActSubmitRequest" xml:space="preserve">
+    <value>Отправить запрос активации</value>
+  </data>
+  <data name="ActResetRequest" xml:space="preserve">
+    <value>Сбросить запрос</value>
+  </data>
+  <data name="ActActivate" xml:space="preserve">
+    <value>Активировать</value>
+  </data>
+  <data name="ActGetCode" xml:space="preserve">
+    <value>Получить код активации</value>
+  </data>
+  <data name="ActEnterCodeHint" xml:space="preserve">
+    <value>Введите код активации здесь:</value>
+  </data>
+  <data name="ActClose" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="ActSucceeded" xml:space="preserve">
+    <value>Спасибо за успешную активацию.
+Окно активации можно закрыть навсегда.</value>
+  </data>
+  <data name="ActFailed" xml:space="preserve">
+    <value>Активация не удалась. Пробный период: 60 дней.
+Пожалуйста, отправьте код запроса активации
+с E-Mail: {0} на {1}.
+После оплаты вы получите код активации.</value>
+  </data>
+  <data name="ActGetCodeFailed" xml:space="preserve">
+    <value>Активация не удалась. Пожалуйста, попробуйте позже.</value>
+  </data>
+  <data name="ActRequestSucceeded" xml:space="preserve">
+    <value>Запрос активации выполнен ({0}).
+Код активации будет отправлен после оплаты.</value>
+  </data>
+  <data name="ActRequestFailed" xml:space="preserve">
+    <value>Запрос активации не удался ({0}): {1}
+Пожалуйста, отправьте данные из формы на E-Mail {2}.
+Код активации будет отправлен на вашу почту после оплаты.</value>
+  </data>
+  <data name="ActCodeGenerated" xml:space="preserve">
+    <value>Код запроса активации сгенерирован.
+Пожалуйста, отправьте запрос активации.</value>
+  </data>
+  <data name="ActCodeReceived" xml:space="preserve">
+    <value>Код активации получен ({0}).
+Активация разблокирована.</value>
+  </data>
+  <data name="ActRemoteServiceError" xml:space="preserve">
+    <value>Ошибка удалённого сервиса ({0}):
+{1}</value>
+  </data>
+  <data name="ActRemoteServiceFailed" xml:space="preserve">
+    <value>Удалённый сервис недоступен.
+Вы можете связаться с владельцем по адресу
+{0}.</value>
+  </data>
 </root>

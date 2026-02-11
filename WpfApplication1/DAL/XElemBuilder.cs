@@ -36,19 +36,17 @@ namespace WpfApplication1.DAL
         }
         protected static string          GetCultureAdaptedDouble(object dec)
         {
-            if (double.TryParse(dec.ToString(), NumberStyles.Any, CultureInfo.CurrentCulture, out double tmp))
-            {
-                return tmp.ToString(CultureInfo.InvariantCulture);
-            }
+            string value = dec.ToString().Trim();
+            CultureInfo detectedCulture = DetectDecimalCulture(value);
 
-            if (double.TryParse(dec.ToString(), NumberStyles.Any, Config.GetCSVCultureInfo(), out tmp))
+            if (double.TryParse(value, NumberStyles.Any, detectedCulture, out double tmp))
             {
                 return tmp.ToString(CultureInfo.InvariantCulture);
             }
 
             try
             {
-                tmp = double.Parse(dec.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture);
+                tmp = double.Parse(value, NumberStyles.Any, CultureInfo.InvariantCulture);
             }
             catch (FormatException e)
             {
@@ -57,6 +55,26 @@ namespace WpfApplication1.DAL
                 throw new Exception("Please select appropriate CodePage in Settings");
             }
             return tmp.ToString("F2");
+        }
+
+        /// <summary>
+        /// Detects the decimal separator from the value itself.
+        /// German CSV: "1.234,56" or "-5,50" (comma = decimal)
+        /// English CSV: "1,234.56" or "-5.50" (dot = decimal)
+        /// The last separator character in the string determines the format.
+        /// </summary>
+        private static CultureInfo DetectDecimalCulture(string value)
+        {
+            int lastComma = value.LastIndexOf(',');
+            int lastDot = value.LastIndexOf('.');
+
+            if (lastComma > lastDot)
+                return CultureInfo.GetCultureInfo("de-DE");  // comma is decimal separator
+            if (lastDot > lastComma)
+                return CultureInfo.InvariantCulture;          // dot is decimal separator
+
+            // No separator or ambiguous — fall back to CSV encoding culture
+            return Config.GetCSVCultureInfo();
         }
         abstract public XElement         BuildXElement(List<string[]> source);
     }

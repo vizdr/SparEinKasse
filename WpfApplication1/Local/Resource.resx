@@ -188,4 +188,121 @@
 
 Restart now?</value>
   </data>
+  <data name="FilterExpensesLessOrEqual" xml:space="preserve">
+    <value>Expenses &lt;=</value>
+  </data>
+  <data name="FilterExpensesGreaterOrEqual" xml:space="preserve">
+    <value>Expenses &gt;=</value>
+  </data>
+  <data name="FilterIncomesGreaterOrEqual" xml:space="preserve">
+    <value>Incomes &gt;=</value>
+  </data>
+  <data name="FilterIncomesLessOrEqual" xml:space="preserve">
+    <value>Incomes &lt;=</value>
+  </data>
+  <data name="FilterFind" xml:space="preserve">
+    <value>Find:</value>
+  </data>
+  <data name="FilterBuchungstext" xml:space="preserve">
+    <value>Booking text</value>
+  </data>
+  <data name="FilterApply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="FilterClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="FilterReset" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="FilterUse" xml:space="preserve">
+    <value>Use</value>
+  </data>
+  <data name="FilterAccount" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="FilterToShow" xml:space="preserve">
+    <value>To Show</value>
+  </data>
+  <data name="FilterValues" xml:space="preserve">
+    <value>Values</value>
+  </data>
+  <data name="FilterNotAssigned" xml:space="preserve">
+    <value>Not Assigned</value>
+  </data>
+  <data name="ActTitle" xml:space="preserve">
+    <value>Activation</value>
+  </data>
+  <data name="ActEnterFirstName" xml:space="preserve">
+    <value>Enter Your First Name:</value>
+  </data>
+  <data name="ActEnterName" xml:space="preserve">
+    <value>Enter Your Name:</value>
+  </data>
+  <data name="ActEnterEmail" xml:space="preserve">
+    <value>Enter Your E-Mail:</value>
+  </data>
+  <data name="ActRequestCode" xml:space="preserve">
+    <value>Activation Request Code:</value>
+  </data>
+  <data name="ActGenerate" xml:space="preserve">
+    <value>Generate Activation Request Code</value>
+  </data>
+  <data name="ActSubmitRequest" xml:space="preserve">
+    <value>Submit Activation Request</value>
+  </data>
+  <data name="ActResetRequest" xml:space="preserve">
+    <value>Reset Request</value>
+  </data>
+  <data name="ActActivate" xml:space="preserve">
+    <value>Activate</value>
+  </data>
+  <data name="ActGetCode" xml:space="preserve">
+    <value>Get Activation Code</value>
+  </data>
+  <data name="ActEnterCodeHint" xml:space="preserve">
+    <value>You may enter activation code here:</value>
+  </data>
+  <data name="ActClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="ActSucceeded" xml:space="preserve">
+    <value>Thank you for the succeeded activation.
+Activation dialog may be closed forever.</value>
+  </data>
+  <data name="ActFailed" xml:space="preserve">
+    <value>Activation failed. Trial period: 60 days.
+Please send your Activation Request Code
+from E-Mail: {0} to {1}.
+Soon after payment you will receive the activation code.</value>
+  </data>
+  <data name="ActGetCodeFailed" xml:space="preserve">
+    <value>Activation failed. Please, try again later.</value>
+  </data>
+  <data name="ActRequestSucceeded" xml:space="preserve">
+    <value>Activation request succeeded ({0}).
+Activation Code will be sent after the payment.</value>
+  </data>
+  <data name="ActRequestFailed" xml:space="preserve">
+    <value>Activation request failed ({0}): {1}
+Please send on E-mail {2} data from this form.
+Activation Code will be sent on your E-Mail after the payment.</value>
+  </data>
+  <data name="ActCodeGenerated" xml:space="preserve">
+    <value>Activation Request Code is generated.
+Please, submit Activation Request.</value>
+  </data>
+  <data name="ActCodeReceived" xml:space="preserve">
+    <value>Activation Code received ({0}).
+Activation is unlocked.</value>
+  </data>
+  <data name="ActRemoteServiceError" xml:space="preserve">
+    <value>Remote service Error ({0}):
+{1}</value>
+  </data>
+  <data name="ActRemoteServiceFailed" xml:space="preserve">
+    <value>Remote service failed.
+You can communicate with the owner via
+{0}.</value>
+  </data>
 </root>
