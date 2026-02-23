@@ -99,6 +99,11 @@ namespace WpfApplication1
             bl.Request.DataBankUpdating = true;
         }
 
+        public void UpdateCategorization()
+        {
+            bl.Request.CategorizationUpdating = true;
+        }
+
         #region Filters
 
         public IViewFilters ViewFilters

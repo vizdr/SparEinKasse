@@ -96,6 +96,11 @@ namespace WpfApplication1
                     InitializeComponent();
                 }
             };
+            buttonUpdateCategorization.Click += delegate
+            {
+                if (_registration.IsFeatureEnabled)
+                    chP.UpdateCategorization();
+            };
             buttonSettings.Click += delegate { OnSettingsClicked(); };
             buttonCategoryExpense3D.Click += delegate { LaunchCategoryExpense3D(); };
 

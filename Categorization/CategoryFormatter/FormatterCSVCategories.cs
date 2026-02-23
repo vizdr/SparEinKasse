@@ -286,5 +286,25 @@ namespace CategoryFormatter
             }
 
         }
+
+        /// <summary>
+        /// Re-applies category matching for a single transaction's text fields.
+        /// Call GetCategoriesAndKeywordsFromFile() once before using this.
+        /// </summary>
+        public KeyValuePair<int, string> MatchCategory(
+            string beneficiary, string reasonForPayment, string bookingText)
+        {
+            var tokens = new List<string>();
+            tokens.AddRange(Tokenize(beneficiary));
+            tokens.AddRange(Tokenize(reasonForPayment));
+            tokens.AddRange(Tokenize(bookingText));
+
+            foreach (var token in tokens)
+                foreach (var ctx in categoryContexts)
+                    if (ctx.Item2.Contains(token) || ctx.Item3.Contains(token) || ctx.Item4.Contains(token))
+                        return ctx.Item1;
+
+            return new KeyValuePair<int, string>(notFoundCategoryID, notFoundCategory);
+        }
     }
 }

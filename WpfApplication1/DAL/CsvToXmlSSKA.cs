@@ -220,6 +220,112 @@ namespace WpfApplication1.DAL
                 return false;
             }
         }
+        public bool UpdateCategorization()
+        {
+            // --- Resolve Categorization.csv path (same fallbacks as ProvideCategorization) ---
+            string path2CatFile = FormatterCSVCategories.defaultPath2Categorization;
+            if (!File.Exists(path2CatFile))
+                path2CatFile = Config.PathToCategorizationFile;
+            if (!File.Exists(path2CatFile))
+                path2CatFile = @"../../../Categorization/" +
+                               Path.GetFileName(FormatterCSVCategories.defaultPath2Categorization);
+            if (!File.Exists(path2CatFile))
+            {
+                MessageBox.Show("Categorization file not found: " + Path.GetFullPath(path2CatFile),
+                    Config.AppName, MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            // --- Load category keywords (pass empty string for input CSV — constructor handles gracefully) ---
+            var formatter = new FormatterCSVCategories(
+                pathToCategoriesCSV: path2CatFile,
+                pathToInputCSV: string.Empty,
+                pathToOutputCSV: string.Empty);
+            formatter.GetCategoriesAndKeywordsFromFile();
+
+            if (formatter.GetCountOfAvailibleCategories == 0)
+            {
+                MessageBox.Show("No categories loaded from: " + path2CatFile, Config.AppName);
+                return false;
+            }
+
+            // --- Update Arxiv.xml ---
+            try
+            {
+                lock (_fileLock)
+                {
+                    XElement arxiv = XElement.Load(PathToStorageXmlFile);
+                    foreach (var tx in arxiv.Elements(Config.TransactionField))
+                    {
+                        string buchungstext     = tx.Element(Config.BuchungsTextField)?.Value ?? string.Empty;
+                        string verwendungszweck = tx.Element(Config.VerwendZweckField)?.Value ?? string.Empty;
+                        string beguenstigter    = tx.Element(Config.BeguenstigterField)?.Value ?? string.Empty;
+
+                        var cat = formatter.MatchCategory(beguenstigter, verwendungszweck, buchungstext);
+                        tx.Element(Config.CategoryIdField)?.SetValue(cat.Key.ToString());
+                        tx.Element(Config.CategoryField)?.SetValue(cat.Value);
+                    }
+                    File.WriteAllText(PathToStorageXmlFile, arxiv.ToString());
+                    DataSource = arxiv;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, Config.AppName + ": XML categorization update failed.",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            // --- Update *categorized*.csv files in the Arxiv folder ---
+            if (Directory.Exists(Config.PathToXmlStorageFolder))
+            {
+                foreach (string csvFile in Directory.GetFiles(Config.PathToXmlStorageFolder, "*categorized*.csv"))
+                    UpdateCategorizationInCsvFile(csvFile, formatter);
+            }
+
+            return true;
+        }
+
+        private void UpdateCategorizationInCsvFile(string csvPath, FormatterCSVCategories formatter)
+        {
+            try
+            {
+                var encoding = Encoding.GetEncoding(Config.EncodePage);
+                string[] lines = File.ReadAllLines(csvPath, encoding);
+                if (lines.Length < 2) return;
+
+                string[] headers = lines[0].Split(Config.Delimiter4CSVFile.ToCharArray());
+                int catIdIdx         = Array.IndexOf(headers, Config.CategoryIdField);
+                int catIdx           = Array.IndexOf(headers, Config.CategoryField);
+                int buchungsIdx      = Array.IndexOf(headers, Config.BuchungsTextField);
+                int verwendungIdx    = Array.IndexOf(headers, Config.VerwendZweckField);
+                int beguenstigterIdx = Array.IndexOf(headers, Config.BeguenstigterField);
+
+                if (catIdIdx < 0 || catIdx < 0) return; // columns not present — skip file
+
+                for (int i = 1; i < lines.Length; i++)
+                {
+                    string[] fields = lines[i].Split(Config.Delimiter4CSVFile.ToCharArray());
+                    if (fields.Length <= Math.Max(catIdIdx, catIdx)) continue;
+
+                    string buchungstext     = buchungsIdx >= 0 && buchungsIdx < fields.Length ? fields[buchungsIdx] : string.Empty;
+                    string verwendungszweck = verwendungIdx >= 0 && verwendungIdx < fields.Length ? fields[verwendungIdx] : string.Empty;
+                    string beguenstigter    = beguenstigterIdx >= 0 && beguenstigterIdx < fields.Length ? fields[beguenstigterIdx] : string.Empty;
+
+                    var cat = formatter.MatchCategory(beguenstigter, verwendungszweck, buchungstext);
+                    fields[catIdIdx] = cat.Key.ToString();
+                    fields[catIdx]   = cat.Value;
+                    lines[i] = string.Join(Config.Delimiter4CSVFile, fields);
+                }
+
+                File.WriteAllLines(csvPath, lines, encoding);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not update: " + Path.GetFileName(csvPath) + "\n" + ex.Message, Config.AppName);
+            }
+        }
+
         private string[] ReplaceSymbolGetSeparator(ref string[] src, char symbol2Remove = '\"', char symbol2Replace = ' ')
         {
             for (int i = 0; i < src.GetLength(0); i++)

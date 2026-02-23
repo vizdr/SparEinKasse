@@ -22,6 +22,7 @@ namespace WpfApplication1
         private readonly Dispatcher _uiDispatcher;
         private WindowProgrBar progrBar;
         private bool _isRunning;
+        private bool _isCategorizationRunning = false;
         private readonly ResponseModel responseModel;
         private static PreprocessedDataRequest preprocessedRequest;
         private readonly TransactionQueryService _queryService;
@@ -54,13 +55,34 @@ namespace WpfApplication1
             Request.DataRequested += (s, e) => UpdateDataModel();
             Request.FilterValuesRequested += (s, e) => FilterData();
             Request.DataBankUpdateRequested += (s, e) => UpdateData();
+            Request.CategorizationUpdateRequested += (s, e) => UpdateCategorization();
             Request.ViewDataRequested += (s, e) => UpdateViewData();
         }
 
         public void UpdateData()
         {
+            if (_isCategorizationRunning)
+            {
+                MessageBox.Show("Categorization update is in progress. Please wait.",
+                    Config.AppName, MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
             if (dataGate.UpdateDataBank())
                 UpdateDataModel();
+        }
+
+        public void UpdateCategorization()
+        {
+            _isCategorizationRunning = true;
+            try
+            {
+                if (dataGate.UpdateCategorization())
+                    UpdateDataModel();
+            }
+            finally
+            {
+                _isCategorizationRunning = false;
+            }
         }
 
         public void UpdateDataModel()
