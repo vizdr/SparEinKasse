@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -94,6 +97,7 @@ namespace WpfApplication1
                 }
             };
             buttonSettings.Click += delegate { OnSettingsClicked(); };
+            buttonCategoryExpense3D.Click += delegate { LaunchCategoryExpense3D(); };
 
             // BarDataPoint_MouseUpDatExp is already wired via XAML EventSetter
             popupChDateExpText = new TextBlock
@@ -183,6 +187,7 @@ namespace WpfApplication1
             expRemGroups.Header = RuntimeLocalization.Instance["Exp2"];
             chartRemGroupExpence.Title = RuntimeLocalization.Instance["ExpensesOverRemitteeGroups"];
             chartCategoryExpence.Title = RuntimeLocalization.Instance["ExpensesOverCategory"];
+            buttonCategoryExpense3D.Content = RuntimeLocalization.Instance["CategoryExpense3D"];
 
             DiagnosticLog.Log("Window1", "InitializeResources completed");
         }
@@ -421,6 +426,90 @@ namespace WpfApplication1
         #endregion
 
         // handlers of event setters for attached in xaml styles, resources for chart popups   
+        private static string FindCategoryBarsExe()
+        {
+            // 1. Next to the WPF exe (deployment)
+            var exeDir = Path.GetDirectoryName(
+                System.Reflection.Assembly.GetExecutingAssembly().Location) ?? string.Empty;
+            var candidate = Path.Combine(exeDir, "categorybars.exe");
+            if (File.Exists(candidate)) return candidate;
+
+            // 2. Walk up the directory tree to find categorybars\build\Release\ (development)
+            var dir = new DirectoryInfo(exeDir);
+            while (dir != null)
+            {
+                foreach (var config in new[] { "Release", "Debug" })
+                {
+                    var devPath = Path.Combine(dir.FullName, "categorybars", "build", config, "categorybars.exe");
+                    if (File.Exists(devPath)) return devPath;
+                }
+                dir = dir.Parent;
+            }
+
+            return "categorybars.exe"; // last resort: hope it's on PATH
+        }
+
+        private void LaunchCategoryExpense3D()
+        {
+            var beginDate = datePickerBeginDate.SelectedDate ?? DateTime.Today;
+            var endDate   = datePickerEndDate.SelectedDate   ?? DateTime.Today;
+
+            var selector = new WindowTimespanSelector(beginDate, endDate);
+            selector.Owner = this;
+            if (selector.ShowDialog() != true)
+                return;
+
+            var timespans = selector.SelectedTimespans;
+
+            // Build JSON manually
+            var sb = new StringBuilder();
+            sb.AppendLine("{");
+            sb.AppendLine("  \"timespans\": [");
+            for (int i = 0; i < timespans.Count; i++)
+            {
+                var (tsBegin, tsEnd) = timespans[i];
+                var label = tsBegin.ToString("dd.MM.yyyy") + " - " + tsEnd.ToString("dd.MM.yyyy");
+                var categories = businessLogic.GetExpensesOverCategoryForDateRange(tsBegin, tsEnd);
+
+                sb.AppendLine("    {");
+                sb.AppendLine($"      \"beginDate\": \"{tsBegin:yyyy-MM-dd}\",");
+                sb.AppendLine($"      \"endDate\": \"{tsEnd:yyyy-MM-dd}\",");
+                sb.AppendLine($"      \"label\": \"{label}\",");
+                sb.AppendLine("      \"categories\": [");
+                for (int c = 0; c < categories.Count; c++)
+                {
+                    var kv = categories[c];
+                    var name = kv.Key.Replace("\"", "\\\"");
+                    var value = kv.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    var comma = c < categories.Count - 1 ? "," : "";
+                    sb.AppendLine($"        {{ \"name\": \"{name}\", \"expense\": {value} }}{comma}");
+                }
+                sb.AppendLine("      ]");
+                var tsComma = i < timespans.Count - 1 ? "," : "";
+                sb.AppendLine("    }" + tsComma);
+            }
+            sb.AppendLine("  ]");
+            sb.AppendLine("}");
+
+            var jsonPath = Path.Combine(Path.GetTempPath(), "sska_category_expense_3d.json");
+            File.WriteAllText(jsonPath, sb.ToString(), Encoding.UTF8);
+
+            var exePath = FindCategoryBarsExe();
+
+            try
+            {
+                Process.Start(new ProcessStartInfo(exePath, $"\"{jsonPath}\"")
+                {
+                    UseShellExecute = false
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not launch categorybars.exe:\n{ex.Message}",
+                    "Category-Expense 3D", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
         private void BarDataPoint_MouseUpDatExp(object sender, MouseButtonEventArgs e)
         {
             // also accessible via object o = (chartDateExpence.Series[0] as DataPointSeries).SelectedItem;

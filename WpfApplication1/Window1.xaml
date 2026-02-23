@@ -2,7 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=DotNetProjects.DataVisualization.Toolkit"
-        Title="SSKA data analyzer" SizeToContent="WidthAndHeight" Background="LightGray"  ShowInTaskbar="True" Icon="/SSKAanalyzer;component/IconSSKAapp.ico" >
+        Title="SSKA data analyser" SizeToContent="WidthAndHeight" Background="LightGray"  ShowInTaskbar="True" Icon="/SSKAanalyzer;component/IconSSKAapp.ico" >
     <Window.Resources>
         <Style x:Key="MyInvisibleLegendStyle">
             <Setter Property="Control.Width" Value="0"></Setter>
@@ -310,7 +310,7 @@
                 <RowDefinition MinHeight="180" Height="180*"></RowDefinition>
                 <RowDefinition Height="0*" />
                 <RowDefinition MinHeight="24" Height="24*" />
-                <RowDefinition Height="0*" />
+                <RowDefinition MinHeight="24" Height="24*" />
                 <RowDefinition MinHeight="30" Height="55*" />
                 <RowDefinition MinHeight="150" Height="280*"></RowDefinition>
             </Grid.RowDefinitions>
@@ -331,6 +331,7 @@
                 </StackPanel>
             </GroupBox>
             <Button   Name="buttonSettings" Grid.Column="1" Grid.Row="2" VerticalAlignment="Top" Margin="0,0,0,4" Height="20" >Settings</Button>
+            <Button Name="buttonCategoryExpense3D" Grid.Column="1" Grid.Row="3" VerticalAlignment="Top" Margin="0,0,0,4" Height="20">Category-Expense 3D</Button>
             <StackPanel Grid.Column="1" Grid.Row="4" Margin="0,1,0,0" HorizontalAlignment="Center">
                 <Label   Name="labelAccounts" HorizontalAlignment="Center" Padding="0" VerticalAlignment="Bottom" FontSize="11">Account(s)</Label>
                 <ListBox   Name="listBoxAccounts" MinHeight="22" MinWidth="50" Padding="1,0" ItemsSource="{Binding}" VerticalAlignment="Top"  FontSize="11" VerticalContentAlignment="Top" HorizontalAlignment="Center"  />

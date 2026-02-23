@@ -3,6 +3,8 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <!-- Always invoke MSBuild so AfterBuild runs even when only QML files changed -->
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{01A15E59-C31A-43D3-BE1D-2A3F567078C5}</ProjectGuid>
@@ -137,6 +139,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="WindowTimespanSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WindowProgrBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -232,6 +238,9 @@
     </Compile>
     <Compile Include="WindowFilters.xaml.cs">
       <DependentUpon>WindowFilters.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowTimespanSelector.xaml.cs">
+      <DependentUpon>WindowTimespanSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowProgrBar.xaml.cs">
       <DependentUpon>WindowProgrBar.xaml</DependentUpon>
@@ -400,11 +409,34 @@
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
+  <!-- Copy categorybars Qt6 app to WPF output after build -->
   <Target Name="AfterBuild">
+    <PropertyGroup>
+      <CbBuildDir>$(MSBuildProjectDirectory)\..\categorybars\build</CbBuildDir>
+      <CategoryBarsOutDir>$(CbBuildDir)\$(Configuration)</CategoryBarsOutDir>
+    </PropertyGroup>
+    <!-- Use cmake build to ensure QML file changes are detected (VS vcxproj rebuild misses them) -->
+    <Exec Command="&quot;C:\Program Files\CMake\bin\cmake.exe&quot; --build &quot;$(CbBuildDir)&quot; --config $(Configuration) --target categorybars"
+          WorkingDirectory="$(CbBuildDir)" />
+    <ItemGroup>
+      <CategoryBarsFiles Include="$(CategoryBarsOutDir)\categorybars.exe" />
+      <CategoryBarsFiles Include="$(CategoryBarsOutDir)\*.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(CategoryBarsFiles)"
+          DestinationFolder="$(OutputPath)"
+          SkipUnchangedFiles="true"
+          Condition="Exists('$(CategoryBarsOutDir)\categorybars.exe')" />
+    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\platforms&quot; &quot;$(OutputPath)platforms&quot;"
+          Condition="Exists('$(CategoryBarsOutDir)\platforms')" />
+    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\styles&quot; &quot;$(OutputPath)styles&quot;"
+          Condition="Exists('$(CategoryBarsOutDir)\styles')" />
+    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\imageformats&quot; &quot;$(OutputPath)imageformats&quot;"
+          Condition="Exists('$(CategoryBarsOutDir)\imageformats')" />
+    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\qml&quot; &quot;$(OutputPath)qml&quot;"
+          Condition="Exists('$(CategoryBarsOutDir)\qml')" />
+    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\generic&quot; &quot;$(OutputPath)generic&quot;"
+          Condition="Exists('$(CategoryBarsOutDir)\generic')" />
+    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\tls&quot; &quot;$(OutputPath)tls&quot;"
+          Condition="Exists('$(CategoryBarsOutDir)\tls')" />
   </Target>
-  -->
 </Project>

@@ -305,4 +305,7 @@
 Вы можете связаться с владельцем по адресу
 {0}.</value>
   </data>
+  <data name="CategoryExpense3D" xml:space="preserve">
+    <value>Категория-Расходы 3D</value>
+  </data>
 </root>
