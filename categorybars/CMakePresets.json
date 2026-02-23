@@ -1,0 +1,15 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "vs2022-x64",
+      "displayName": "Visual Studio 2022 x64",
+      "description": "Generates categorybars.vcxproj for use in WpfApp-SSKA.sln",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_PREFIX_PATH": "C:/Qt/Qt6/6.10.2/msvc2022_64"
+      }
+    }
+  ]
+}

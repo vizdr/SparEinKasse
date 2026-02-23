@@ -355,6 +355,24 @@ namespace WpfApplication1
         }
 
         #endregion
+
+        public List<KeyValuePair<string, decimal>> GetExpensesOverCategoryForDateRange(DateTime begin, DateTime end)
+        {
+            var tempRequest = new WpfApplication1.DTO.PreprocessedDataRequest
+            {
+                BeginDate = begin,
+                FinishDate = end,
+                Accounts = preprocessedRequest.Accounts,
+                Buchungstexts = preprocessedRequest.Buchungstexts,
+                ExpensesLowestValue = preprocessedRequest.ExpensesLowestValue,
+                ExpensesHighestValue = preprocessedRequest.ExpensesHighestValue,
+                IncomesLowestValue = preprocessedRequest.IncomesLowestValue,
+                IncomesHighestValue = preprocessedRequest.IncomesHighestValue,
+                ToFind = preprocessedRequest.ToFind
+            };
+            var tempService = new TransactionQueryService(_dataSourceProvider, tempRequest);
+            return tempService.GetExpensesOverCategory();
+        }
     }
 
     delegate void UpdateUIDelegateTextBox(System.Windows.Controls.TextBox textBox);

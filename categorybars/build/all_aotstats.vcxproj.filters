@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="$(MSBuildProjectDirectory)\CMakeFiles\89d71533f75a35c8111f5a06f4cb00ff\all_aotstats.aotstats.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="$(MSBuildProjectDirectory)\CMakeFiles\d4d7c95c3e2876fbf14fb0497114be8e\all_aotstats.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="$(MSBuildProjectDirectory)\..\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildProjectDirectory)\CMakeFiles\all_aotstats" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{37E7BAB2-FFC4-3038-930B-88B1CE3E1C7C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

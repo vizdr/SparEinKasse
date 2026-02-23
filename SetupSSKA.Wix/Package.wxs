@@ -16,7 +16,7 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
      xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
   <Package
-    Name="SSKA Analyzer"
+    Name="SSKA Analyser"
     Manufacturer="V_Zdravkov"
     Version="2.1.0"
     UpgradeCode="E8F5B9A1-7C3D-4E2F-9A1B-5C8D7E6F4A3B"
@@ -85,10 +85,16 @@
 
     <!-- Installation directory structure -->
     <StandardDirectory Id="ProgramFiles64Folder">
-      <Directory Id="INSTALLFOLDER" Name="SSKAanalyzer">
+      <Directory Id="INSTALLFOLDER" Name="SSKAanalyser">
         <!-- Satellite assembly folders for localization -->
         <Directory Id="DeCultureFolder" Name="de" />
         <Directory Id="RuCultureFolder" Name="ru" />
+        <!-- categorybars Qt6 plugin subdirectories -->
+        <Directory Id="CbPlatformsFolder" Name="platforms" />
+        <Directory Id="CbImageFormatsFolder" Name="imageformats" />
+        <Directory Id="CbGenericFolder" Name="generic" />
+        <Directory Id="CbTlsFolder" Name="tls" />
+        <Directory Id="CbQmlFolder" Name="qml" />
       </Directory>
     </StandardDirectory>
 
@@ -414,7 +420,7 @@
       <Component Id="DesktopAppShortcut">
         <Shortcut Id="DesktopAppShortcut"
                   Name="SSKA"
-                  Description="SSKA Analyzer - Personal Finance"
+                  Description="SSKA Analyser - Personal Finance"
                   Target="[INSTALLFOLDER]SSKAanalyzer.exe"
                   WorkingDirectory="INSTALLFOLDER"
                   Icon="AppIcon.ico" />
@@ -450,6 +456,73 @@
       </Component>
     </ComponentGroup>
 
+    <!-- ═══════════════════════════════════════════════════════════
+         categorybars Qt6 3D Chart — executable, DLLs, plugins
+         ═══════════════════════════════════════════════════════════ -->
+
+    <!-- categorybars.exe + Qt6 main DLLs (flat in INSTALLFOLDER) -->
+    <ComponentGroup Id="CategoryBarsApp" Directory="INSTALLFOLDER">
+      <Component Id="CategoryBarsExe">
+        <File Source="..\WpfApplication1\bin\x64\Release\categorybars.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="Qt6Core"><File Source="..\WpfApplication1\bin\x64\Release\Qt6Core.dll" /></Component>
+      <Component Id="Qt6Graphs"><File Source="..\WpfApplication1\bin\x64\Release\Qt6Graphs.dll" /></Component>
+      <Component Id="Qt6Gui"><File Source="..\WpfApplication1\bin\x64\Release\Qt6Gui.dll" /></Component>
+      <Component Id="Qt6LabsQmlModels"><File Source="..\WpfApplication1\bin\x64\Release\Qt6LabsQmlModels.dll" /></Component>
+      <Component Id="Qt6Network"><File Source="..\WpfApplication1\bin\x64\Release\Qt6Network.dll" /></Component>
+      <Component Id="Qt6OpenGL"><File Source="..\WpfApplication1\bin\x64\Release\Qt6OpenGL.dll" /></Component>
+      <Component Id="Qt6Qml"><File Source="..\WpfApplication1\bin\x64\Release\Qt6Qml.dll" /></Component>
+      <Component Id="Qt6QmlMeta"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QmlMeta.dll" /></Component>
+      <Component Id="Qt6QmlModels"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QmlModels.dll" /></Component>
+      <Component Id="Qt6QmlWorkerScript"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QmlWorkerScript.dll" /></Component>
+      <Component Id="Qt6Quick"><File Source="..\WpfApplication1\bin\x64\Release\Qt6Quick.dll" /></Component>
+      <Component Id="Qt6Quick3D"><File Source="..\WpfApplication1\bin\x64\Release\Qt6Quick3D.dll" /></Component>
+      <Component Id="Qt6Quick3DRuntimeRender"><File Source="..\WpfApplication1\bin\x64\Release\Qt6Quick3DRuntimeRender.dll" /></Component>
+      <Component Id="Qt6Quick3DUtils"><File Source="..\WpfApplication1\bin\x64\Release\Qt6Quick3DUtils.dll" /></Component>
+      <Component Id="Qt6QuickControls2"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickControls2.dll" /></Component>
+      <Component Id="Qt6QuickControls2Basic"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickControls2Basic.dll" /></Component>
+      <Component Id="Qt6QuickControls2BasicStyleImpl"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickControls2BasicStyleImpl.dll" /></Component>
+      <Component Id="Qt6QuickControls2Impl"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickControls2Impl.dll" /></Component>
+      <Component Id="Qt6QuickEffects"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickEffects.dll" /></Component>
+      <Component Id="Qt6QuickLayouts"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickLayouts.dll" /></Component>
+      <Component Id="Qt6QuickShapes"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickShapes.dll" /></Component>
+      <Component Id="Qt6QuickTemplates2"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickTemplates2.dll" /></Component>
+      <Component Id="Qt6ShaderTools"><File Source="..\WpfApplication1\bin\x64\Release\Qt6ShaderTools.dll" /></Component>
+      <Component Id="Qt6Svg"><File Source="..\WpfApplication1\bin\x64\Release\Qt6Svg.dll" /></Component>
+      <Component Id="CbD3Dcompiler"><File Source="..\WpfApplication1\bin\x64\Release\D3Dcompiler_47.dll" /></Component>
+      <Component Id="CbOpengl32sw"><File Source="..\WpfApplication1\bin\x64\Release\opengl32sw.dll" /></Component>
+      <Component Id="CbIcuuc"><File Source="..\WpfApplication1\bin\x64\Release\icuuc.dll" /></Component>
+    </ComponentGroup>
+
+    <!-- Qt6 platform plugin -->
+    <ComponentGroup Id="CbPlatforms" Directory="CbPlatformsFolder">
+      <Component Id="CbQwindows"><File Source="..\WpfApplication1\bin\x64\Release\platforms\qwindows.dll" /></Component>
+    </ComponentGroup>
+
+    <!-- Qt6 image format plugins -->
+    <ComponentGroup Id="CbImageFormats" Directory="CbImageFormatsFolder">
+      <Component Id="CbQgif"><File Source="..\WpfApplication1\bin\x64\Release\imageformats\qgif.dll" /></Component>
+      <Component Id="CbQico"><File Source="..\WpfApplication1\bin\x64\Release\imageformats\qico.dll" /></Component>
+      <Component Id="CbQjpeg"><File Source="..\WpfApplication1\bin\x64\Release\imageformats\qjpeg.dll" /></Component>
+      <Component Id="CbQsvg"><File Source="..\WpfApplication1\bin\x64\Release\imageformats\qsvg.dll" /></Component>
+    </ComponentGroup>
+
+    <!-- Qt6 generic plugin -->
+    <ComponentGroup Id="CbGeneric" Directory="CbGenericFolder">
+      <Component Id="CbQtuio"><File Source="..\WpfApplication1\bin\x64\Release\generic\qtuiotouchplugin.dll" /></Component>
+    </ComponentGroup>
+
+    <!-- Qt6 TLS plugins -->
+    <ComponentGroup Id="CbTls" Directory="CbTlsFolder">
+      <Component Id="CbQcertonlybackend"><File Source="..\WpfApplication1\bin\x64\Release\tls\qcertonlybackend.dll" /></Component>
+      <Component Id="CbQschannelbackend"><File Source="..\WpfApplication1\bin\x64\Release\tls\qschannelbackend.dll" /></Component>
+    </ComponentGroup>
+
+    <!-- Qt6 QML engine plugins (full tree via WiX 5 glob) -->
+    <ComponentGroup Id="CbQml" Directory="CbQmlFolder">
+      <Files Include="..\WpfApplication1\bin\x64\Release\qml\**\*" />
+    </ComponentGroup>
+
     <!-- Feature definitions -->
     <Feature Id="MainFeature" Title="SSKA Analyzer" Description="Main application files (required)" Level="1" AllowAbsent="no">
       <ComponentGroupRef Id="MainApplication" />
@@ -469,6 +542,17 @@
 
     <Feature Id="DesktopShortcutsFeature" Title="Desktop Shortcuts" Description="Creates SSKA and SSKA Storage shortcuts on the desktop" Level="1" AllowAbsent="yes">
       <ComponentGroupRef Id="DesktopShortcuts" />
+    </Feature>
+
+    <Feature Id="CategoryBars3DFeature" Title="Category-Expense 3D Chart"
+             Description="Qt6 3D visualization of expenses by category (requires 3D graphics support)"
+             Level="1" AllowAbsent="yes">
+      <ComponentGroupRef Id="CategoryBarsApp" />
+      <ComponentGroupRef Id="CbPlatforms" />
+      <ComponentGroupRef Id="CbImageFormats" />
+      <ComponentGroupRef Id="CbGeneric" />
+      <ComponentGroupRef Id="CbTls" />
+      <ComponentGroupRef Id="CbQml" />
     </Feature>
 
   </Package>

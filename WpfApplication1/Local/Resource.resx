@@ -305,4 +305,7 @@ Activation is unlocked.</value>
 You can communicate with the owner via
 {0}.</value>
   </data>
+  <data name="CategoryExpense3D" xml:space="preserve">
+    <value>Category-Expense 3D</value>
+  </data>
 </root>

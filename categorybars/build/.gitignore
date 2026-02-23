@@ -1,0 +1,39 @@
+# ── CMake-generated files (recreate with: cmake --preset vs2022-x64) ──────────
+CMakeCache.txt
+cmake_install.cmake
+CMakeFiles/
+
+# Generated C++ sources (produced by cmake/Qt tools at configure time)
+categorybars_qmltyperegistrations.cpp
+ddf_categorybars.h
+
+# Qt meta-object / type-registration outputs
+categorybars_autogen/
+meta_types/
+qmltypes/
+
+# Qt cmake helper scripts (contain absolute Qt install paths)
+.qt/
+
+# ── Build outputs ──────────────────────────────────────────────────────────────
+Debug/
+Release/
+MinSizeRel/
+RelWithDebInfo/
+x64/
+
+# MSBuild per-target intermediate directories
+*.dir/
+
+# Deployed application directory (windeployqt output)
+CategoryBarsExample/
+
+# QML bytecode cache
+.rcc/
+
+# Qt Creator Ninja build directory
+Desktop_Qt_*/
+
+# ── IDE / user-specific ────────────────────────────────────────────────────────
+.vs/
+*.vcxproj.user

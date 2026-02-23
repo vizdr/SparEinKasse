@@ -305,4 +305,7 @@ Aktivierung ist freigeschaltet.</value>
 Sie können den Inhaber kontaktieren unter
 {0}.</value>
   </data>
+  <data name="CategoryExpense3D" xml:space="preserve">
+    <value>Kategorie-Aufwand 3D</value>
+  </data>
 </root>
