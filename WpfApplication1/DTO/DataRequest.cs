@@ -16,11 +16,17 @@ namespace WpfApplication1.DTO
         public event EventHandler DataRequested;
         public event EventHandler FilterValuesRequested;
         public event EventHandler DataBankUpdateRequested;
+        public event EventHandler CategorizationUpdateRequested;
         public event EventHandler ViewDataRequested;
 
         public bool DataBankUpdating
         {
             set => OnDataBankUpdateRequested();
+        }
+
+        public bool CategorizationUpdating
+        {
+            set => OnCategorizationUpdateRequested();
         }
 
         public Tuple<DateTime, DateTime> TimeSpan
@@ -120,6 +126,12 @@ namespace WpfApplication1.DTO
         {
             DataBankUpdateRequested?.Invoke(this, EventArgs.Empty);
         }
+
+        protected void OnCategorizationUpdateRequested()
+        {
+            CategorizationUpdateRequested?.Invoke(this, EventArgs.Empty);
+        }
+
         protected void OnViewDataRequested()
         {
             ViewDataRequested?.Invoke(this, EventArgs.Empty);

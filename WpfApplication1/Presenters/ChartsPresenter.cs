@@ -99,6 +99,17 @@ namespace WpfApplication1
             bl.Request.DataBankUpdating = true;
         }
 
+        public void UpdateCategorization()
+        {
+            bl.Request.CategorizationUpdating = true;
+        }
+
+        public event EventHandler<bool> CategorizationRunningChanged
+        {
+            add    => _businessLogic.CategorizationRunningChanged += value;
+            remove => _businessLogic.CategorizationRunningChanged -= value;
+        }
+
         #region Filters
 
         public IViewFilters ViewFilters

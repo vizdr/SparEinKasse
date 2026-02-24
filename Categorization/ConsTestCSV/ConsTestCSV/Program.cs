@@ -7,7 +7,7 @@ namespace ConsTestCSV
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello CSV Categories");
+            Console.WriteLine("Debug launched to test of parse logic for discovery of Categories from .csv file");
             FormatterCSVCategories worker = new FormatterCSVCategories();
             worker.GetCategoriesAndKeywordsFromFile();
             worker.ProcessCSVInput();
