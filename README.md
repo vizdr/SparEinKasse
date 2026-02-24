@@ -8,7 +8,7 @@ Personal finance analysis application for Windows. Processes German bank CSV exp
 - Automatic transaction categorization via keyword rules
 - **Update Categorization** — re-apply updated category rules to existing data without re-importing
 - Interactive spending charts and visualizations (bar, line, area)
-- Category-Expense 3D chart with additional time-span comparison
+- Category-Expense 3D chart with additional time-span comparison (external Window from QT6 QML sub-project)
 - Multi-account support
 - Filter by date range, category, account, booking text, and amount
 - Localized UI (German, English, Russian)
