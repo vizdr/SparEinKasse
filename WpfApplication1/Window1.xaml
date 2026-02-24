@@ -192,7 +192,7 @@
                         </Grid.RowDefinitions>
                         <chartingToolkit:Chart Name="chartDateExpence" Grid.Column="2" Grid.Row="0" Title="Date-Expence" LegendStyle="{StaticResource MyInvisibleLegendStyle}" Background="White" >
                             <chartingToolkit:ColumnSeries  Name="lineSeriesDateExp" DependentValuePath="Value" IndependentValuePath="Key"  ItemsSource="{Binding}" 
-                            IsSelectionEnabled="True" AnimationSequence="Simultaneous" IsEnabled="True" >
+                            IsSelectionEnabled="True" AnimationSequence="Simultaneous" IsEnabled="True" MouseUp="BarDataPoint_MouseUpDatExp" >
                                 <chartingToolkit:ColumnSeries.IndependentAxis>
                                     <chartingToolkit:DateTimeAxis Orientation="X" IsEnabled="True" Block.TextAlignment="Left" Name="chartDateExpDependRangeAxis" >
                                         <chartingToolkit:DateTimeAxis.AxisLabelStyle>

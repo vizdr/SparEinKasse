@@ -45,7 +45,25 @@ namespace WpfApplication1.DAL
                 return x.Value.Equals(y.Value);
             }
         }
-        public int GetHashCode(XElement obj) => obj.Value.GetHashCode();
+        public int GetHashCode(XElement obj)
+        {
+            // Hash only the stable transaction-identity fields that Equals() uses.
+            // Deliberately excludes CategoryId and Category: those can change after
+            // UpdateCategorization() and must not affect deduplication in Union().
+            string buchungstag  = obj.Elements(Config.BuchungstagField).FirstOrDefault()?.Value  ?? string.Empty;
+            string wertDatum    = obj.Elements(Config.WertDatumField).FirstOrDefault()?.Value    ?? string.Empty;
+            string buchungstext = obj.Elements(Config.BuchungsTextField).FirstOrDefault()?.Value ?? string.Empty;
+            string betrag       = obj.Elements(Config.BetragField).FirstOrDefault()?.Value       ?? string.Empty;
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 31 + buchungstag.GetHashCode();
+                hash = hash * 31 + wertDatum.GetHashCode();
+                hash = hash * 31 + buchungstext.GetHashCode();
+                hash = hash * 31 + betrag.GetHashCode();
+                return hash;
+            }
+        }
     }
 }
 
