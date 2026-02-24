@@ -70,6 +70,7 @@ namespace WpfApplication1
 
             chP = new ChartsPresenter(this, businessLogic, filterViewModel);
             chP.Initialize();
+            chP.CategorizationRunningChanged += OnCategorizationRunningChanged;
             this.Closing += OnWindowClosing;
 
 #if DEBUG
@@ -99,7 +100,12 @@ namespace WpfApplication1
             buttonUpdateCategorization.Click += delegate
             {
                 if (_registration.IsFeatureEnabled)
+                {
+                    popupChartCategExp.IsOpen = false;
+                    popupChartDateRemitte.IsOpen = false;
+                    popupChartDateExpenes.IsOpen = false;
                     chP.UpdateCategorization();
+                }
             };
             buttonSettings.Click += delegate { OnSettingsClicked(); };
             buttonCategoryExpense3D.Click += delegate { LaunchCategoryExpense3D(); };
@@ -147,8 +153,17 @@ namespace WpfApplication1
             DiagnosticLog.Log("Window1", "Constructor completed successfully");
         }
 
+        private void OnCategorizationRunningChanged(object sender, bool isRunning)
+        {
+            labelCategorizationStatus.Visibility = isRunning ? Visibility.Visible : Visibility.Collapsed;
+            buttonUpdateSpan.IsEnabled = !isRunning;
+            buttonUpdateDataBankXML.IsEnabled = !isRunning;
+            buttonUpdateCategorization.IsEnabled = !isRunning;
+        }
+
         private void OnWindowClosing(object sender, CancelEventArgs e)
         {
+            chP.CategorizationRunningChanged -= OnCategorizationRunningChanged;
             chP.FinalizeChP();
 
             // Unsubscribe from singleton events to allow this window to be garbage collected
@@ -193,6 +208,8 @@ namespace WpfApplication1
             chartRemGroupExpence.Title = RuntimeLocalization.Instance["ExpensesOverRemitteeGroups"];
             chartCategoryExpence.Title = RuntimeLocalization.Instance["ExpensesOverCategory"];
             buttonCategoryExpense3D.Content = RuntimeLocalization.Instance["CategoryExpense3D"];
+            buttonUpdateCategorization.Content = RuntimeLocalization.Instance["UpdateCategorization"];
+            labelCategorizationStatus.Content = RuntimeLocalization.Instance["CategorizationUpdating"];
 
             DiagnosticLog.Log("Window1", "InitializeResources completed");
         }

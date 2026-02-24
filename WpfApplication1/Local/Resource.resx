@@ -308,4 +308,55 @@ You can communicate with the owner via
   <data name="CategoryExpense3D" xml:space="preserve">
     <value>Category-Expense 3D</value>
   </data>
+  <data name="UpdateCategorization" xml:space="preserve">
+    <value>Update Categorization</value>
+  </data>
+  <data name="CategorizationUpdating" xml:space="preserve">
+    <value>Updating...</value>
+  </data>
+  <data name="TimespanSelectorTitle" xml:space="preserve">
+    <value>Select Additional Time Spans</value>
+  </data>
+  <data name="TimespanSelectorPresetHeader" xml:space="preserve">
+    <value>Add timespans relative to current:</value>
+  </data>
+  <data name="TimespanSelectorPlus2" xml:space="preserve">
+    <value>+2 forward</value>
+  </data>
+  <data name="TimespanSelectorMinus2" xml:space="preserve">
+    <value>-2 backward</value>
+  </data>
+  <data name="TimespanSelectorPlus4" xml:space="preserve">
+    <value>+4 forward</value>
+  </data>
+  <data name="TimespanSelectorMinus4" xml:space="preserve">
+    <value>-4 backward</value>
+  </data>
+  <data name="TimespanSelectorCustomHeader" xml:space="preserve">
+    <value>Custom:</value>
+  </data>
+  <data name="TimespanSelectorStartDate" xml:space="preserve">
+    <value>Start date:</value>
+  </data>
+  <data name="TimespanSelectorDirection" xml:space="preserve">
+    <value>Direction:</value>
+  </data>
+  <data name="TimespanSelectorForward" xml:space="preserve">
+    <value>Forward</value>
+  </data>
+  <data name="TimespanSelectorBackward" xml:space="preserve">
+    <value>Backward</value>
+  </data>
+  <data name="TimespanSelectorAdditionalSpans" xml:space="preserve">
+    <value>Additional spans:</value>
+  </data>
+  <data name="TimespanSelectorOk" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="TimespanSelectorSelectDate" xml:space="preserve">
+    <value>Please select a start date.</value>
+  </data>
+  <data name="TimespanSelectorCustomTitle" xml:space="preserve">
+    <value>Custom Time Span</value>
+  </data>
 </root>

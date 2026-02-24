@@ -320,18 +320,19 @@
                 <ColumnDefinition Width="0.18*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <GroupBox Grid.Column="1" MinHeight="175" MaxHeight="200" Grid.Row="0" Header="Date Interval" BorderThickness="2"  Name="groupBoxDateInterval" Panel.ZIndex="2">
+            <GroupBox Grid.Column="1" MinHeight="190" MaxHeight="230" Grid.Row="0" Header="Date Interval" BorderThickness="2"  Name="groupBoxDateInterval" Panel.ZIndex="2">
                 <StackPanel x:Name="SelectionPanel">
                     <Label  Name="labelFrom"  VerticalAlignment="Top" Background="Lavender" Padding="2" Margin="0,5,0,0">From:</Label>
                     <DatePicker Name="datePickerBeginDate"  Height="25" VerticalAlignment="Top"  Background="LightSalmon" SelectedDateFormat="Short" SelectedDate="11.11.2020"/>
                     <Label  Name="labelTo" VerticalAlignment="Top" Background="Lavender" Padding="2" Margin="0,3,0,0" >To:</Label>
                     <DatePicker  Name="datePickerEndDate" VerticalAlignment="Bottom"  Background="LightSalmon"  SelectedDateFormat="Short" SelectedDate="12.11.2020"/>
-                    <Button Name="buttonUpdateSpan" Focusable="True" IsDefault="True" ClickMode="Release"  VerticalAlignment="Bottom" Margin="0,5,0,0" HorizontalAlignment="Center">Update Interval</Button>
-                    <Button Name="buttonUpdateDataBankXML"   VerticalAlignment="Top"  Margin="0,20,0,5" >Update DataStorage</Button>
-                    <Button Name="buttonUpdateCategorization" VerticalAlignment="Top" Margin="0,4,0,5">Update Categorization</Button>
+                    <Button Name="buttonUpdateSpan" Focusable="True" IsDefault="True" ClickMode="Release"  VerticalAlignment="Bottom" Margin="0,4,0,0" HorizontalAlignment="Center">Update Interval</Button>
+                    <Button x:Name="buttonUpdateDataBankXML"  Content="Update DataStorage" Margin="0,4,0,2" />
+                    <Button Name="buttonUpdateCategorization" VerticalAlignment="Top" Margin="0,2,0,2">Update Categorization</Button>
+                    <Label Name="labelCategorizationStatus" Foreground="Red" Visibility="Collapsed" HorizontalAlignment="Center" Padding="2,1" FontWeight="Bold">Updating...</Label>
                 </StackPanel>
             </GroupBox>
-            <Button   Name="buttonSettings" Grid.Column="1" Grid.Row="2" VerticalAlignment="Top" Margin="0,0,0,4" Height="20" >Settings</Button>
+            <Button   Name="buttonSettings" Grid.Column="1" Grid.Row="2" VerticalAlignment="Top" Margin="0,1,0,4" Height="20" >Settings</Button>
             <Button Name="buttonCategoryExpense3D" Grid.Column="1" Grid.Row="3" VerticalAlignment="Top" Margin="0,0,0,4" Height="20">Category-Expense 3D</Button>
             <StackPanel Grid.Column="1" Grid.Row="4" Margin="0,1,0,0" HorizontalAlignment="Center">
                 <Label   Name="labelAccounts" HorizontalAlignment="Center" Padding="0" VerticalAlignment="Bottom" FontSize="11">Account(s)</Label>

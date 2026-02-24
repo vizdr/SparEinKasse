@@ -308,4 +308,55 @@ Sie können den Inhaber kontaktieren unter
   <data name="CategoryExpense3D" xml:space="preserve">
     <value>Kategorie-Aufwand 3D</value>
   </data>
+  <data name="UpdateCategorization" xml:space="preserve">
+    <value>Kategorisierung aktualisieren</value>
+  </data>
+  <data name="CategorizationUpdating" xml:space="preserve">
+    <value>Aktualisierung...</value>
+  </data>
+  <data name="TimespanSelectorTitle" xml:space="preserve">
+    <value>Zusätzliche Zeiträume wählen</value>
+  </data>
+  <data name="TimespanSelectorPresetHeader" xml:space="preserve">
+    <value>Zeiträume relativ zum aktuellen hinzufügen:</value>
+  </data>
+  <data name="TimespanSelectorPlus2" xml:space="preserve">
+    <value>+2 vorwärts</value>
+  </data>
+  <data name="TimespanSelectorMinus2" xml:space="preserve">
+    <value>-2 rückwärts</value>
+  </data>
+  <data name="TimespanSelectorPlus4" xml:space="preserve">
+    <value>+4 vorwärts</value>
+  </data>
+  <data name="TimespanSelectorMinus4" xml:space="preserve">
+    <value>-4 rückwärts</value>
+  </data>
+  <data name="TimespanSelectorCustomHeader" xml:space="preserve">
+    <value>Benutzerdefiniert:</value>
+  </data>
+  <data name="TimespanSelectorStartDate" xml:space="preserve">
+    <value>Startdatum:</value>
+  </data>
+  <data name="TimespanSelectorDirection" xml:space="preserve">
+    <value>Richtung:</value>
+  </data>
+  <data name="TimespanSelectorForward" xml:space="preserve">
+    <value>Vorwärts</value>
+  </data>
+  <data name="TimespanSelectorBackward" xml:space="preserve">
+    <value>Rückwärts</value>
+  </data>
+  <data name="TimespanSelectorAdditionalSpans" xml:space="preserve">
+    <value>Zusätzliche Zeiträume:</value>
+  </data>
+  <data name="TimespanSelectorOk" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="TimespanSelectorSelectDate" xml:space="preserve">
+    <value>Bitte wählen Sie ein Startdatum.</value>
+  </data>
+  <data name="TimespanSelectorCustomTitle" xml:space="preserve">
+    <value>Benutzerdefinierter Zeitraum</value>
+  </data>
 </root>

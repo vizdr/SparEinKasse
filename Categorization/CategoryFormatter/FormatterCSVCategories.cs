@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualBasic.FileIO;
 
 namespace CategoryFormatter
@@ -20,20 +19,19 @@ namespace CategoryFormatter
         private readonly string categoryId;
         private readonly string category;
 
-        private string[] rowInputCSV;
-        List<string> collectedTokensFromRow;
         private readonly Encoding csvSSKAEncoding;
         private List<Tuple<KeyValuePair<int, string> /*category*/,
             HashSet<string> /*beneficiary*/, HashSet<string> /* reasonForPayment*/ , HashSet<string> /*bookingText*/>> categoryContexts;
-        private List<Tuple<long /* row number */, KeyValuePair<int /* category ID */, string /* Category */>>> categoryInfo;
+        private List<KeyValuePair<int /* category ID */, string /* Category */>> categoryInfo;
         private List<string> lines;
 
         public static readonly string notFoundCategory = "NonCategorized";
         public static readonly int notFoundCategoryID = 0;
-        public const string defaultPath2Categorization = @"../../../../../Categorization.csv";
+        public const string defaultPath2Categorization = @"../../../../../../Categorization.csv";
         public string PathToCategories => pathToCategories;
         public int GetCountOfAvailibleCategories => categoryContexts.Count();
-        public FormatterCSVCategories(string pathToCategoriesCSV = defaultPath2Categorization, string pathToInputCSV = @"../../../../../MT940_Test_umsatz.csv", string pathToOutputCSV = @"../../../../../testOutput.csv",
+
+        public FormatterCSVCategories(string pathToCategoriesCSV = defaultPath2Categorization, string pathToInputCSV = @"../../../../../../MT940_Test_umsatz.csv", string pathToOutputCSV = @"../../../../../../testOutput.csv",
             string categoryId = "CategoryID", string category = "Category",
             string delimiter = ";", int indexBeneficiaryField = 5, int indexReasonForPaymentField = 4, int indexBookingTextField = 3)
         {
@@ -42,8 +40,7 @@ namespace CategoryFormatter
             this.pathToOutputCSV = pathToOutputCSV;
 
             categoryContexts = new List<Tuple<KeyValuePair<int, string>, HashSet<string>, HashSet<string>, HashSet<string>>>(30);
-            categoryInfo = new List<Tuple<long /* row number */, KeyValuePair<int /* category ID */, string /* Category */>>>();
-            collectedTokensFromRow = new List<string>();
+            categoryInfo = new List<KeyValuePair<int, string>>();
 
             this.categoryId = categoryId;
             this.category = category;
@@ -53,44 +50,64 @@ namespace CategoryFormatter
             this.indexBookingTextField = indexBookingTextField;
             try
             {
-#if NETFRAMEWORK
-                // Windows-1252 is available by default in .NET Framework
-#else
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-#endif
-                csvSSKAEncoding = Encoding.GetEncoding(1252);
+                // Robustly obtain code page 1252 (Windows-1252). On some runtimes (e.g. .NET Core)
+                // the code pages provider must be registered. On others (e.g. full .NET Framework)
+                // this is not necessary. Attempt registration, ignore if not available,
+                // then try to get the encoding and fall back to Encoding.Default if needed.
+                try
+                {
+                    // Try registering the provider if available (no-op on runtimes that don't need it).
+                    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                }
+                catch
+                {
+                    // Ignore: registration may not be necessary or available on this runtime.
+                }
+
+                try
+                {
+                    csvSSKAEncoding = Encoding.GetEncoding(1252);
+                }
+                catch
+                {
+                    try
+                    {
+                        // Try by name as a fallback
+                        csvSSKAEncoding = Encoding.GetEncoding("windows-1252");
+                    }
+                    catch
+                    {
+                        // Final fallback to system default to avoid throwing here.
+                        csvSSKAEncoding = Encoding.Default;
+                    }
+                }
+
                 lines = File.ReadAllLines(pathToInputCSV, csvSSKAEncoding).ToList();
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Input CSV File for raw lines not found. {0,-120}", ex.Message);
+                Console.WriteLine("Input CSV File for raw lines or Encoding error. {0,-120}", ex.Message);
             }
         }
 
         public void GetCategoriesAndKeywordsFromFile(bool updateFlag = false)
         {
-            int currentCategory = default;
-            if (categoryContexts.Count > 0 && updateFlag)
+            if (categoryContexts.Count > 0)
             {
+                if (!updateFlag) return;
                 categoryContexts.Clear();
             }
-            else if (categoryContexts.Count == 0)           
-            {
-            }
-            else 
-            {
-                return;
-            }
-            
+
             try
             {
+                int currentCategory = default;
                 using (TextFieldParser parser = new TextFieldParser(pathToCategories))
                 {
-                    List<string> recognizedCategories = new List<string>(30);
+                    HashSet<string> recognizedCategories = new HashSet<string>();
                     recognizedCategories.Add(notFoundCategory);
                     parser.TextFieldType = FieldType.Delimited;
                     parser.SetDelimiters(delimiter);
-                    parser.ReadLine(); // Skip header                    
+                    parser.ReadLine(); // Skip header
                     categoryContexts.Add(Tuple.Create(new KeyValuePair<int, string>(currentCategory, notFoundCategory), new HashSet<string>(), new HashSet<string>(), new HashSet<string>()));
 
                     while (!parser.EndOfData)
@@ -122,8 +139,6 @@ namespace CategoryFormatter
                             }
                         }
                     }
-
-
                 }
                 for (int i = 0; i <= currentCategory; i++)
                 {
@@ -135,43 +150,61 @@ namespace CategoryFormatter
             {
                 Console.WriteLine("Categorization.csv with path {0,30} is not found. Exception: {1,-120}", pathToCategories, ex.Message);
             }
-
-
         }
 
-        private void FormCategoryInfoForRow(string[] tokens, long rowNumber)
+        private void FormCategoryInfoForRow(string normalizedString, string[] tokens)
         {
-            bool isCategoryDetermined = false;
-            bool isFound = false;
-            foreach (string token in tokens)
+            string combined = normalizedString ?? string.Empty;
+            foreach (var categoryContext in categoryContexts)
             {
-                foreach (var categoryConrext in categoryContexts)
+                if (KeywordSetMatches(categoryContext.Item2, tokens, combined) ||
+                    KeywordSetMatches(categoryContext.Item3, tokens, combined) ||
+                    KeywordSetMatches(categoryContext.Item4, tokens, combined))
                 {
-                    if (categoryConrext.Item2.Contains(token) || categoryConrext.Item3.Contains(token) || categoryConrext.Item4.Contains(token))
-                    {
-                        isCategoryDetermined = true;
-                        var currentInfo = Tuple.Create(rowNumber, categoryConrext.Item1);
-                        if (!categoryInfo.Contains(currentInfo))
-                        {
-                            categoryInfo.Add(currentInfo);
-                        }
-                        isFound = true;
-                        break;
-                    }
-                }
-                if (isFound)
-                {
-                    break;
+                    categoryInfo.Add(categoryContext.Item1);
+                    return;
                 }
             }
-            if (!isCategoryDetermined)
+            categoryInfo.Add(new KeyValuePair<int, string>(notFoundCategoryID, notFoundCategory));
+        }
+
+        // Hilfsmethode: Prüft, ob irgendein Keyword aus 'set' in den Tokens oder der kombinierten Zeichenkette vorkommt.
+        // Ein-Wort-Keywords werden gegen die token-Liste gesucht, mehrwortige Keywords (enthalten Leerzeichen)
+        // werden als Substring in der kombinierten normalisierten Zeichenkette geprüft.
+        private bool KeywordSetMatches(HashSet<string> set, string[] tokens, string combinedLower)
+        {
+            if (set == null || set.Count == 0)
+                return false;
+
+            var tokenSet = new HashSet<string>(tokens ?? Array.Empty<string>());
+
+            foreach (var kw in set)
             {
-                categoryInfo.Add(Tuple.Create(rowNumber + 1, new KeyValuePair<int, string>(notFoundCategoryID, notFoundCategory)));
+                if (string.IsNullOrWhiteSpace(kw))
+                    continue;
+
+                string keyword = kw.Trim().ToLowerInvariant();
+
+                if (keyword.Contains(" "))
+                {
+                    if (!string.IsNullOrEmpty(combinedLower) && combinedLower.Contains(keyword))
+                        return true;
+                }
+                else
+                {
+                    if (tokenSet.Contains(keyword))
+                        return true;
+                }
             }
+
+            return false;
         }
 
         private string[] Tokenize(string field)
         {
+            if (string.IsNullOrWhiteSpace(field))
+                return Array.Empty<string>();
+
             List<string> tokensList = new List<string>();
 
             string[] splitedFirst = field.Split('+');
@@ -180,72 +213,85 @@ namespace CategoryFormatter
                 string[] splitedSecond = splited.Split(' ');
                 foreach (string splitThird in splitedSecond)
                 {
-                    string[] tokens = splitThird.Split(new char[2] { '/', '/' });
+                    // correct delimiter: once '/'
+                    string[] tokens = splitThird.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
                     tokensList.AddRange(tokens);
                 }
             }
 
             List<string> formatedTokens = new List<string>(tokensList.Count());
-            tokensList.ForEach(fld => formatedTokens.Add(fld.ToLower().Trim()));
+            tokensList.ForEach(fld =>
+            {
+                if (!string.IsNullOrWhiteSpace(fld))
+                    formatedTokens.Add(fld.ToLower().Trim());
+            });
             return formatedTokens.ToArray();
         }
 
         public void FormCSVOutput()
         {
-            if ((lines != null) && (lines[0] != null))
-            {
-                int rowNumber = 1;
-                string[] headers = lines[0].Split( delimiter.ToCharArray() );
-                if (!headers.ToList().Contains(category))
-                {
-                    lines[0] += delimiter + categoryId + delimiter + category;
-                    lines.Skip(1).ToList().ForEach(line =>
-                    {
-                        lines[rowNumber] += delimiter + categoryInfo[rowNumber - 1].Item2.Key + delimiter + categoryInfo[rowNumber - 1].Item2.Value;
-                        rowNumber++;
-                    });
-                }
-                else
-                {
-                    lines.Skip(1).ToList().ForEach(line =>
-                    {
-                        lines[rowNumber] = lines[rowNumber].Remove(lines[rowNumber].Length - 2); // Remove last delimiters
-                        lines[rowNumber] += delimiter + categoryInfo[rowNumber - 1].Item2.Key + delimiter + categoryInfo[rowNumber - 1].Item2.Value;
-                        rowNumber++;
-                    });
-                }
-                
-               
-            }
+            if (lines == null || lines.Count == 0)
+                return;
 
-            //write the new content
-            if (File.Exists(pathToOutputCSV))
+            int rowNumber = 1;
+            string[] headers = lines[0].Split(delimiter.ToCharArray());
+            if (!headers.ToList().Contains(category))
             {
-                try
+                lines[0] += delimiter + categoryId + delimiter + category;
+                lines.Skip(1).ToList().ForEach(line =>
                 {
-                    File.WriteAllLines(pathToOutputCSV, lines, csvSSKAEncoding);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Raw lines are not valid. {0,-120}", ex.Message);
-                }
+                    lines[rowNumber] += delimiter + categoryInfo[rowNumber - 1].Key + delimiter + categoryInfo[rowNumber - 1].Value;
+                    rowNumber++;
+                });
             }
             else
             {
-                Console.WriteLine("Output file: " + pathToOutputCSV + " is not found. Please create it and restart.");
+                lines.Skip(1).ToList().ForEach(line =>
+                {
+                    // Strip the last two delimiter-separated fields (old CategoryID;Category) before appending updated values.
+                    int lastDelim = lines[rowNumber].LastIndexOf(delimiter);
+                    int prevDelim = lastDelim > 0 ? lines[rowNumber].LastIndexOf(delimiter, lastDelim - 1) : -1;
+                    lines[rowNumber] = prevDelim >= 0 ? lines[rowNumber].Substring(0, prevDelim) : lines[rowNumber];
+                    lines[rowNumber] += delimiter + categoryInfo[rowNumber - 1].Key + delimiter + categoryInfo[rowNumber - 1].Value;
+                    rowNumber++;
+                });
+            }
+
+            try
+            {
+                File.WriteAllLines(pathToOutputCSV, lines, csvSSKAEncoding);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Output CSV write failed. {0,-120}", ex.Message);
             }
         }
 
-        private void GetTokensFromFiels(string[] row)
+        private (string normalized, string[] tokens) CollectTokensFromFields(string[] row)
         {
-            collectedTokensFromRow.Clear();
-            if (row.Length > 0)
+            string beneficiary = string.Empty;
+            string reason = string.Empty;
+            string booking = string.Empty;
+
+            if (row != null && row.Length > 0)
             {
-                collectedTokensFromRow.AddRange(Tokenize(row[indexBeneficiaryField]));
-                collectedTokensFromRow.AddRange(Tokenize(row[indexReasonForPaymentField]));
-                collectedTokensFromRow.AddRange(Tokenize(row[indexBookingTextField]));
+                if (indexBeneficiaryField >= 0 && indexBeneficiaryField < row.Length)
+                    beneficiary = row[indexBeneficiaryField] ?? string.Empty;
+                if (indexReasonForPaymentField >= 0 && indexReasonForPaymentField < row.Length)
+                    reason = row[indexReasonForPaymentField] ?? string.Empty;
+                if (indexBookingTextField >= 0 && indexBookingTextField < row.Length)
+                    booking = row[indexBookingTextField] ?? string.Empty;
             }
+
+            string normalized = (beneficiary + "***" + reason + "***" + booking).ToLowerInvariant().Trim();
+
+            var tokensList = new List<string>();
+            tokensList.AddRange(Tokenize(beneficiary));
+            tokensList.AddRange(Tokenize(reason));
+            tokensList.AddRange(Tokenize(booking));
+            return (normalized, tokensList.ToArray());
         }
+
         public void ProcessCSVInput()
         {
             categoryInfo.Clear();
@@ -253,38 +299,33 @@ namespace CategoryFormatter
             {
                 using (TextFieldParser parser = new TextFieldParser(pathToInputCSV))
                 {
-
                     parser.TextFieldType = FieldType.Delimited;
                     parser.SetDelimiters(delimiter);
                     parser.ReadLine(); // Skip first line with headers
                     while (!parser.EndOfData)
                     {
-                        //Process row of input file
                         try
                         {
-                            rowInputCSV = parser.ReadFields();
-
+                            string[] rowInputCSV = parser.ReadFields();
                             if (rowInputCSV != null)
                             {
-                                GetTokensFromFiels(rowInputCSV);
-                                FormCategoryInfoForRow(collectedTokensFromRow.ToArray(), parser.LineNumber - 2);
+                                var (normalized, tokens) = CollectTokensFromFields(rowInputCSV);
+                                FormCategoryInfoForRow(normalized, tokens);
                             }
                         }
                         catch (MalformedLineException ex)
                         {
                             Console.WriteLine("InputCSVFile Line: " + ex.LineNumber + " Not valid and skipped." + parser.ErrorLine);
-                            GetTokensFromFiels(new string[0]);
-                            FormCategoryInfoForRow(collectedTokensFromRow.ToArray(), parser.ErrorLineNumber - 2);
+                            var (normalized, tokens) = CollectTokensFromFields(new string[0]);
+                            FormCategoryInfoForRow(normalized, tokens);
                         }
                     }
                 }
-
             }
             catch (FileNotFoundException ex)
             {
                 Console.WriteLine("Input CSV file with path {0,30} is not found. Exception: {1,-120}", pathToInputCSV, ex.Message);
             }
-
         }
 
         /// <summary>
@@ -294,16 +335,21 @@ namespace CategoryFormatter
         public KeyValuePair<int, string> MatchCategory(
             string beneficiary, string reasonForPayment, string bookingText)
         {
-            var tokens = new List<string>();
-            tokens.AddRange(Tokenize(beneficiary));
-            tokens.AddRange(Tokenize(reasonForPayment));
-            tokens.AddRange(Tokenize(bookingText));
+            var tokensList = new List<string>();
+            tokensList.AddRange(Tokenize(beneficiary));
+            tokensList.AddRange(Tokenize(reasonForPayment));
+            tokensList.AddRange(Tokenize(bookingText));
+            string[] tokens = tokensList.ToArray();
 
-            foreach (var token in tokens)
-                foreach (var ctx in categoryContexts)
-                    if (ctx.Item2.Contains(token) || ctx.Item3.Contains(token) || ctx.Item4.Contains(token))
-                        return ctx.Item1;
+            string combined = (beneficiary + "***" + reasonForPayment + "***" + bookingText).ToLowerInvariant().Trim();
 
+            foreach (var ctx in categoryContexts)
+            {
+                if (KeywordSetMatches(ctx.Item2, tokens, combined) ||
+                    KeywordSetMatches(ctx.Item3, tokens, combined) ||
+                    KeywordSetMatches(ctx.Item4, tokens, combined))
+                    return ctx.Item1;
+            }
             return new KeyValuePair<int, string>(notFoundCategoryID, notFoundCategory);
         }
     }

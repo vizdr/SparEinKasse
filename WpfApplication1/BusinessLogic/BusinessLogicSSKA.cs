@@ -23,6 +23,12 @@ namespace WpfApplication1
         private WindowProgrBar progrBar;
         private bool _isRunning;
         private bool _isCategorizationRunning = false;
+        private bool _pendingDataModelUpdate = false;
+
+        /// <summary>
+        /// Fired on the UI thread when a categorization update starts (true) or finishes (false).
+        /// </summary>
+        public event EventHandler<bool> CategorizationRunningChanged;
         private readonly ResponseModel responseModel;
         private static PreprocessedDataRequest preprocessedRequest;
         private readonly TransactionQueryService _queryService;
@@ -71,9 +77,15 @@ namespace WpfApplication1
                 UpdateDataModel();
         }
 
-        public void UpdateCategorization()
+        public async void UpdateCategorization()
         {
             _isCategorizationRunning = true;
+            CategorizationRunningChanged?.Invoke(this, true);
+
+            // Yield to the dispatcher at Background priority so WPF renders the
+            // label and disabled-button state before the blocking file I/O starts.
+            await _uiDispatcher.InvokeAsync(new Action(() => { }), DispatcherPriority.Background);
+
             try
             {
                 if (dataGate.UpdateCategorization())
@@ -82,6 +94,7 @@ namespace WpfApplication1
             finally
             {
                 _isCategorizationRunning = false;
+                CategorizationRunningChanged?.Invoke(this, false);
             }
         }
 
@@ -144,7 +157,8 @@ namespace WpfApplication1
             }
             else
             {
-                DiagnosticLog.Log("BusinessLogicSSKA", "Queries already running, not starting new work");
+                DiagnosticLog.Log("BusinessLogicSSKA", "Queries already running, scheduling pending update");
+                _pendingDataModelUpdate = true;
             }
 
             responseModel.UpdateDataRequired = !responseModel.UpdateDataRequired;
@@ -309,6 +323,13 @@ namespace WpfApplication1
             responseModel.UpdateDataRequired = !responseModel.UpdateDataRequired;
             _isRunning = false;
             DiagnosticLog.Log("BusinessLogicSSKA", "Parallel queries completed, data is ready");
+
+            if (_pendingDataModelUpdate)
+            {
+                _pendingDataModelUpdate = false;
+                DiagnosticLog.Log("BusinessLogicSSKA", "Running pending UpdateDataModel after queries completed");
+                UpdateDataModel();
+            }
         }
 
         #endregion
