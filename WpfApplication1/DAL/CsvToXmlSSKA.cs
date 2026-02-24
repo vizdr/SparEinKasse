@@ -202,7 +202,7 @@ namespace WpfApplication1.DAL
                         File.WriteAllText(PathToStorageXmlFile, new XElement(Config.XmlFileRoot, mergedElements ?? savedXml.Elements()).ToString());
                         DataSource = XElement.Load(PathToStorageXmlFile);
                     }
-                    else throw new XmlException("Nothing to update or datum missing.");
+                    else throw new XmlException("Nothing to update or datum is missing.");
                 }
                 MessageBox.Show("SSKA analyzer: The data bank is being updated.", "SSKA analyzer", MessageBoxButton.OK, MessageBoxImage.Information);
                 return true;

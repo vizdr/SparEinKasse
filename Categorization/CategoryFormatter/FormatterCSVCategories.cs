@@ -101,7 +101,7 @@ namespace CategoryFormatter
             try
             {
                 int currentCategory = default;
-                using (TextFieldParser parser = new TextFieldParser(pathToCategories))
+                using (TextFieldParser parser = new TextFieldParser(pathToCategories, csvSSKAEncoding))
                 {
                     HashSet<string> recognizedCategories = new HashSet<string>();
                     recognizedCategories.Add(notFoundCategory);
@@ -127,15 +127,15 @@ namespace CategoryFormatter
                             // Process fields
                             if (!string.IsNullOrWhiteSpace(fields[1]))
                             {
-                                categoryContexts[currentCategory].Item2.Add(fields[1].ToLower().Trim()); // beneficiary
+                                categoryContexts[currentCategory].Item2.Add(fields[1].ToLowerInvariant().Trim()); // beneficiary
                             }
                             if (!string.IsNullOrWhiteSpace(fields[2]))
                             {
-                                categoryContexts[currentCategory].Item3.Add(fields[2].ToLower().Trim());  // reasonForPayment
+                                categoryContexts[currentCategory].Item3.Add(fields[2].ToLowerInvariant().Trim());  // reasonForPayment
                             }
                             if (!string.IsNullOrWhiteSpace(fields[3]))
                             {
-                                categoryContexts[currentCategory].Item4.Add(fields[3].ToLower().Trim()); // bookingText
+                                categoryContexts[currentCategory].Item4.Add(fields[3].ToLowerInvariant().Trim()); // bookingText
                             }
                         }
                     }
@@ -223,7 +223,7 @@ namespace CategoryFormatter
             tokensList.ForEach(fld =>
             {
                 if (!string.IsNullOrWhiteSpace(fld))
-                    formatedTokens.Add(fld.ToLower().Trim());
+                    formatedTokens.Add(fld.ToLowerInvariant().Trim());
             });
             return formatedTokens.ToArray();
         }
@@ -297,7 +297,7 @@ namespace CategoryFormatter
             categoryInfo.Clear();
             try
             {
-                using (TextFieldParser parser = new TextFieldParser(pathToInputCSV))
+                using (TextFieldParser parser = new TextFieldParser(pathToInputCSV, csvSSKAEncoding))
                 {
                     parser.TextFieldType = FieldType.Delimited;
                     parser.SetDelimiters(delimiter);

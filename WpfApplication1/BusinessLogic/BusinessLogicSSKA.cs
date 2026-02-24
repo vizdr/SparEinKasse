@@ -89,7 +89,13 @@ namespace WpfApplication1
             try
             {
                 if (dataGate.UpdateCategorization())
+                {
                     UpdateDataModel();
+                    // Re-query detail data so the popup reflects new categories immediately
+                    // on the next click, even when the same category is re-selected.
+                    // (DataRequest.SelectedCategory guards against re-firing when unchanged.)
+                    UpdateViewData();
+                }
             }
             finally
             {

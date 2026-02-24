@@ -21,8 +21,11 @@ namespace WpfApplication1
         /// <summary>
         /// Returns true if the user is registered or still within the trial period.
         /// </summary>
+#if DEBUG
+        public bool IsFeatureEnabled => true; // Always enabled in debug mode for testing
+#else
         public bool IsFeatureEnabled => !IsNotRegistered || ExpirationDate > DateTime.Today;
-
+#endif
         public RegistrationManager()
         {
             IsNotRegistered = true;
