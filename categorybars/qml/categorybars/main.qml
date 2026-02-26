@@ -5,7 +5,7 @@ import QtGraphs
 Item {
     id: root
     width: 1024
-    height: 850
+    height: 800
 
     ListModel {
         id: flatModel
@@ -13,8 +13,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        //color: "#1a1a2e"
-        color: "#808080"
+        color: "#808090"
     }
 
     Rectangle {
@@ -55,12 +54,12 @@ Item {
         anchors {
             top: titleText.bottom
             horizontalCenter: parent.horizontalCenter
-            topMargin: 10
+            topMargin: 6
         }
         spacing: 8
 
         Text {
-            text: "Rotation:"
+            text: "Rotation Y:"
             color: "#e0e0e0"
             font.pixelSize: 13
             anchors.verticalCenter: parent.verticalCenter
@@ -68,9 +67,7 @@ Item {
 
         Slider {
             id: rotationSlider
-            from: -180
-            to: 180
-            value: -20
+            from: -180; to: 180; value: -23
             width: 400
             anchors.verticalCenter: parent.verticalCenter
         }
@@ -84,14 +81,46 @@ Item {
         }
     }
 
+    Row {
+        id: rotationRow2
+        anchors {
+            top: rotationRow.bottom
+            horizontalCenter: parent.horizontalCenter
+            topMargin: 5
+        }
+        spacing: 8
+
+        Text {
+            text: "Rotation X:"
+            color: "#e0e0e0"
+            font.pixelSize: 13
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Slider {
+            id: rotationSlider2
+            from: -180; to: 180; value: 15
+            width: 400
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Text {
+            text: Math.round(rotationSlider2.value) + "°"
+            color: "#e0e0e0"
+            font.pixelSize: 13
+            width: 36
+            anchors.verticalCenter: parent.verticalCenter
+        }
+    }
+
     Bars3D {
         id: chart
         anchors {
-            top: rotationRow.bottom
+            top: rotationRow2.bottom
             left: parent.left
             right: parent.right
             bottom: parent.bottom
-            topMargin: 4
+            topMargin: 15
             bottomMargin: 15
         }
 
@@ -112,7 +141,7 @@ Item {
         selectionMode: Graphs3D.SelectionFlag.Item
         cameraPreset: Graphs3D.CameraPreset.IsometricRightHigh
         cameraXRotation: rotationSlider.value
-        cameraYRotation: 42
+        cameraYRotation: rotationSlider2.value
         cameraZoomLevel: 115
         margin: 0.0
         aspectRatio: 2.5
@@ -131,11 +160,11 @@ Item {
             title: "Expense"
             titleVisible: true
             labelFormat: "%.0f"
-            max: dataReader.maxExpense > 0 ? Math.ceil(dataReader.maxExpense * 1.15) : 1000
+            max: (typeof dataReader !== "undefined" && dataReader.maxExpense > 0)
+                 ? Math.ceil(dataReader.maxExpense * 1.15) : 1000
         }
 
         Bar3DSeries {
-            id: barSeries
             itemLabelFormat: "@rowLabel | @colLabel: @valueLabel"
 
             ItemModelBarDataProxy {
@@ -147,15 +176,41 @@ Item {
         }
     }
 
+    Text {
+        id: debugOverlay
+        z: 200
+        anchors { bottom: parent.bottom; left: parent.left; margins: 6 }
+        color: "yellow"
+        font.pixelSize: 12
+        text: ""
+    }
+
     Component.onCompleted: {
-        var timespans = dataReader.timespans
+        var timespans = []
+
+        if (typeof dataReader !== "undefined") {
+            timespans = dataReader.timespans
+        } else {
+            // QML Preview: load test_sample.json relative to this QML file
+            var xhr = new XMLHttpRequest()
+            xhr.open("GET", Qt.resolvedUrl("../../test_sample.json"), false)
+            xhr.send()
+            if (xhr.responseText) {
+                try {
+                    timespans = JSON.parse(xhr.responseText).timespans || []
+                } catch (e) {
+                    debugOverlay.text = "Preview: JSON parse error – " + e
+                    return
+                }
+            } else {
+                debugOverlay.text = "Preview: could not load test_sample.json"
+                return
+            }
+        }
+
         flatModel.clear()
         for (var s = 0; s < timespans.length; s++) {
             var ts = timespans[s]
-//            var parts = ts.label.split(" - ")
-//            var shortLabel = parts.length === 2
-//                ? parts[0].substring(0, 8) + "-" + parts[1].substring(0, 8)
-//                : ts.label
             for (var c = 0; c < ts.categories.length; c++) {
                 flatModel.append({
                     "tsLabel":  ts.label,
@@ -164,5 +219,10 @@ Item {
                 })
             }
         }
+
+        // debugOverlay.text = "timespans=" + timespans.length
+        //     + "  flatModel=" + flatModel.count
+        //     + ((typeof dataReader !== "undefined" && dataReader.hasError)
+        //        ? "  ERR: " + dataReader.errorString : "")
     }
 }
