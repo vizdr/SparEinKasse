@@ -3,6 +3,7 @@
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QUrl>
+#include <QFileInfo>
 
 #include "categorydatareader.h"
 
@@ -16,10 +17,20 @@ int main(int argc, char *argv[])
     {
         jsonPath = QString::fromLocal8Bit(argv[1]);
     }
+    // Resolve relative paths against the executable directory, not the CWD
+    if (!jsonPath.isEmpty())
+    {
+        QFileInfo fi(jsonPath);
+        if (fi.isRelative())
+            jsonPath = QGuiApplication::applicationDirPath() + "/" + jsonPath;
+    }
+    else
+    {
+        jsonPath = QGuiApplication::applicationDirPath() + "/test_sample.json";
+    }
 
     CategoryDataReader dataReader;
-    if (!jsonPath.isEmpty())
-        dataReader.loadFromFile(jsonPath);
+    dataReader.loadFromFile(jsonPath);
 
     QQuickView view;
     view.setResizeMode(QQuickView::SizeRootObjectToView);
@@ -34,7 +45,7 @@ int main(int argc, char *argv[])
 
     view.setSource(QUrl(QStringLiteral("qrc:/CategoryBarsExample/qml/categorybars/main.qml")));
     view.setTitle(QStringLiteral("Category-Expense Comparison"));
-    view.resize(1024, 850);
+    view.resize(1024, 800);
     view.show();
 
     return app.exec();

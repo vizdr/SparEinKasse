@@ -34,3 +34,21 @@ set_target_properties(categorybars PROPERTIES
     WIN32_EXECUTABLE TRUE
     MACOSX_BUNDLE TRUE
 )
+
+# Copy test data next to the executable so it is found via applicationDirPath()
+configure_file(test_sample.json test_sample.json COPYONLY)
+
+# Deploy Qt DLLs next to the executable on Windows
+if(WIN32)
+    get_target_property(_qmake Qt6::qmake IMPORTED_LOCATION)
+    get_filename_component(_qt_bin "${_qmake}" DIRECTORY)
+    find_program(WINDEPLOYQT windeployqt6 HINTS "${_qt_bin}")
+    if(WINDEPLOYQT)
+        add_custom_command(TARGET categorybars POST_BUILD
+            COMMAND "${WINDEPLOYQT}"
+                --qmldir "${CMAKE_SOURCE_DIR}/qml"
+                "$<TARGET_FILE:categorybars>"
+            COMMENT "Deploying Qt DLLs..."
+        )
+    endif()
+endif()
