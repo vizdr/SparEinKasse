@@ -492,6 +492,19 @@
       <Component Id="CbD3Dcompiler"><File Source="..\WpfApplication1\bin\x64\Release\D3Dcompiler_47.dll" /></Component>
       <Component Id="CbOpengl32sw"><File Source="..\WpfApplication1\bin\x64\Release\opengl32sw.dll" /></Component>
       <Component Id="CbIcuuc"><File Source="..\WpfApplication1\bin\x64\Release\icuuc.dll" /></Component>
+      <Component Id="CbDxcompiler"><File Source="..\WpfApplication1\bin\x64\Release\dxcompiler.dll" /></Component>
+      <Component Id="CbDxil"><File Source="..\WpfApplication1\bin\x64\Release\dxil.dll" /></Component>
+      <Component Id="Qt6QuickControls2Universal"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickControls2Universal.dll" /></Component>
+      <Component Id="Qt6QuickControls2UniversalStyleImpl"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickControls2UniversalStyleImpl.dll" /></Component>
+      <!-- Style DLLs required by optional QML style plugins (missing causes optional import to fail in Qt 6.10) -->
+      <Component Id="Qt6QuickControls2Fusion"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickControls2Fusion.dll" /></Component>
+      <Component Id="Qt6QuickControls2FusionStyleImpl"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickControls2FusionStyleImpl.dll" /></Component>
+      <Component Id="Qt6QuickControls2Material"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickControls2Material.dll" /></Component>
+      <Component Id="Qt6QuickControls2MaterialStyleImpl"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickControls2MaterialStyleImpl.dll" /></Component>
+      <Component Id="Qt6QuickControls2Imagine"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickControls2Imagine.dll" /></Component>
+      <Component Id="Qt6QuickControls2ImagineStyleImpl"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickControls2ImagineStyleImpl.dll" /></Component>
+      <Component Id="Qt6QuickControls2FluentWinUI3StyleImpl"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickControls2FluentWinUI3StyleImpl.dll" /></Component>
+      <Component Id="Qt6QuickControls2WindowsStyleImpl"><File Source="..\WpfApplication1\bin\x64\Release\Qt6QuickControls2WindowsStyleImpl.dll" /></Component>
     </ComponentGroup>
 
     <!-- Qt6 platform plugin -->

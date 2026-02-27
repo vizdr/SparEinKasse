@@ -522,7 +522,8 @@ namespace WpfApplication1
             {
                 Process.Start(new ProcessStartInfo(exePath, $"\"{jsonPath}\"")
                 {
-                    UseShellExecute = false
+                    UseShellExecute = false,
+                    WorkingDirectory = Path.GetDirectoryName(exePath) ?? string.Empty
                 });
             }
             catch (Exception ex)
