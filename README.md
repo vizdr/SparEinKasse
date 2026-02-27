@@ -24,7 +24,7 @@ Personal finance analysis application for Windows. Processes German bank CSV exp
 </p>
 
 <p align="center">
-  <img src="Screenshot-4-SSKA_data_analyser.png" width="900">
+  <img src="Screenshot-5-SSKA_data_analyser.png" width="900">
 </p>
 
 ## Requirements
