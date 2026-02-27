@@ -405,19 +405,20 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- Import Grpc.Tools targets for proto code generation (required for old-style csproj) -->
   <Import Project="$(NuGetPackageRoot)grpc.tools\2.67.0\buildTransitive\Grpc.Tools.targets" Condition="Exists('$(NuGetPackageRoot)grpc.tools\2.67.0\buildTransitive\Grpc.Tools.targets')" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
+  <!-- Build categorybars Qt6 app before C# compilation so cmake never touches an open .vcxproj -->
+  <Target Name="BuildCategoryBars" BeforeTargets="Build">
+    <PropertyGroup>
+      <CbBuildDir>$(MSBuildProjectDirectory)\..\categorybars\build</CbBuildDir>
+    </PropertyGroup>
+    <Exec Command="&quot;C:\Program Files\CMake\bin\cmake.exe&quot; --build &quot;$(CbBuildDir)&quot; --config $(Configuration) --target categorybars"
+          WorkingDirectory="$(CbBuildDir)" />
+  </Target>
   <!-- Copy categorybars Qt6 app to WPF output after build -->
   <Target Name="AfterBuild">
     <PropertyGroup>
       <CbBuildDir>$(MSBuildProjectDirectory)\..\categorybars\build</CbBuildDir>
       <CategoryBarsOutDir>$(CbBuildDir)\$(Configuration)</CategoryBarsOutDir>
     </PropertyGroup>
-    <!-- Use cmake build to ensure QML file changes are detected (VS vcxproj rebuild misses them) -->
-    <Exec Command="&quot;C:\Program Files\CMake\bin\cmake.exe&quot; --build &quot;$(CbBuildDir)&quot; --config $(Configuration) --target categorybars"
-          WorkingDirectory="$(CbBuildDir)" />
     <ItemGroup>
       <CategoryBarsFiles Include="$(CategoryBarsOutDir)\categorybars.exe" />
       <CategoryBarsFiles Include="$(CategoryBarsOutDir)\*.dll" />

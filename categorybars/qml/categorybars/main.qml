@@ -1,5 +1,5 @@
 import QtQuick
-import QtQuick.Controls.Basic
+import QtQuick.Controls
 import QtGraphs
 
 Item {
@@ -126,9 +126,11 @@ Item {
 
         theme: GraphsTheme {
             theme: GraphsTheme.PurpleSeries
-            colorScheme: GraphsTheme.ColorScheme.Dark
+            colorScheme: GraphsTheme.ColorScheme.Automatic
+
             plotAreaBackgroundVisible: true
-            colorStyle: GraphsTheme.ColorStyle.RangeGradient
+            labelTextColor: "#e0e0e0"
+            colorStyle: GraphsTheme.ColorStyle.RangeGradient         
             baseGradients: [
                 Gradient {
                     GradientStop { position: 0.0; color: "#4A148C" }
@@ -139,9 +141,9 @@ Item {
 
         shadowQuality: Graphs3D.ShadowQuality.Medium
         selectionMode: Graphs3D.SelectionFlag.Item
-        cameraPreset: Graphs3D.CameraPreset.IsometricRightHigh
         cameraXRotation: rotationSlider.value
         cameraYRotation: rotationSlider2.value
+        cameraTargetPosition: Qt.vector3d(0.0, -0.4, 0.0)
         cameraZoomLevel: 115
         margin: 0.0
         aspectRatio: 2.5
