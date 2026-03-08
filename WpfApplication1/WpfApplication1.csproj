@@ -410,8 +410,7 @@
     <PropertyGroup>
       <CbBuildDir>$(MSBuildProjectDirectory)\..\categorybars\build</CbBuildDir>
     </PropertyGroup>
-    <Exec Command="&quot;C:\Program Files\CMake\bin\cmake.exe&quot; --build &quot;$(CbBuildDir)&quot; --config $(Configuration) --target categorybars"
-          WorkingDirectory="$(CbBuildDir)" />
+    <Exec Command="&quot;C:\Program Files\CMake\bin\cmake.exe&quot; --build &quot;$(CbBuildDir)&quot; --config $(Configuration) --target categorybars" WorkingDirectory="$(CbBuildDir)" />
   </Target>
   <!-- Copy categorybars Qt6 app to WPF output after build -->
   <Target Name="AfterBuild">
@@ -423,21 +422,12 @@
       <CategoryBarsFiles Include="$(CategoryBarsOutDir)\categorybars.exe" />
       <CategoryBarsFiles Include="$(CategoryBarsOutDir)\*.dll" />
     </ItemGroup>
-    <Copy SourceFiles="@(CategoryBarsFiles)"
-          DestinationFolder="$(OutputPath)"
-          SkipUnchangedFiles="true"
-          Condition="Exists('$(CategoryBarsOutDir)\categorybars.exe')" />
-    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\platforms&quot; &quot;$(OutputPath)platforms&quot;"
-          Condition="Exists('$(CategoryBarsOutDir)\platforms')" />
-    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\styles&quot; &quot;$(OutputPath)styles&quot;"
-          Condition="Exists('$(CategoryBarsOutDir)\styles')" />
-    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\imageformats&quot; &quot;$(OutputPath)imageformats&quot;"
-          Condition="Exists('$(CategoryBarsOutDir)\imageformats')" />
-    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\qml&quot; &quot;$(OutputPath)qml&quot;"
-          Condition="Exists('$(CategoryBarsOutDir)\qml')" />
-    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\generic&quot; &quot;$(OutputPath)generic&quot;"
-          Condition="Exists('$(CategoryBarsOutDir)\generic')" />
-    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\tls&quot; &quot;$(OutputPath)tls&quot;"
-          Condition="Exists('$(CategoryBarsOutDir)\tls')" />
+    <Copy SourceFiles="@(CategoryBarsFiles)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" Condition="Exists('$(CategoryBarsOutDir)\categorybars.exe')" />
+    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\platforms&quot; &quot;$(OutputPath)platforms&quot;" Condition="Exists('$(CategoryBarsOutDir)\platforms')" />
+    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\styles&quot; &quot;$(OutputPath)styles&quot;" Condition="Exists('$(CategoryBarsOutDir)\styles')" />
+    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\imageformats&quot; &quot;$(OutputPath)imageformats&quot;" Condition="Exists('$(CategoryBarsOutDir)\imageformats')" />
+    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\qml&quot; &quot;$(OutputPath)qml&quot;" Condition="Exists('$(CategoryBarsOutDir)\qml')" />
+    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\generic&quot; &quot;$(OutputPath)generic&quot;" Condition="Exists('$(CategoryBarsOutDir)\generic')" />
+    <Exec Command="xcopy /E /I /Y /Q &quot;$(CategoryBarsOutDir)\tls&quot; &quot;$(OutputPath)tls&quot;" Condition="Exists('$(CategoryBarsOutDir)\tls')" />
   </Target>
 </Project>
