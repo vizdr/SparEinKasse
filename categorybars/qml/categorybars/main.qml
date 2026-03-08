@@ -125,11 +125,14 @@ Item {
         }
 
         theme: GraphsTheme {
+
             theme: GraphsTheme.PurpleSeries
             colorScheme: GraphsTheme.ColorScheme.Automatic
 
+            labelTextColor: "#000000"
+            labelBackgroundColor: "#FFFFFF"
             plotAreaBackgroundVisible: true
-            labelTextColor: "#e0e0e0"
+
             colorStyle: GraphsTheme.ColorStyle.RangeGradient         
             baseGradients: [
                 Gradient {
@@ -137,10 +140,12 @@ Item {
                     GradientStop { position: 1.0; color: "#CE93D8" }
                 }
             ]
+
         }
 
         shadowQuality: Graphs3D.ShadowQuality.Medium
         selectionMode: Graphs3D.SelectionFlag.Item
+
         cameraXRotation: rotationSlider.value
         cameraYRotation: rotationSlider2.value
         cameraTargetPosition: Qt.vector3d(0.0, -0.4, 0.0)
@@ -167,8 +172,13 @@ Item {
         }
 
         Bar3DSeries {
+            mesh: Abstract3DSeries.MeshBevelBar
+            //meshSmooth: true          // softer bevel edges
             itemLabelFormat: "@rowLabel | @colLabel: @valueLabel"
-
+            singleHighlightGradient: Gradient {
+                GradientStop { position: 0.0; color: "#2c2c00" }
+                GradientStop { position: 1.0; color: "#eded00" }
+            }
             ItemModelBarDataProxy {
                 itemModel: flatModel
                 rowRole: "tsLabel"

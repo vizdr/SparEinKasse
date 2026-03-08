@@ -29,12 +29,12 @@ namespace WpfApplication1.DAL
             }
             return targetedHeaderFieldsIndexes;
         }
-        protected virtual bool           IsAllKeyIndexesFound(Dictionary<uint, uint> targetHeaders)
+        protected virtual bool IsAllKeyIndexesFound(Dictionary<uint, uint> targetHeaders)
         {
             IEnumerable<uint> targetIndexes = targetHeaders.Keys;
             return keyIndexes.Except<uint>(targetIndexes).Count<uint>() == 0;
         }
-        protected static string          GetCultureAdaptedDouble(object dec)
+        protected static string GetCultureAdaptedDouble(object dec)
         {
             string value = dec.ToString().Trim();
             CultureInfo detectedCulture = DetectDecimalCulture(value);

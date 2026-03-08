@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,10 +14,7 @@ namespace WpfApplication1.DAL
 {
     public class CsvToXmlSSKA : IDataSourceProvider
     {
-        private string[] rawCSVInputFiles;
-        private string[] categorizedCSVInputFiles;
         private string PathToStorageXmlFile { get; set; }
-        private bool isExceptionUnhandled = false;
         public XElement DataSource { get; private set; }
         private readonly object _fileLock = new object();
 
@@ -63,63 +60,60 @@ namespace WpfApplication1.DAL
 
         public bool isInputCsvFilesAvailable()
         {
-            if (Directory.Exists(Config.PathToSskaDownloadsFolder))
-                rawCSVInputFiles = Directory.GetFiles(Config.PathToSskaDownloadsFolder, @"*.csv");
-            bool res = !isExceptionUnhandled & (rawCSVInputFiles.Length > 0);
-            return res;
-        }
-
-        public bool isInputCsvFilesCategorized()
-        {
-            if (Directory.Exists(Config.PathToSskaDownloadsFolder))
-                categorizedCSVInputFiles = Directory.GetFiles(Config.PathToSskaDownloadsFolder, @"*categorized*.csv");
-            bool res = !isExceptionUnhandled & (categorizedCSVInputFiles.Length > 0);
-            return res;
+            return PathToFilesUtil.GetNonCategorizedInputCSVFilePaths.Length > 0;
         }
 
         public bool UpdateDataBank()
         {
-            isExceptionUnhandled = false;
             int filesCounter = 0;
+            PathToFilesUtil.ObtainInputRawCsvFiles();
+
             if (isInputCsvFilesAvailable())
             {
-                bool isCategorizationSucced = false;
-                if (!isInputCsvFilesCategorized())
+                if (ProvideCategorization())
                 {
-                    isCategorizationSucced = ProvideCategorization();
-                }
-                if (isCategorizationSucced)
-                {
-                    while (isInputCsvFilesCategorized())
-                        if (TryUpdateSavedXml(PathToFilesUtil.GetNameInputCategorizedCsvFile()))
+                    // if there are raw CSV files, categorization should be processed before update. If there are categorized CSV files, update can be processed immediately.
+                    int categorizedFilesCount = PathToFilesUtil.GetCategorizedInputCSVFilePaths.Length;
+                    for (int i = 0; i < categorizedFilesCount; i++)
+                    {
+                        string pathToProcessedCSVFile = PathToFilesUtil.GetNameOfFirstInputCategorizedCsvFile();
+                        if (!string.IsNullOrEmpty(pathToProcessedCSVFile) && TryUpdateSavedXml(pathToProcessedCSVFile))
                         {
-                            PathToFilesUtil.MoveFileToArxiv();
+                            PathToFilesUtil.MoveFileToArxiv(pathToProcessedCSVFile, "_arxive");
                             filesCounter++;
                         }
+                    }
                 }
-                return isCategorizationSucced;
             }
             else PathToFilesUtil.CreateSskaFolderAndFile();
+
             if (filesCounter > 0)
             {
                 MessageBox.Show("Update is completed. It was processed " + filesCounter + (filesCounter == 1 ? " file." : " files."), Config.AppName, MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
-                MessageBox.Show("File(s) to update not found.", Config.AppName);
+                int remainingRawFiles = PathToFilesUtil.GetNonCategorizedInputCSVFilePaths.Length;
+                if (remainingRawFiles > 0)
+                {
+                    MessageBox.Show("The " + remainingRawFiles + " file(s) to update were not processed.", Config.AppName);
+                }
+                else
+                {
+                    MessageBox.Show("No files to update found.", Config.AppName, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
-            return (filesCounter > 0);
+            return filesCounter > 0;
         }
 
         private bool ProvideCategorization()
         {
-            bool isCategorizatioSucseeded = false;
-            string[] rawCsvFiles = PathToFilesUtil.GetInputRawCsvFiles();
+            bool isCategorizationSucceeded = false;
+            string[] rawCsvFiles = PathToFilesUtil.GetNonCategorizedInputCSVFilePaths;
             // categorization should be processed. Only raw CSV Input, w/o appended category fields, is accepted.
             if (rawCsvFiles.Length == 0)
-            {
-                return isCategorizatioSucseeded;
-            }
+                return isCategorizationSucceeded;
+
             foreach (string rawCsvFile in rawCsvFiles)
             {
                 string csvFileWithCategoryFields = PathToFilesUtil.CreateCategorizedCsvFile(rawCsvFile);
@@ -127,57 +121,49 @@ namespace WpfApplication1.DAL
                 {
                     // fill file with categories;
                     FormatterCSVCategories formatterCsv;
-                    string path2CaegorizationFile = FormatterCSVCategories.defaultPath2Categorization;
-                    if (!File.Exists(path2CaegorizationFile))
+                    string path2CategorizationFile = FormatterCSVCategories.defaultPath2Categorization;
+                    if (!File.Exists(path2CategorizationFile))
                     {
-                        path2CaegorizationFile = Config.PathToCategorizationFile;
-                        if (!File.Exists(path2CaegorizationFile))
+                        path2CategorizationFile = Config.PathToCategorizationFile;
+                        if (!File.Exists(path2CategorizationFile))
                         {
-                            path2CaegorizationFile = @"../../../Categorization/" + Path.GetFileName(FormatterCSVCategories.defaultPath2Categorization);
-                        }                       
-                        if (!File.Exists(path2CaegorizationFile))
+                            path2CategorizationFile = @"../../../Categorization/" + Path.GetFileName(FormatterCSVCategories.defaultPath2Categorization);
+                        }
+                        if (!File.Exists(path2CategorizationFile))
                         {
-                            MessageBox.Show("File to parse categories is missing: " + Path.GetFullPath(FormatterCSVCategories.defaultPath2Categorization) + " or: " + Path.GetFullPath(path2CaegorizationFile));
+                            MessageBox.Show("File to parse categories is missing: " + Path.GetFullPath(FormatterCSVCategories.defaultPath2Categorization) + " or: " + Path.GetFullPath(path2CategorizationFile));
                         }
                         else
                         {
-                            formatterCsv = new FormatterCSVCategories(pathToCategoriesCSV: path2CaegorizationFile, pathToInputCSV: rawCsvFile, pathToOutputCSV: csvFileWithCategoryFields);
+                            formatterCsv = new FormatterCSVCategories(pathToCategoriesCSV: path2CategorizationFile, pathToInputCSV: rawCsvFile, pathToOutputCSV: csvFileWithCategoryFields);
                             ProcessCategoriyFile(formatterCsv);
-                            isCategorizatioSucseeded = true;
+                            isCategorizationSucceeded = true;
                         }
                     }
                     else
                     {
                         formatterCsv = new FormatterCSVCategories(pathToInputCSV: rawCsvFile, pathToOutputCSV: csvFileWithCategoryFields);
                         ProcessCategoriyFile(formatterCsv);
-                        isCategorizatioSucseeded = true;
+                        isCategorizationSucceeded = true;
                     }
                 }
-                string file2Arxive = PathToFilesUtil.GetArxivedCsvFilePath(PathToFilesUtil.AppendSuffixToFileName(rawCsvFile, "_arxiv"));
-                if (!File.Exists(file2Arxive))
-                {
-                    try
-                    {
-                        File.Move(rawCsvFile, file2Arxive);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Input CSV File can not be moved to Arxive folder:", ex.Message);
-                    }                    
-                }
+
+                PathToFilesUtil.MoveFileToArxiv(rawCsvFile, "_arxiv");
             }
-            return isCategorizatioSucseeded;
+            return isCategorizationSucceeded;
         }
+
         private void ProcessCategoriyFile(FormatterCSVCategories formatterCsv)
         {
             if (formatterCsv.GetCountOfAvailibleCategories == 0)
             {
                 formatterCsv.GetCategoriesAndKeywordsFromFile();
             }
-            
+
             formatterCsv.ProcessCSVInput();
             formatterCsv.FormCSVOutput();
         }
+
         public bool TryUpdateSavedXml(string fileToReadPath)
         {
             IEnumerable<XElement> mergedElements = null;
@@ -210,16 +196,15 @@ namespace WpfApplication1.DAL
             catch (XmlException e)
             {
                 MessageBox.Show(e.Message, Config.AppName + ": Xml File was not load!", MessageBoxButton.OK, MessageBoxImage.Error);
-                isExceptionUnhandled = true;
                 return false;
             }
-
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, Config.AppName + ": Unable to form Xml File", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
         }
+
         public bool UpdateCategorization()
         {
             // --- Resolve Categorization.csv path (same fallbacks as ProvideCategorization) ---
@@ -257,9 +242,9 @@ namespace WpfApplication1.DAL
                     XElement arxiv = XElement.Load(PathToStorageXmlFile);
                     foreach (var tx in arxiv.Elements(Config.TransactionField))
                     {
-                        string buchungstext     = tx.Element(Config.BuchungsTextField)?.Value ?? string.Empty;
+                        string buchungstext = tx.Element(Config.BuchungsTextField)?.Value ?? string.Empty;
                         string verwendungszweck = tx.Element(Config.VerwendZweckField)?.Value ?? string.Empty;
-                        string beguenstigter    = tx.Element(Config.BeguenstigterField)?.Value ?? string.Empty;
+                        string beguenstigter = tx.Element(Config.BeguenstigterField)?.Value ?? string.Empty;
 
                         var cat = formatter.MatchCategory(beguenstigter, verwendungszweck, buchungstext);
                         tx.Element(Config.CategoryIdField)?.SetValue(cat.Key.ToString());
@@ -295,10 +280,10 @@ namespace WpfApplication1.DAL
                 if (lines.Length < 2) return;
 
                 string[] headers = lines[0].Split(Config.Delimiter4CSVFile.ToCharArray());
-                int catIdIdx         = Array.IndexOf(headers, Config.CategoryIdField);
-                int catIdx           = Array.IndexOf(headers, Config.CategoryField);
-                int buchungsIdx      = Array.IndexOf(headers, Config.BuchungsTextField);
-                int verwendungIdx    = Array.IndexOf(headers, Config.VerwendZweckField);
+                int catIdIdx = Array.IndexOf(headers, Config.CategoryIdField);
+                int catIdx = Array.IndexOf(headers, Config.CategoryField);
+                int buchungsIdx = Array.IndexOf(headers, Config.BuchungsTextField);
+                int verwendungIdx = Array.IndexOf(headers, Config.VerwendZweckField);
                 int beguenstigterIdx = Array.IndexOf(headers, Config.BeguenstigterField);
 
                 if (catIdIdx < 0 || catIdx < 0) return; // columns not present — skip file
@@ -308,13 +293,13 @@ namespace WpfApplication1.DAL
                     string[] fields = lines[i].Split(Config.Delimiter4CSVFile.ToCharArray());
                     if (fields.Length <= Math.Max(catIdIdx, catIdx)) continue;
 
-                    string buchungstext     = buchungsIdx >= 0 && buchungsIdx < fields.Length ? fields[buchungsIdx] : string.Empty;
+                    string buchungstext = buchungsIdx >= 0 && buchungsIdx < fields.Length ? fields[buchungsIdx] : string.Empty;
                     string verwendungszweck = verwendungIdx >= 0 && verwendungIdx < fields.Length ? fields[verwendungIdx] : string.Empty;
-                    string beguenstigter    = beguenstigterIdx >= 0 && beguenstigterIdx < fields.Length ? fields[beguenstigterIdx] : string.Empty;
+                    string beguenstigter = beguenstigterIdx >= 0 && beguenstigterIdx < fields.Length ? fields[beguenstigterIdx] : string.Empty;
 
                     var cat = formatter.MatchCategory(beguenstigter, verwendungszweck, buchungstext);
                     fields[catIdIdx] = cat.Key.ToString();
-                    fields[catIdx]   = cat.Value;
+                    fields[catIdx] = cat.Value;
                     lines[i] = string.Join(Config.Delimiter4CSVFile, fields);
                 }
 
@@ -331,12 +316,11 @@ namespace WpfApplication1.DAL
             for (int i = 0; i < src.GetLength(0); i++)
             {
                 if (src[i].Contains(symbol2Remove))
-                {
                     src[i] = src[i].Replace(symbol2Remove, symbol2Replace);
-                }
             }
             return new string[] { Config.Delimiter4CSVFile };
         }
+
         private List<string[]> FilterStrings(string[] src, string[] sep)
         {
             List<string[]> res = new List<string[]>();
@@ -344,30 +328,29 @@ namespace WpfApplication1.DAL
             {
                 string[] splittedArr = el.Split(sep, StringSplitOptions.None);
                 for (int j = 0; j < splittedArr.Length; j++)
-                {
                     splittedArr[j] = splittedArr[j].Trim();
-
-                }
                 res.Add(splittedArr);
             }
             return res;
         }
+
         private string[] GetHeader(List<string[]> textFileStrings)
         {
             return textFileStrings.FirstOrDefault(); // first line contains headers
         }
+
         private List<string[]> RemoveHeader(List<string[]> textFileStrings)
         {
             return textFileStrings.Skip(1).ToList();
         }
+
         public XElement GetXmlElem(string pathToFileToRead)
         {
-            XElement res;
             try
             {
                 lock (_fileLock)
                 {
-                    string[] sources = File.ReadAllLines(pathToFileToRead, /*Encoding.Default*/ Encoding.GetEncoding(Config.EncodePage)).ToArray<string>();
+                    string[] sources = File.ReadAllLines(pathToFileToRead, Encoding.GetEncoding(Config.EncodePage));
                     string[] sep = ReplaceSymbolGetSeparator(ref sources);
                     List<string[]> source = FilterStrings(sources, sep);
                     string[] sourceHeaders = GetHeader(source);
@@ -375,11 +358,11 @@ namespace WpfApplication1.DAL
                     if (sourceHeaders.Length > 0)
                     {
                         source = RemoveHeader(source);
-                        XElemBuilder XElemsBuilder = new X10ElemBuilder(sourceHeaders, AccountsLogic);
-                        res = XElemsBuilder.BuildXElement(source);
+                        XElemBuilder xElemsBuilder = new X10ElemBuilder(sourceHeaders, AccountsLogic);
+                        XElement res = xElemsBuilder.BuildXElement(source);
                         if (res != null)
-                            return res; //XElemsBuilder.BuildXElement(source) ?? new XElement("Root");
-                        else throw new XmlException("Update of Xml DataBank file failed. ");
+                            return res;
+                        throw new XmlException("Update of Xml DataBank file failed.");
                     }
                     else
                     {
@@ -387,20 +370,15 @@ namespace WpfApplication1.DAL
                     }
                 }
             }
-
             catch (IOException e)
             {
                 MessageBox.Show(e.Message, Config.AppName + ": File is blocked!", MessageBoxButton.OK, MessageBoxImage.Error);
-                isExceptionUnhandled = true;
             }
             catch (XmlException e)
             {
                 MessageBox.Show(e.Message, "!!! " + Config.AppName + ": Unable to create XmlElement.", MessageBoxButton.OK, MessageBoxImage.Error);
-                isExceptionUnhandled = true;
             }
             return null;
         }
-
-
     }
 }
